@@ -101,7 +101,7 @@ const UserLoginPage = () => {
 
   return (
     <>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <div className="pop-bg"></div>
       <PopUpSearch />
       <TopMenu />

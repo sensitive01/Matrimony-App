@@ -19,7 +19,7 @@ import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
 const UserHomePage = () => {
   return (
     <>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <PopUpSearch />
       <TopMenu />
       <MenuPopUp1 />

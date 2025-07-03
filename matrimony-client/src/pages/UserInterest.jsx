@@ -12,7 +12,7 @@ import UserSideBar from "../components/UserSideBar";
 const UserInterest = () => {
   return (
     <>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <PopUpSearch />
       <TopMenu />
       <MenuPopUp1 />

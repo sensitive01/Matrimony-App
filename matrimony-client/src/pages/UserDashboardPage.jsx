@@ -107,7 +107,7 @@ const UserDashboardPage = () => {
 
   return (
     <>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <PopUpSearch />
       <TopMenu />
       <MenuPopUp1 />

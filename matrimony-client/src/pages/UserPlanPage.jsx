@@ -12,7 +12,7 @@ import UserSideBar from "../components/UserSideBar";
 const UserPlanPage = () => {
   return (
     <>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <PopUpSearch />
       <TopMenu />
       <MenuPopUp1 />

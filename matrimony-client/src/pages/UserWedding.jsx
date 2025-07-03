@@ -11,7 +11,7 @@ import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
 const UserWedding = () => {
   return (
     <body>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <PopUpSearch />
       <TopMenu />
       <MenuPopUp1 />

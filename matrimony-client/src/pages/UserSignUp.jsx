@@ -74,7 +74,7 @@ const UserSignUp = () => {
 
   return (
     <>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <div className="pop-bg"></div>
       <PopUpSearch />
       <TopMenu />

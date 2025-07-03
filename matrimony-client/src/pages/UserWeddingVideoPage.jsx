@@ -11,7 +11,7 @@ import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
 const UserWeddingVideoPage = () => {
   return (
     <>
-      <PreLoader />
+      {/* <PreLoader /> */}
       <PopUpSearch />
       <TopMenu />
       <MenuPopUp1 />
