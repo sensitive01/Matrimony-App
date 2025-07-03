@@ -86,7 +86,7 @@ const UserSignUp = () => {
 
       <section>
         <div className="login">
-          <div className="container">
+          <div className="container"> 
             <div className="row">
               <div className="inn">
                 <div className="lhs">
