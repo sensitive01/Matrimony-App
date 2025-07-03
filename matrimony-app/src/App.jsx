@@ -1,17 +1,146 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import MatrimonyAdminLogin from "./components/admin/AdminLoginPage";
-import AdminDashboard from "./components/admin/AdminDashboardPage";
 import AdminNewUserRequest from "./components/admin/AdminNewUserRequest";
+import DashboardPage from "./components/admin/DashboardPage";
+import AdminAllUsersList from "./components/admin/AdminAllUsersList";
+import AdminFreeUserList from "./components/admin/AdminFreeUserList";
+import AdminPremiumUserList from "./components/admin/AdminPremiumUserList";
+import AdminAddNewUser from "./components/admin/AdminAddNewUser";
+import AdminMetaTags from "./components/admin/AdminMetaTags";
+import AdminGoogleAnalyticsCode from "./components/admin/AdminGoogleAnalyticsCode";
+import AdminXmlSiteMap from "./components/admin/AdminXmlSiteMap";
+import AdminAllPayments from "./components/admin/AdminAllPayments";
+import AdminPricingPlans from "./components/admin/AdminPricingPlans";
+import AdminPaymentGateWay from "./components/admin/AdminPaymentGateWay";
+import AdminSettings from "./components/admin/AdminSettings";
+import AdminLayout from "./components/mainLayouts/AdminLayout";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public/Home Route */}
-        {/* {/* <Route path="/admin/login" element={<AdminLoginPage />} /> */}
-        <Route path="/" element={<MatrimonyAdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/add-new-user-request" element={<AdminNewUserRequest />} />
+        {/* Admin Routes */}
+        <Route
+          path="/"
+          element={
+            <AdminLayout>
+              <MatrimonyAdminLogin />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminLayout>
+              <DashboardPage />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/new-user-requests"
+          element={
+            <AdminLayout>
+              <AdminNewUserRequest />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/all-user-list"
+          element={
+            <AdminLayout>
+              <AdminAllUsersList />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/free-user-list"
+          element={
+            <AdminLayout>
+              <AdminFreeUserList />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/standard-user-list"
+          element={
+            <AdminLayout>
+              <AdminFreeUserList />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/premium-user-list"
+          element={
+            <AdminLayout>
+              <AdminPremiumUserList />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/add-new-user"
+          element={
+            <AdminLayout>
+              <AdminAddNewUser />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/seo-meta-tags"
+          element={
+            <AdminLayout>
+              <AdminMetaTags />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/seo-google-analystics-code"
+          element={
+            <AdminLayout>
+              <AdminGoogleAnalyticsCode />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/seo-xml-site-map"
+          element={
+            <AdminLayout>
+              <AdminXmlSiteMap />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/all-payments-list"
+          element={
+            <AdminLayout>
+              <AdminAllPayments />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/pricing-plans-list"
+          element={
+            <AdminLayout>
+              <AdminPricingPlans />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/payment-gateway"
+          element={
+            <AdminLayout>
+              <AdminPaymentGateWay />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/settings-page"
+          element={
+            <AdminLayout>
+              <AdminSettings />
+            </AdminLayout>
+          }
+        />
       </Routes>
     </Router>
   );

@@ -1,3 +1,12 @@
+import $ from "jquery";
+
+// Now $ is defined here
+$(document).ready(function () {
+  console.log("Admin custom JS loaded");
+  // Your jQuery code here
+});
+
+
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)

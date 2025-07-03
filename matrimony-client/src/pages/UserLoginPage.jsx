@@ -1,0 +1,244 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Make sure you have react-router-dom installed
+import PreLoader from "../../../matrimony-app/src/components/user/components/PreLoader";
+import PopUpSearch from "../../../matrimony-app/src/components/user/components/PopUpSearch";
+import TopMenu from "../components/TopMenu";
+import MenuPopUp1 from "../../../matrimony-app/src/components/user/components/MenuPopUp1";
+import MenuPopUp2 from "../../../matrimony-app/src/components/user/components/MenuPopUp2";
+import MainMenuBar from "../../../matrimony-app/src/components/user/components/MainMenuBar";
+import ExploreMenuPopUp from "../../../matrimony-app/src/components/user/components/ExploreMenuPopUp";
+import MobileUserProfileMenu from "../../../matrimony-app/src/components/user/components/MobileUserProfileMenu";
+import Footer from "../components/Footer";
+import CopyRights from "../components/CopyRights";
+import { verifyUser } from "../api/axiosService/userSignUpService";
+
+const UserLoginPage = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    rememberMe: false,
+  });
+
+  const [errors, setErrors] = useState({});
+  const [success,setSuccess] = useState()
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [loginSuccess,setLoginSuccess] = useState(false)
+
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+
+    if (errors[name]) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoginError("");
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await verifyUser(formData)
+      console.log(response);
+      if(response.status===200){
+        setLoginSuccess(true);
+        setSuccess(response.data.message)
+        localStorage.setItem("userId",response.data.userId)
+        setTimeout(() => {
+          navigate("/user/user-dashboard-page")
+          
+        }, 1500);
+      }
+      
+
+
+     
+    }
+     catch (error) {
+      console.error("Login error:", error);
+      setLoginError(
+        "Network error. Please check your connection and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <PreLoader />
+      <div className="pop-bg"></div>
+      <PopUpSearch />
+      <TopMenu />
+      <MenuPopUp1 />
+      <MenuPopUp2 />
+      <MainMenuBar />
+      <ExploreMenuPopUp />
+      <MobileUserProfileMenu />
+
+      <section>
+        <div className="login">
+          <div className="container">
+            <div className="row">
+              <div className="inn">
+                <div className="lhs">
+                  <div className="tit">
+                    <h2>
+                      Now{" "}
+                      <b>
+                        Find <br /> your life partner
+                      </b>{" "}
+                      Easy and fast.
+                    </h2>
+                  </div>
+                  <div className="im">
+                    <img src="images/login-couple.png" alt="" />
+                  </div>
+                  <div className="log-bg">&nbsp;</div>
+                </div>
+                <div className="rhs">
+                  <div>
+                    <div className="form-tit">
+                      <h4>Start for free</h4>
+                      <h1>Sign in to Matrimony</h1>
+                      <p>
+                        Not a member?{" "}
+                        <a href="/user/user-sign-up">Sign up now</a>
+                      </p>
+                    </div>
+                    <div className="form-login">
+                      <form onSubmit={handleSubmit}>
+                        {loginError && (
+                          <div className="alert alert-danger" role="alert">
+                            {loginError}
+                          </div>
+                        )}
+                        {loginSuccess && (
+                          <div className="alert alert-success" role="alert">
+                            {success}
+                          </div>
+                        )}
+
+
+                        <div className="form-group">
+                          <label className="lb">Email:</label>
+                          <input
+                            type="email"
+                            className={`form-control ${
+                              errors.email ? "is-invalid" : ""
+                            }`}
+                            id="email"
+                            placeholder="Enter email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            disabled={isLoading}
+                          />
+                          {errors.email && (
+                            <div className="invalid-feedback">
+                              {errors.email}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="form-group">
+                          <label className="lb">Password:</label>
+                          <input
+                            type="password"
+                            className={`form-control ${
+                              errors.password ? "is-invalid" : ""
+                            }`}
+                            id="pwd"
+                            placeholder="Enter password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            disabled={isLoading}
+                          />
+                          {errors.password && (
+                            <div className="invalid-feedback">
+                              {errors.password}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="form-group form-check">
+                          <label className="form-check-label">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="rememberMe"
+                              checked={formData.rememberMe}
+                              onChange={handleInputChange}
+                              disabled={isLoading}
+                            />{" "}
+                            Remember me
+                          </label>
+                        </div>
+
+                        <button
+                          type="submit"
+                          className="btn btn-primary"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? "Signing in..." : "Sign in"}
+                        </button>
+                      </form>
+
+                      <div
+                        className="forgot-password"
+                        style={{ marginTop: "15px" }}
+                      >
+                        <a href="/forgot-password">Forgot your password?</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+      <CopyRights />
+    </>
+  );
+};
+
+export default UserLoginPage;

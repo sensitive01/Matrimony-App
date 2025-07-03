@@ -1,0 +1,76 @@
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import UserHomePage from "./pages/UserHomePage";
+import UserLoginPage from "./pages/UserLoginPage";
+import UserSignUp from "./pages/UserSignUp";
+import UserWedding from "./pages/UserWedding";
+import UserWeddingVideoPage from "./pages/UserWeddingVideoPage";
+import UserSettingsPage from "./pages/UserSettingsPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import UserProfileEditPage from "./pages/UserProfileEditPage";
+import UserPlanPage from "./pages/UserPlanPage";
+import UserInterest from "./pages/UserInterest";
+import UserChatPage from "./pages/UserChatPage";
+import UserDashboardPage from "./pages/UserDashboardPage";
+import UserServicePage from "./pages/UserServicePage";
+import UserAllProfilePage from "./pages/UserAllProfilePage";
+
+// Component to handle page reloads
+function ReloadHandler() {
+  const location = useLocation();
+  
+  useEffect(() => {
+    // Store the previous path to detect actual navigation
+    const previousPath = sessionStorage.getItem('previousPath');
+    const currentPath = location.pathname;
+    
+    // Only reload if we're navigating from a different path
+    if (previousPath && previousPath !== currentPath) {
+      sessionStorage.setItem('previousPath', currentPath);
+      window.location.reload();
+    } else if (!previousPath) {
+      // First visit, just store the path
+      sessionStorage.setItem('previousPath', currentPath);
+    }
+  }, [location.pathname]);
+  
+  return null;
+}
+
+function App() {
+  return (
+    <Router>
+      <ReloadHandler />
+      <Routes>
+        <Route path="/" element={<UserHomePage />} />
+        <Route path="/user/user-login" element={<UserLoginPage />} />
+        <Route path="/user/user-sign-up" element={<UserSignUp />} />
+        <Route path="/user/user-wedding-page" element={<UserWedding />} />
+        <Route
+          path="/user/user-wedding-video-page"
+          element={<UserWeddingVideoPage />}
+        />
+        <Route path="/user/user-settings-page" element={<UserSettingsPage />} />
+        <Route path="/user/user-profile-page" element={<UserProfilePage />} />
+        <Route
+          path="/user/user-profile-edit-page/:userId"
+          element={<UserProfileEditPage />}
+        />
+        <Route path="/user/user-plan-page" element={<UserPlanPage />} />
+        <Route path="/user/user-interest-page" element={<UserInterest />} />
+        <Route path="/user/user-chat-page" element={<UserChatPage />} />
+        <Route
+          path="/user/user-dashboard-page"
+          element={<UserDashboardPage />}
+        />
+        <Route path="/user/user-service-page" element={<UserServicePage />} />
+        <Route
+          path="/user/show-all-profiles"
+          element={<UserAllProfilePage />}
+        />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
