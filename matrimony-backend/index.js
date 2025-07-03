@@ -16,7 +16,7 @@ dbConnect();
 
 app.use(express.json());
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174","https://vercel.com/sensitive-technologies-projects/matrimony-app-t94e"];
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174","https://matrimony-app-t94e.vercel.app"];
 
 const corsOptions = {
   origin: function (origin, callback) {
