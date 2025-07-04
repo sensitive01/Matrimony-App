@@ -1,11 +1,17 @@
 import React from "react";
 
 import LayoutComponent from "../components/layouts/LayoutComponent";
+import BannerAndSearch from "../components/BannerAndSearch";
+import BannerSlider from "../components/BannerSlider";
+import QuickAccess from "../components/QuickAccess";
 
 const UserHomePage = () => {
   return (
     <>
       <LayoutComponent />
+      <BannerAndSearch />
+      <BannerSlider />
+      <QuickAccess />
 
       <section>
         <div className="hom-cus-revi">
