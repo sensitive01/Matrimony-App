@@ -29,6 +29,7 @@ const AdminAllUsersList = () => {
             payment: user.payment || "Pending",
             planType: user.planType || "Basic",
           }));
+          console.log("mappedUsers",mappedUsers)
           setUsers(mappedUsers);
           setFilteredUsers(mappedUsers);
         }
