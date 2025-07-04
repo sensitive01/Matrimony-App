@@ -15,32 +15,26 @@ const userSchema = new mongoose.Schema(
     isEmailVerified: { type: Boolean, default: false },
     isTermsAggreed: { type: Boolean, default: false },
 
-  
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
-      default: "other",
     },
     dateOfBirth: { type: Date },
     age: { type: Number },
     city: { type: String, trim: true },
-    height: { type: String }, 
-    weight: { type: String }, 
+    height: { type: String },
+    weight: { type: String },
     fathersName: { type: String, trim: true },
     mothersName: { type: String, trim: true },
     address: { type: String },
 
-   
-    jobType: { type: String }, 
+    jobType: { type: String },
     companyName: { type: String },
-    salary: { type: String }, 
+    salary: { type: String },
     jobExperience: { type: String },
 
-   
     degree: { type: String },
     school: { type: String },
     college: { type: String },
-
 
     whatsapp: { type: String },
     facebook: { type: String },
@@ -49,9 +43,8 @@ const userSchema = new mongoose.Schema(
     youtube: { type: String },
     linkedin: { type: String },
 
-  
     hobbies: [{ type: String }],
-    profileImage: { type: String }, 
+    profileImage: { type: String },
     additionalImages: [{ type: String }],
   },
   {

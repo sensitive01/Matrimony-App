@@ -49,7 +49,7 @@ const MainMenuBar = () => {
                               </h5>
                               <span className="explor-cta">More details</span>
                               <Link
-                                to="/user/show-all-profiles"
+                                to="/user/show-all-profiles/all-profiles"
                                 className="fclick"
                               ></Link>
                             </div>
@@ -103,20 +103,20 @@ const MainMenuBar = () => {
                                 {set === 1 && (
                                   <>
                                     <li>
-                                      <Link to="/user/show-all-profiles">
+                                      <Link to="/user/show-all-profiles/all-profiles">
                                         Browse Profiles
                                       </Link>
                                     </li>
                                     <li>
-                                      <Link to="/profile-details">
+                                      <Link to="/profile-more-details">
                                         Profile Details
                                       </Link>
                                     </li>
                                     <li>
-                                      <Link to="/wedding">Wedding</Link>
+                                      <Link to="/user/user-wedding-page">Wedding</Link>
                                     </li>
                                     <li>
-                                      <Link to="/services">Services</Link>
+                                      <Link to="/user/user-service-page">Services</Link>
                                     </li>
                                     <li>
                                       <Link to="/photo-gallery">
@@ -235,15 +235,15 @@ const MainMenuBar = () => {
                   <div className="smenu-open smenu-single">
                     <ul>
                       <li>
-                        <Link to="/user/show-all-profiles">
+                        <Link to="/user/show-all-profiles/all-profiles">
                           Browse Profiles
                         </Link>
                       </li>
                       <li>
-                        <Link to="/profile-details">Profile Details</Link>
+                        <Link to="/profile-more-details">Profile Details</Link>
                       </li>
                       <li>
-                        <Link to="/wedding">Wedding</Link>
+                        <Link to="/user/user-wedding-page">Wedding</Link>
                       </li>
                       <li>
                         <Link to="/blog">Blog</Link>

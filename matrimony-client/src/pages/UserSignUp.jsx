@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PreLoader from "../../../matrimony-app/src/components/user/components/PreLoader";
-import PopUpSearch from "../../../matrimony-app/src/components/user/components/PopUpSearch";
-import TopMenu from "../../../matrimony-app/src/components/user/components/TopMenu";
-import MenuPopUp1 from "../../../matrimony-app/src/components/user/components/MenuPopUp1";
-import MenuPopUp2 from "../../../matrimony-app/src/components/user/components/MenuPopUp2";
-import MainMenuBar from "../../../matrimony-app/src/components/user/components/MainMenuBar";
-import ExploreMenuPopUp from "../../../matrimony-app/src/components/user/components/ExploreMenuPopUp";
-import MobileUserProfileMenu from "../../../matrimony-app/src/components/user/components/MobileUserProfileMenu";
+
 import Footer from "../components/Footer";
 import CopyRights from "../components/CopyRights";
 import { sendSignUpRequest } from "../api/axiosService/userSignUpService";
+import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserSignUp = () => {
   const navigate = useNavigate();
@@ -62,6 +56,9 @@ const UserSignUp = () => {
       const response = await sendSignUpRequest(formData);
       if (response.status === 201) {
         setSuccess(response.data.message);
+        setTimeout(() => {
+          navigate("/user/user-login");
+        }, 1500);
       }
     } catch (err) {
       setError("Network error. Please check your connection and try again.");
@@ -70,23 +67,13 @@ const UserSignUp = () => {
     }
   };
 
-
-
   return (
     <>
-      {/* <PreLoader /> */}
-      <div className="pop-bg"></div>
-      <PopUpSearch />
-      <TopMenu />
-      <MenuPopUp1 />
-      <MenuPopUp2 />
-      <MainMenuBar />
-      <ExploreMenuPopUp />
-      <MobileUserProfileMenu />
+      <LayoutComponent />
 
       <section>
         <div className="login">
-          <div className="container"> 
+          <div className="container">
             <div className="row">
               <div className="inn">
                 <div className="lhs">
@@ -106,9 +93,7 @@ const UserSignUp = () => {
                       <h4>Start for free</h4>
                       <h1>Sign up to Matrimony</h1>
                       <p>
-                        Already a member?{" "}
-                        <a href="/user/user-login">Login</a>
-            
+                        Already a member? <a href="/user/user-login">Login</a>
                       </p>
                     </div>
                     <div className="form-login">

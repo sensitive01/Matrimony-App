@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { registerAdmin, verifyAdmin } from "../../api/service/adminServices";
 
 const MatrimonyAdminLogin = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [forgotEmail, setForgotEmail] = useState("");
+
+  useEffect(() => {
+    const saveAdmin = async () => {
+      await registerAdmin();
+    };
+    saveAdmin();
+  });
 
   const handleLoginChange = (e) => {
     setLoginData({
@@ -13,15 +21,14 @@ const MatrimonyAdminLogin = () => {
     });
   };
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     console.log("Login attempt:", loginData);
-
-    // Example logic — Replace with actual API authentication
-    if (loginData.email && loginData.password) {
+    const response = await verifyAdmin(loginData);
+    console.log("response",response)
+    if (response.status === 200) {
+      localStorage.setItem("adminId", response?.data?.adminId);
       navigate("/admin/dashboard");
-    } else {
-      alert("Please enter email and password");
     }
   };
 

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getUserProfile } from "../api/axiosService/userAuthService";
+import profImage from "../assets/images/blue-circle-with-white-user_78370-4707.avif";
+
 
 const UserSideBar = () => {
   const userId = localStorage.getItem("userId");
@@ -59,7 +61,7 @@ const UserSideBar = () => {
       <div className="db-nav">
         <div className="db-nav-pro">
           <img
-            src={userInfo?.profileImage||""}
+            src={userInfo?.profileImage||profImage}
             className="img-fluid"
             alt="Profile"
           />

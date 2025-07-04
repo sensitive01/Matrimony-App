@@ -7,6 +7,7 @@ const http = require("http");
 const dbConnect = require("./config/database/dbConnect");
 const signUpRoute = require("./routes/userRoutes/userSignUpRoute");
 const userAuthRoutes = require("./routes/userRoutes/userAuthRoute");
+const adminAuthRoutes = require("./routes/adminRoutes/adminRoutes");
 
 const port = PORT || 3001;
 const server = http.createServer(app);
@@ -16,7 +17,12 @@ dbConnect();
 
 app.use(express.json());
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174","https://matrimony-app-t94e.vercel.app"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://matrimony-app-t94e.vercel.app",
+  "https://matrimony-app-three.vercel.app/",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -32,9 +38,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use("/user",signUpRoute)
-app.use("/user-auth",userAuthRoutes)
-
+app.use("/user", signUpRoute);
+app.use("/user-auth", userAuthRoutes);
+app.use("/admin", adminAuthRoutes);
 
 app.disable("x-powered-by");
 server.listen(port, () => {

@@ -51,7 +51,7 @@ const MenuPopUp1 = () => {
           <div className="user-bio">
             <h5>Ashley emyy</h5>
             <span>Senior personal advisor</span>
-            <a href="#" className="btn btn-primary btn-sm">
+            <a href="/enquiry-page" className="btn btn-primary btn-sm">
               Ask your doubts
             </a>
           </div>

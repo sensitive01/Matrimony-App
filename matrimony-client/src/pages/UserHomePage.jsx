@@ -1,40 +1,11 @@
-import React from "react"
-import BannerAndSearch from "../components/BannerAndSearch";
-import BannerSlider from "../components/BannerSlider";
+import React from "react";
 
-import QuickAccess from "../components/QuickAccess";
-
-import PreLoader from "../components/PreLoader";
-import PopUpSearch from "../components/PopUpSearch";
-import TopMenu from "../components/TopMenu";
-import MenuPopUp1 from "../components/MenuPopUp1";
-import MenuPopUp2 from "../components/MenuPopUp2";
-import MainMenuBar from "../components/MainMenuBar";
-import ExploreMenuPopUp from "../components/ExploreMenuPopUp";
-import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
-
-
-
+import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserHomePage = () => {
   return (
     <>
-      {/* <PreLoader /> */}
-      <PopUpSearch />
-      <TopMenu />
-      <MenuPopUp1 />
-      <MenuPopUp2 />
-      <MainMenuBar />
-      <ExploreMenuPopUp />
-      <MobileUserProfileMenu />
-      <BannerAndSearch/>
-      <BannerSlider/>
-      <QuickAccess/>
-
-  
-   
-   
-    
+      <LayoutComponent />
 
       <section>
         <div className="hom-cus-revi">
@@ -263,8 +234,8 @@ const UserHomePage = () => {
                       page when looking at its layout.
                     </p>
                     <p>
-                      <a href="#">Click here to</a> Start you matrimony
-                      service now.
+                      <a href="#">Click here to</a> Start you matrimony service
+                      now.
                     </p>
                   </div>
                   <div className="ab-wel-tit-1">

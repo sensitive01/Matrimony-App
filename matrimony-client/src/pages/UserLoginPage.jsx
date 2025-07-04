@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Make sure you have react-router-dom installed
-import PreLoader from "../../../matrimony-app/src/components/user/components/PreLoader";
-import PopUpSearch from "../../../matrimony-app/src/components/user/components/PopUpSearch";
-import TopMenu from "../components/TopMenu";
-import MenuPopUp1 from "../../../matrimony-app/src/components/user/components/MenuPopUp1";
-import MenuPopUp2 from "../../../matrimony-app/src/components/user/components/MenuPopUp2";
-import MainMenuBar from "../../../matrimony-app/src/components/user/components/MainMenuBar";
-import ExploreMenuPopUp from "../../../matrimony-app/src/components/user/components/ExploreMenuPopUp";
-import MobileUserProfileMenu from "../../../matrimony-app/src/components/user/components/MobileUserProfileMenu";
+
 import Footer from "../components/Footer";
 import CopyRights from "../components/CopyRights";
 import { verifyUser } from "../api/axiosService/userSignUpService";
+import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserLoginPage = () => {
   const navigate = useNavigate();
@@ -22,11 +16,10 @@ const UserLoginPage = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [success,setSuccess] = useState()
+  const [success, setSuccess] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
-  const [loginSuccess,setLoginSuccess] = useState(false)
-
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -73,23 +66,17 @@ const UserLoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await verifyUser(formData)
+      const response = await verifyUser(formData);
       console.log(response);
-      if(response.status===200){
+      if (response.status === 200) {
         setLoginSuccess(true);
-        setSuccess(response.data.message)
-        localStorage.setItem("userId",response.data.userId)
+        setSuccess(response.data.message);
+        localStorage.setItem("userId", response.data.userId);
         setTimeout(() => {
-          navigate("/user/user-dashboard-page")
-          
+          navigate("/user/user-dashboard-page");
         }, 1500);
       }
-      
-
-
-     
-    }
-     catch (error) {
+    } catch (error) {
       console.error("Login error:", error);
       setLoginError(
         "Network error. Please check your connection and try again."
@@ -101,15 +88,7 @@ const UserLoginPage = () => {
 
   return (
     <>
-      {/* <PreLoader /> */}
-      <div className="pop-bg"></div>
-      <PopUpSearch />
-      <TopMenu />
-      <MenuPopUp1 />
-      <MenuPopUp2 />
-      <MainMenuBar />
-      <ExploreMenuPopUp />
-      <MobileUserProfileMenu />
+      <LayoutComponent />
 
       <section>
         <div className="login">
@@ -153,7 +132,6 @@ const UserLoginPage = () => {
                             {success}
                           </div>
                         )}
-
 
                         <div className="form-group">
                           <label className="lb">Email:</label>

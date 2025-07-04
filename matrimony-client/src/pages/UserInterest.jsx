@@ -8,18 +8,13 @@ import MainMenuBar from "../components/MainMenuBar";
 import ExploreMenuPopUp from "../components/ExploreMenuPopUp";
 import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
 import UserSideBar from "../components/UserSideBar";
+import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserInterest = () => {
   return (
     <>
-      {/* <PreLoader /> */}
-      <PopUpSearch />
-      <TopMenu />
-      <MenuPopUp1 />
-      <MenuPopUp2 />
-      <MainMenuBar />
-      <ExploreMenuPopUp />
-      <MobileUserProfileMenu />
+      <LayoutComponent />
+
 
       <section>
         <div className="db">

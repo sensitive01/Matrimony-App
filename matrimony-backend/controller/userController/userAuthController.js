@@ -160,7 +160,11 @@ const getUserProfileImage = async (req, res) => {
     const { userId } = req.params;
 
     // Fetch only the profileImage field of the user
-    const userImage = await userModel.findById(userId, { profileImage: 1 ,userName:1,userMobile:1});
+    const userImage = await userModel.findById(userId, {
+      profileImage: 1,
+      userName: 1,
+      userMobile: 1,
+    });
 
     if (!userImage) {
       return res.status(404).json({
@@ -184,8 +188,32 @@ const getUserProfileImage = async (req, res) => {
   }
 };
 
+const getAllUserProfileData = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const userData = await userModel.find(
+      { _id: { $ne: userId } },
+      { userPassword: 0 }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "All users excluding the current user fetched successfully",
+      data: userData,
+    });
+  } catch (err) {
+    console.log("Error in getAllUserProfileData:", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 module.exports = {
   getUserProfileImage,
   getUserInformation,
   completeProfileData,
+  getAllUserProfileData,
 };

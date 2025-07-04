@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import PreLoader from "../components/PreLoader";
-import PopUpSearch from "../components/PopUpSearch";
-import TopMenu from "../components/TopMenu";
-import MenuPopUp1 from "../components/MenuPopUp1";
-import MenuPopUp2 from "../components/MenuPopUp2";
-import MainMenuBar from "../components/MainMenuBar";
-import ExploreMenuPopUp from "../components/ExploreMenuPopUp";
-import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
+import { Link } from "react-router-dom";
+
 import UserSideBar from "../components/UserSideBar";
 import Footer from "../components/Footer";
 import CopyRights from "../components/CopyRights";
 import { getUserProfile } from "../api/axiosService/userAuthService";
+import profImage from "../assets/images/blue-circle-with-white-user_78370-4707.avif";
+import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserProfilePage = () => {
   const userId = localStorage.getItem("userId");
@@ -26,68 +22,59 @@ const UserProfilePage = () => {
     fetchData();
   }, []);
 
- // Fixed Chart.js v3+ configuration
-useEffect(() => {
-  const initChart = () => {
-    if (window.Chart && document.getElementById("Chart_leads")) {
-      const xValues = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-      const yValues = [10, 20, 30, 40, 50, 60];
+  useEffect(() => {
+    const initChart = () => {
+      if (window.Chart && document.getElementById("Chart_leads")) {
+        const xValues = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+        const yValues = [10, 20, 30, 40, 50, 60];
 
-      new window.Chart("Chart_leads", {
-        type: "line",
-        data: {
-          labels: xValues,
-          datasets: [
-            {
-              fill: false,
-              tension: 0, // Changed from lineTension to tension
-              backgroundColor: "#f1bb51",
-              borderColor: "#fae9c8",
-              data: yValues,
+        new window.Chart("Chart_leads", {
+          type: "line",
+          data: {
+            labels: xValues,
+            datasets: [
+              {
+                fill: false,
+                tension: 0,
+                backgroundColor: "#f1bb51",
+                borderColor: "#fae9c8",
+                data: yValues,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
             },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { 
-              display: false 
-            }
+            scales: {
+              y: {
+                min: 0,
+                max: 100,
+              },
+            },
           },
-          scales: {
-            y: { // Changed from yAxes to y
-              min: 0, // Changed from ticks.min to min
-              max: 100 // Changed from ticks.max to max
-            }
-          },
-        },
-      });
-    }
-  };
+        });
+      }
+    };
 
-  // Load Chart.js if not already loaded
-  if (!window.Chart) {
-    const script = document.createElement("script");
-    script.src =
-      "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js";
-    script.onload = initChart;
-    document.head.appendChild(script);
-  } else {
-    initChart();
-  }
-}, []);
+    if (!window.Chart) {
+      const script = document.createElement("script");
+      script.src =
+        "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js";
+      script.onload = initChart;
+      document.head.appendChild(script);
+    } else {
+      initChart();
+    }
+  }, []);
 
   return (
     <>
-      {/* <PreLoader /> */}
-      <PopUpSearch />
-      <TopMenu />
-      <MenuPopUp1 />
-      <MenuPopUp2 />
-      <MainMenuBar />
-      <ExploreMenuPopUp />
+      <LayoutComponent />
 
-      <MobileUserProfileMenu />
 
       <section>
         <div className="db">
@@ -99,62 +86,85 @@ useEffect(() => {
                 <div className="row">
                   <div className="col-md-12 col-lg-6 col-xl-8 db-sec-com">
                     <h2 className="db-tit">Profiles status</h2>
-                    <div className="db-profile" style={{ display: 'flex', alignItems: 'center' }}>
-                      <div 
+                    <div
+                      className="db-profile"
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <div
                         className="img overflow-hidden rounded-full flex items-center justify-center bg-gray-200"
                         style={{
-                          width: '160px',
-                          height: '160px',
-                          minWidth: '160px',
-                          minHeight: '160px'
+                          width: "160px",
+                          height: "160px",
+                          minWidth: "160px",
+                          minHeight: "160px",
                         }}
                       >
                         {userInfo ? (
                           <img
-                            src={userInfo?.profileImage}
+                            src={userInfo?.profileImage || profImage}
                             loading="lazy"
                             alt="Profile"
                             style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                              objectPosition: 'center',
-                              borderRadius: '50%'
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              objectPosition: "center",
+                              borderRadius: "50%",
                             }}
                             onError={(e) => {
-                              e.target.style.display = 'none';
+                              e.target.style.display = "none";
                             }}
                           />
                         ) : (
                           <div className="flex items-center justify-center w-full h-full text-gray-400">
-                            <i className="fa fa-user" style={{ fontSize: '2rem' }}></i>
+                            <i
+                              className="fa fa-user"
+                              style={{ fontSize: "2rem" }}
+                            ></i>
                           </div>
                         )}
                       </div>
 
-                      <div className="profile-info" style={{ marginLeft: '20px', flex: 1 }}>
+                      <div
+                        className="profile-info"
+                        style={{ marginLeft: "20px", flex: 1 }}
+                      >
                         <div className="user-details">
-                          <h3 style={{ margin: '0 0 10px 0', fontSize: '1.5rem', fontWeight: 'bold' }}>
-                            {userInfo?.userName || 'John Doe'}
+                          <h3
+                            style={{
+                              margin: "0 0 10px 0",
+                              fontSize: "1.5rem",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {userInfo?.userName || "John Doe"}
                           </h3>
-                          <p style={{ margin: '0 0 15px 0', color: '#666', fontSize: '1rem' }}>
-                            <i className="fa fa-phone" style={{ marginRight: '8px' }}></i>
-                            {userInfo?.userMobile || '+91 9876543210'}
+                          <p
+                            style={{
+                              margin: "0 0 15px 0",
+                              color: "#666",
+                              fontSize: "1rem",
+                            }}
+                          >
+                            <i
+                              className="fa fa-phone"
+                              style={{ marginRight: "8px" }}
+                            ></i>
+                            {userInfo?.userMobile || "+91 9876543210"}
                           </p>
                         </div>
                         <div className="edit">
-                          <a
-                            href={`/user/user-profile-edit-page/${userId}`}
+                          <Link
+                            to={`/user/user-profile-edit-page/${userId}`}
                             className="cta-dark"
-                            target="_blank"
-                            rel="noopener noreferrer"
                           >
                             Edit profile
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>
                   </div>
+
                   <div className="col-md-12 col-lg-6 col-xl-4 db-sec-com">
                     <h2 className="db-tit">Profiles status</h2>
                     <div className="db-pro-stat">
@@ -172,27 +182,38 @@ useEffect(() => {
                         </button>
                         <ul className="dropdown-menu">
                           <li>
-                            <a className="dropdown-item" href="#">
+                            <Link
+                              className="dropdown-item"
+                              to={`/user/user-profile-edit-page/${userId}`}
+                            >
                               Edit profile
-                            </a>
+                            </Link>
                           </li>
                           <li>
-                            <a className="dropdown-item" href="#">
+                            <Link
+                              className="dropdown-item"
+                              to={`/user/user-profile-view/${userId}`}
+                            >
                               View profile
-                            </a>
+                            </Link>
                           </li>
                           <li>
-                            <a className="dropdown-item" href="#">
+                            <Link
+                              className="dropdown-item"
+                              to={`/user/visibility-settings/${userId}`}
+                            >
                               Profile visibility settings
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </div>
+
                       <div className="db-pro-pgog">
                         <span>
                           <b className="count">90</b>%
                         </span>
                       </div>
+
                       <ul className="pro-stat-ic">
                         <li>
                           <span>
@@ -234,6 +255,7 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-md-12 db-sec-com db-pro-stat-pg">
                     <h2 className="db-tit">Profiles views</h2>

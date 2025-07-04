@@ -11,6 +11,8 @@ const upload = multer({ dest: "uploads/" });
 
 userAuthRoutes.get("/get-user-info/:userId",userAuthController.getUserInformation)
 userAuthRoutes.get("/get-user-profile/:userId",userAuthController.getUserProfileImage)
+userAuthRoutes.get("/get-all-user-profile/:userId",userAuthController.getAllUserProfileData)
+
 
 
 userAuthRoutes.post("/complete-profile-data/:userId",upload.fields([

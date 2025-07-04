@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const TopMenu = () => {
   return (
@@ -13,13 +14,13 @@ const TopMenu = () => {
                 </a>
               </li>
               <li>
-                <a href="#">About</a>
+                <Link to="/about-us">About</Link>
               </li>
               <li>
-                <a href="#">FAQ</a>
+                <Link to="/faq-page">FAQ</Link>
               </li>
               <li>
-                <a href="#">Contact</a>
+                <Link to="/contact-page">Contact</Link>
               </li>
             </ul>
           </div>

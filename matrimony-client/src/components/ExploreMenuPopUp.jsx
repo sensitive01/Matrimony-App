@@ -12,7 +12,7 @@ const ExploreMenuPopUp = () => {
         </h4>
         <ul>
           <li>
-            <a href="/user/show-all-profiles">Browse profiles</a>
+            <a href="/user/show-all-profiles/all-profiles">Browse profiles</a>
           </li>
           <li>
             <a href="/user/user-wedding-page">Wedding page</a>
@@ -21,7 +21,7 @@ const ExploreMenuPopUp = () => {
             <a href="/user/user-service-page">All Services</a>
           </li>
           <li>
-            <a href="#">Join Now</a>
+            <a href="/join-now-page">Join Now</a>
           </li>
         </ul>
         <h4>
@@ -32,16 +32,16 @@ const ExploreMenuPopUp = () => {
             <a href="/user/show-all-profiles">All profiles</a>
           </li>
           <li>
-            <a href="#">Profile details</a>
+            <a href="/profile-more-details">Profile details</a>
           </li>
           <li>
-            <a href="#">Wedding</a>
+            <a href="/user/user-wedding-page">Wedding</a>
           </li>
           <li>
             <a href="#">Wedding video</a>
           </li>
           <li>
-            <a href="#">Our Services</a>
+            <a href="/user/user-service-page">Our Services</a>
           </li>
           <li>
             <a href="#">Pricing plans</a>

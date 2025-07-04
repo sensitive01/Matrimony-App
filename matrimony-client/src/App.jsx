@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import UserHomePage from "./pages/UserHomePage";
 import UserLoginPage from "./pages/UserLoginPage";
 import UserSignUp from "./pages/UserSignUp";
@@ -13,27 +18,33 @@ import UserInterest from "./pages/UserInterest";
 import UserChatPage from "./pages/UserChatPage";
 import UserDashboardPage from "./pages/UserDashboardPage";
 import UserServicePage from "./pages/UserServicePage";
-import UserAllProfilePage from "./pages/UserAllProfilePage";
+import UserAllProfilePage from "./pages/allprofile/UserAllProfilePage";
+import AboutPage from "./pages/aboutPage/AboutPage";
+import FaqPage from "./pages/faq/FaqPage";
+import ContactPage from "./pages/contact/ContactPage";
+import EnquiryPage from "./pages/enquirypage/EnquiryPage";
+import JoinNow from "./pages/joinnow/JoinNow";
+import MoreDetails from "./pages/allprofile/MoreDetails";
 
 // Component to handle page reloads
 function ReloadHandler() {
   const location = useLocation();
-  
+
   useEffect(() => {
     // Store the previous path to detect actual navigation
-    const previousPath = sessionStorage.getItem('previousPath');
+    const previousPath = sessionStorage.getItem("previousPath");
     const currentPath = location.pathname;
-    
+
     // Only reload if we're navigating from a different path
     if (previousPath && previousPath !== currentPath) {
-      sessionStorage.setItem('previousPath', currentPath);
+      sessionStorage.setItem("previousPath", currentPath);
       window.location.reload();
     } else if (!previousPath) {
       // First visit, just store the path
-      sessionStorage.setItem('previousPath', currentPath);
+      sessionStorage.setItem("previousPath", currentPath);
     }
   }, [location.pathname]);
-  
+
   return null;
 }
 
@@ -45,6 +56,7 @@ function App() {
         <Route path="/" element={<UserHomePage />} />
         <Route path="/user/user-login" element={<UserLoginPage />} />
         <Route path="/user/user-sign-up" element={<UserSignUp />} />
+
         <Route path="/user/user-wedding-page" element={<UserWedding />} />
         <Route
           path="/user/user-wedding-video-page"
@@ -65,9 +77,17 @@ function App() {
         />
         <Route path="/user/user-service-page" element={<UserServicePage />} />
         <Route
-          path="/user/show-all-profiles"
+          path="/user/show-all-profiles/:searchContent"
           element={<UserAllProfilePage />}
         />
+                
+
+        <Route path="/profile-more-details" element={<MoreDetails />} />
+        <Route path="/join-now-page" element={<JoinNow />} />
+        <Route path="/enquiry-page" element={<EnquiryPage />} />
+        <Route path="/contact-page" element={<ContactPage />} />
+        <Route path="/faq-page" element={<FaqPage />} />
+        <Route path="/about-us" element={<AboutPage />} />
       </Routes>
     </Router>
   );

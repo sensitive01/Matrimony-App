@@ -1,24 +1,12 @@
 import React from "react";
-import PopUpSearch from "../components/PopUpSearch";
-import TopMenu from "../components/TopMenu";
-import PreLoader from "../components/PreLoader";
-import MenuPopUp1 from "../components/MenuPopUp1";
-import MenuPopUp2 from "../components/MenuPopUp2";
-import MainMenuBar from "../components/MainMenuBar";
-import ExploreMenuPopUp from "../components/ExploreMenuPopUp";
-import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
+
+import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserWedding = () => {
   return (
     <body>
-      {/* <PreLoader /> */}
-      <PopUpSearch />
-      <TopMenu />
-      <MenuPopUp1 />
-      <MenuPopUp2 />
-      <MainMenuBar />
-      <ExploreMenuPopUp />
-      <MobileUserProfileMenu />
+      <LayoutComponent />
+
 
       <section>
         <div className="wedd m-tp">
