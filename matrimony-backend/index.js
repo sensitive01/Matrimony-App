@@ -21,7 +21,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "https://matrimony-app-t94e.vercel.app",
-  "https://matrimony-app-three.vercel.app/",
+  "https://matrimony-app-three.vercel.app",
 ];
 
 const corsOptions = {
