@@ -163,6 +163,7 @@ const ForgotPassword = () => {
       if (response.status === 200) {
         setSuccess(response.data.message);
         setUserId(response.data.userId);
+        setDisplayOtp(response.data.otp);
 
         setTimer(60);
         setCanResend(false);
