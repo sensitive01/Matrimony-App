@@ -15,6 +15,12 @@ const MainMenuBar = () => {
     const userId = localStorage.getItem("userId");
     setIsUserActive(!userId);
   }, []);
+  const handleLogOut = () => {
+    localStorage.clear();
+
+    window.location.href = "/";
+  };
+
   return (
     <div className="hom-top">
       <div className="container">
@@ -301,37 +307,44 @@ const MainMenuBar = () => {
                   </>
                 )}
 
-                {/* <li className="smenu-pare">
-                  <span className="smenu">Dashboard</span>
-                  <div className="smenu-open smenu-single">
-                    <ul>
-                      <li>
-                        <Link to="/user/dashboard">User Dashboard</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/profile">User Profile</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/interests">User Interests</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/chat">User Chat</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/plan">User Plan</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/settings">User Settings</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/profile-edit">User Profile Edit</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/user-login">Login</Link>
-                      </li>
-                    </ul>
-                  </div>
-                </li> */}
+                {!isUserActive && (
+                  <li className="smenu-pare">
+                    <span className="smenu">Dashboard</span>
+                    <div className="smenu-open smenu-single">
+                      <ul>
+                        <li>
+                          <Link to="/user/user-dashboard-page">
+                            User Dashboard
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/user/show-all-profiles/all-profile">
+                            User Profile
+                          </Link>
+                        </li>
+
+                        <li>
+                          <Link to="/user/user-chat-page">User Chat</Link>
+                        </li>
+                        <li>
+                          <Link to="/user/user-plan-page">User Plan</Link>
+                        </li>
+                        <li>
+                          <Link to="/user/user-settings-page">
+                            User Settings
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                )}
+                {!isUserActive && (
+                  <li>
+                    <Link to="#" onClick={handleLogOut}>
+                      Logout
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
 

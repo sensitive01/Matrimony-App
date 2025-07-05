@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import CopyRights from "../../components/CopyRights";
 import LayoutComponent from "../../components/layouts/LayoutComponent";
-import { fetchAllUserProfiles } from "../../api/axiosService/userAuthService";
+import { fetchAllUserProfiles, fetchAllUserProfilesHome } from "../../api/axiosService/userAuthService";
+import ShowInterest from "./ShowInterest";
 
 const UserAllProfilePage = () => {
+  const userId = localStorage.getItem("userId");
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     gender: "",
     age: "",
@@ -21,19 +22,20 @@ const UserAllProfilePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [activeChats, setActiveChats] = useState([]);
 
-  const userId = localStorage.getItem("userId");
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchAllUserProfiles(userId);
+        let response;
+        if (userId) {
+          response = await fetchAllUserProfiles(userId);
+        } else {
+          response = await fetchAllUserProfilesHome();
+        }
         if (response.status === 200) {
           setUsers(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching profiles:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchData();
@@ -449,7 +451,9 @@ const UserAllProfilePage = () => {
                               >
                                 Send interest
                               </a>
-                              <a href={`/profile-more-details/${user._id}`}>More details</a>
+                              <a href={`/profile-more-details/${user._id}`}>
+                                More details
+                              </a>
                             </div>
                           </div>
                           <span
@@ -475,110 +479,7 @@ const UserAllProfilePage = () => {
 
       {/* Send Interest Modal */}
       {selectedUser && (
-        <div className="modal fade" id="sendInter">
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h4 className="modal-title seninter-tit">
-                  Send interest to{" "}
-                  <span className="intename2">{selectedUser.userName}</span>
-                </h4>
-                <button type="button" className="close" data-bs-dismiss="modal">
-                  &times;
-                </button>
-              </div>
-
-              <div className="modal-body seninter">
-                <div className="lhs">
-                  <img
-                    src={
-                      selectedUser.profileImage || "images/default-profile.jpg"
-                    }
-                    alt={selectedUser.userName}
-                    className="intephoto2"
-                    onError={(e) => {
-                      e.target.src = "images/default-profile.jpg";
-                    }}
-                  />
-                </div>
-                <div className="rhs">
-                  <h4>
-                    Permissions:{" "}
-                    <span className="intename2">{selectedUser.userName}</span>{" "}
-                    Can able to view the below details
-                  </h4>
-                  <ul>
-                    <li>
-                      <div className="chbox">
-                        <input type="checkbox" id="pro_about" checked />
-                        <label htmlFor="pro_about">About section</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="chbox">
-                        <input type="checkbox" id="pro_photo" />
-                        <label htmlFor="pro_photo">Photo gallery</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="chbox">
-                        <input type="checkbox" id="pro_contact" />
-                        <label htmlFor="pro_contact">Contact info</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="chbox">
-                        <input type="checkbox" id="pro_person" />
-                        <label htmlFor="pro_person">Personal info</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="chbox">
-                        <input type="checkbox" id="pro_hobbi" />
-                        <label htmlFor="pro_hobbi">Hobbies</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="chbox">
-                        <input type="checkbox" id="pro_social" />
-                        <label htmlFor="pro_social">Social media</label>
-                      </div>
-                    </li>
-                  </ul>
-                  <div className="form-floating">
-                    <textarea
-                      className="form-control"
-                      id="comment"
-                      name="text"
-                      placeholder="Comment goes here"
-                    ></textarea>
-                    <label htmlFor="comment">
-                      Write some message to{" "}
-                      <span className="intename">{selectedUser.userName}</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => handleSendInterest(selectedUser)}
-                >
-                  Send interest
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  data-dismiss="modal"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ShowInterest selectedUser={selectedUser} userId={userId} />
       )}
 
       {/* Enhanced Chat Box */}

@@ -7,6 +7,7 @@ const {
   CLOUDINARY_API_SECRET,
 } = require("../../config/variables/variables");
 const userModel = require("../../model/user/userModel");
+const interestModel = require("../../model/user/interestModel");
 const fs = require("fs");
 
 cloudinary.config({
@@ -194,10 +195,43 @@ const getAllUserProfileData = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // Get current user's gender
+    const currentUser = await userModel.findById(userId, { gender: 1 });
+    if (!currentUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const userGender = currentUser.gender;
+
+    // Find all users excluding same gender and current user
     const userData = await userModel.find(
-      { _id: { $ne: userId } },
+      {
+        _id: { $ne: userId },
+        gender: { $ne: userGender },
+      },
       { userPassword: 0 }
     );
+
+    res.status(200).json({
+      success: true,
+      message: "All opposite-gender users fetched successfully",
+      data: userData,
+    });
+  } catch (err) {
+    console.log("Error in getAllUserProfileData:", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const getAllUserProfileDataHome = async (req, res) => {
+  try {
+    const userData = await userModel.find({}, { userPassword: 0 });
 
     res.status(200).json({
       success: true,
@@ -243,10 +277,175 @@ const getProfileMoreInformation = async (req, res) => {
   }
 };
 
+const showUserInterests = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { interestData } = req.body;
+
+    const { targetUser, permissions, message } = interestData;
+
+    // Check if any interest already exists between the two users
+    const existingInterest = await interestModel.findOne({
+      senderId: userId,
+      targetUserId: targetUser,
+    });
+
+    if (existingInterest) {
+      // Update existing interest (status becomes 'pending' again)
+      existingInterest.status = "pending";
+      existingInterest.message = message;
+      existingInterest.sharedSections = {
+        about: permissions.about || false,
+        photoGallery: permissions.photo || false,
+        contactInfo: permissions.contact || false,
+        personalInfo: permissions.personal || false,
+        hobbies: permissions.hobbies || false,
+        socialMedia: permissions.social || false,
+      };
+
+      await existingInterest.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Interest request updated successfully",
+        interestId: existingInterest._id,
+      });
+    }
+
+    // Create new interest
+    const newInterest = new interestModel({
+      senderId: userId,
+      targetUserId: targetUser,
+      message: message,
+      sharedSections: {
+        about: permissions.about || false,
+        photoGallery: permissions.photo || false,
+        contactInfo: permissions.contact || false,
+        personalInfo: permissions.personal || false,
+        hobbies: permissions.hobbies || false,
+        socialMedia: permissions.social || false,
+      },
+      status: "pending",
+    });
+
+    await newInterest.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Interest sent successfully",
+      interestId: newInterest._id,
+    });
+  } catch (err) {
+    console.error("Error in saving the user interest", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send interest",
+    });
+  }
+};
+
+const getInterestedProfileRequest = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { reqStatus } = req.body;
+
+    if (!userId || !reqStatus) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing userId or request status",
+      });
+    }
+
+    const interests = await interestModel.find(
+      {
+        targetUserId: userId,
+        status: reqStatus,
+      },
+      { sharedSections: 0 }
+    );
+
+    const senderIds = interests.map((item) => item.senderId);
+
+    const senderDetails = await userModel.find(
+      { _id: { $in: senderIds } },
+      "userName profileImage city age gender jobType height"
+    );
+
+    const mergedData = interests.map((interest) => {
+      const sender = senderDetails.find(
+        (u) => u._id.toString() === interest.senderId
+      );
+      return {
+        ...interest.toObject(),
+        senderDetails: sender || null,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Interested profiles fetched successfully",
+      data: mergedData,
+    });
+  } catch (err) {
+    console.log("Error in getting the interested profile request", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const changeInterestStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { reqStatus, profileId } = req.body;
+    console.log(userId, reqStatus, profileId);
+
+    if (!userId || !reqStatus || !profileId) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+
+    const interest = await interestModel.findOneAndUpdate(
+      { targetUserId: userId, senderId: profileId },
+      { status: reqStatus },
+      { new: true }
+    );
+
+    if (!interest) {
+      return res.status(404).json({
+        success: false,
+        message: "Interest request not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Interest status updated to '${reqStatus}'`,
+      data: interest,
+    });
+  } catch (err) {
+    console.log(
+      "Error in changing the status of the interested profile request",
+      err
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
+  getAllUserProfileDataHome,
+  changeInterestStatus,
+  getInterestedProfileRequest,
   getUserProfileImage,
   getUserInformation,
   completeProfileData,
   getAllUserProfileData,
   getProfileMoreInformation,
+  showUserInterests,
 };

@@ -53,7 +53,7 @@ function ReloadHandler() {
 function App() {
   return (
     <Router>
-      <ReloadHandler />
+      {/* <ReloadHandler /> */}
       <Routes>
         <Route path="/" element={<UserHomePage />} />
         <Route path="/user/user-login" element={<UserLoginPage />} />

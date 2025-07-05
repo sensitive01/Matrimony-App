@@ -1,21 +1,246 @@
-import React from "react";
-import PreLoader from "../components/PreLoader";
-import PopUpSearch from "../components/PopUpSearch";
-import TopMenu from "../components/TopMenu";
-import MenuPopUp1 from "../components/MenuPopUp1";
-import MenuPopUp2 from "../components/MenuPopUp2";
-import MainMenuBar from "../components/MainMenuBar";
-import ExploreMenuPopUp from "../components/ExploreMenuPopUp";
-import MobileUserProfileMenu from "../components/MobileUserProfileMenu";
+import React, { useEffect, useState } from "react";
+
 import UserSideBar from "../components/UserSideBar";
 import LayoutComponent from "../components/layouts/LayoutComponent";
+import Footer from "../components/Footer";
+import CopyRights from "../components/CopyRights";
+import {
+  getInterestedProfile,
+  handleChangeInterestStatus,
+} from "../api/axiosService/userAuthService";
 
 const UserInterest = () => {
+  const userId = localStorage.getItem("userId");
+  const [activeTab, setActiveTab] = useState("pending");
+  const [profileData, setProfileData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [notification, setNotification] = useState({ type: "", message: "", show: false });
+
+  // Show notification function
+  const showNotification = (type, message) => {
+    setNotification({ type, message, show: true });
+    // Auto hide notification after 5 seconds
+    setTimeout(() => {
+      setNotification({ type: "", message: "", show: false });
+    }, 5000);
+  };
+
+  // Hide notification function
+  const hideNotification = () => {
+    setNotification({ type: "", message: "", show: false });
+  };
+
+  // Fetch data based on status
+  const fetchProfileData = async (status) => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await getInterestedProfile(userId, status);
+      if (response.status === 200) {
+        setActiveTab(status);
+        setProfileData(response.data.data);
+      } else {
+        setError("Failed to fetch profile data");
+      }
+    } catch (err) {
+      setError("Error fetching data: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle tab change
+  const handleTabChange = (status) => {
+    setActiveTab(status);
+    fetchProfileData(status);
+  };
+
+  // Initial load
+  useEffect(() => {
+    fetchProfileData("pending");
+  }, []);
+
+  const handleAccept = async (profileId, status) => {
+    try {
+      const response = await handleChangeInterestStatus(
+        userId,
+        profileId,
+        status
+      );
+      
+      if (response.status === 200) {
+        showNotification("success", "Profile request accepted successfully!");
+        // Switch to accepted tab and fetch data
+        await fetchProfileData("accepted");
+      } else {
+        showNotification("error", "Failed to accept the request. Please try again.");
+      }
+    } catch (error) {
+      showNotification("error", "Error accepting request: " + error.message);
+    }
+  };
+
+  const handleReject = async (profileId, status) => {
+    try {
+      console.log("Rejecting profile:", profileId, status);
+      const response = await handleChangeInterestStatus(
+        userId,
+        profileId,
+        status
+      );
+      
+      if (response.status === 200) {
+        showNotification("success", "Profile request rejected successfully!");
+        // Switch to rejected tab and fetch data
+        await fetchProfileData("rejected");
+      } else {
+        showNotification("error", "Failed to reject the request. Please try again.");
+      }
+    } catch (error) {
+      showNotification("error", "Error rejecting request: " + error.message);
+    }
+  };
+
+  // Render notification
+  const renderNotification = () => {
+    if (!notification.show) return null;
+
+    return (
+      <div className={`alert ${notification.type === 'success' ? 'alert-success' : 'alert-danger'} alert-dismissible fade show`} role="alert">
+        {notification.message}
+        <button
+          type="button"
+          className="btn-close"
+          aria-label="Close"
+          onClick={hideNotification}
+        ></button>
+      </div>
+    );
+  };
+
+  // Render profile list
+  const renderProfileList = () => {
+    if (loading) {
+      return <div className="text-center">Loading...</div>;
+    }
+
+    if (error) {
+      return <div className="alert alert-danger">{error}</div>;
+    }
+
+    if (profileData.length === 0) {
+      return (
+        <div className="text-center">No profiles found for this category.</div>
+      );
+    }
+
+    return (
+      <div className="db-inte-prof-list">
+        <ul>
+          {profileData.map((profile) => (
+            <li key={profile._id}>
+              <div className="db-int-pro-1">
+                <img
+                  src={
+                    profile.senderDetails.profileImage ||
+                    "images/profiles/default.jpg"
+                  }
+                  alt={profile.senderDetails.userName}
+                  style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                />
+                {/* You can add user plan badges here based on your logic */}
+              </div>
+              <div className="db-int-pro-2">
+                <h5>{profile.senderDetails.userName}</h5>
+                <ol className="poi">
+                  <li>
+                    City: <strong>{profile.senderDetails.city}</strong>
+                  </li>
+                  <li>
+                    Age: <strong>{profile.senderDetails.age}</strong>
+                  </li>
+                  <li>
+                    Height: <strong>{profile.senderDetails.height} cm</strong>
+                  </li>
+                  <li>
+                    Job: <strong>{profile.senderDetails.jobType}</strong>
+                  </li>
+                </ol>
+                <ol className="poi poi-date">
+                  <li>
+                    Request on: {new Date(profile.createdAt).toLocaleString()}
+                  </li>
+                  {profile.status === "accepted" && (
+                    <li>
+                      Accepted on:{" "}
+                      {new Date(profile.updatedAt).toLocaleString()}
+                    </li>
+                  )}
+                  {profile.status === "rejected" && (
+                    <li>
+                      Rejected on:{" "}
+                      {new Date(profile.updatedAt).toLocaleString()}
+                    </li>
+                  )}
+                </ol>
+                {profile.message && (
+                  <p className="profile-message">
+                    <strong>Message:</strong> {profile.message}
+                  </p>
+                )}
+                <a href="#" className="cta-5" target="_blank">
+                  View full profile
+                </a>
+              </div>
+              <div className="db-int-pro-3">
+                {activeTab === "pending" && (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-success btn-sm"
+                      onClick={() => handleAccept(profile.senderId, "accepted")}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => handleReject(profile.senderId, "rejected")}
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
+                {activeTab === "accepted" && (
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={() => handleReject(profile.senderId, "rejected")}
+                  >
+                    Reject
+                  </button>
+                )}
+                {activeTab === "rejected" && (
+                  <button
+                    type="button"
+                    className="btn btn-success btn-sm"
+                    onClick={() => handleAccept(profile.senderId, "accepted")}
+                  >
+                    Accept
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <>
       <LayoutComponent />
-
-
       <section>
         <div className="db">
           <div className="container">
@@ -26,6 +251,10 @@ const UserInterest = () => {
                 <div className="row">
                   <div className="col-md-12 db-sec-com">
                     <h2 className="db-tit">Interest request</h2>
+                    
+                    {/* Notification Display */}
+                    {renderNotification()}
+                    
                     <div className="db-pro-stat">
                       <div className="dropdown">
                         <button
@@ -41,7 +270,7 @@ const UserInterest = () => {
                         <ul className="dropdown-menu">
                           <li>
                             <a className="dropdown-item" href="#">
-                              Edid profile
+                              Edit profile
                             </a>
                           </li>
                           <li>
@@ -64,369 +293,43 @@ const UserInterest = () => {
                       <div className="db-inte-main">
                         <ul className="nav nav-tabs" role="tablist">
                           <li className="nav-item">
-                            <a
-                              className="nav-link active"
-                              data-bs-toggle="tab"
-                              href="#home"
+                            <button
+                              className={`nav-link ${
+                                activeTab === "pending" ? "active" : ""
+                              }`}
+                              type="button"
+                              onClick={() => handleTabChange("pending")}
                             >
                               New requests
-                            </a>
+                            </button>
                           </li>
                           <li className="nav-item">
-                            <a
-                              className="nav-link"
-                              data-bs-toggle="tab"
-                              href="#menu1"
+                            <button
+                              className={`nav-link ${
+                                activeTab === "accepted" ? "active" : ""
+                              }`}
+                              type="button"
+                              onClick={() => handleTabChange("accepted")}
                             >
                               Accept request
-                            </a>
+                            </button>
                           </li>
                           <li className="nav-item">
-                            <a
-                              className="nav-link"
-                              data-bs-toggle="tab"
-                              href="#menu2"
+                            <button
+                              className={`nav-link ${
+                                activeTab === "rejected" ? "active" : ""
+                              }`}
+                              type="button"
+                              onClick={() => handleTabChange("rejected")}
                             >
-                              Denay request
-                            </a>
+                              Reject request
+                            </button>
                           </li>
                         </ul>
                         <div className="tab-content">
-                          <div id="home" className="container tab-pane active">
+                          <div className="container tab-pane active">
                             <br />
-                            <div className="db-inte-prof-list">
-                              <ul>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    {" "}
-                                    <img
-                                      src="images/profiles/men1.jpg"
-                                      alt=""
-                                    />{" "}
-                                    <span className="badge bg-primary user-pla-pat">
-                                      Platinum user
-                                    </span>
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illunois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-success btn-sm"
-                                    >
-                                      Accept
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger btn-sm"
-                                    >
-                                      Denay
-                                    </button>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    {" "}
-                                    <img
-                                      src="images/profiles/men2.jpg"
-                                      alt=""
-                                    />{" "}
-                                    <span className="badge bg-primary user-pla-gold">
-                                      Gold user
-                                    </span>
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illunois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-success btn-sm"
-                                    >
-                                      Accept
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger btn-sm"
-                                    >
-                                      Denay
-                                    </button>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    {" "}
-                                    <img
-                                      src="images/profiles/men3.jpg"
-                                      alt=""
-                                    />{" "}
-                                    <span className="badge bg-primary user-pla-free">
-                                      Free user
-                                    </span>
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illunois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-success btn-sm"
-                                    >
-                                      Accept
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger btn-sm"
-                                    >
-                                      Denay
-                                    </button>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    {" "}
-                                    <img
-                                      src="images/profiles/men4.jpg"
-                                      alt=""
-                                    />{" "}
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illunois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-success btn-sm"
-                                    >
-                                      Accept
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger btn-sm"
-                                    >
-                                      Denay
-                                    </button>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                          <div id="menu1" className="container tab-pane fade">
-                            <br />
-                            <div className="db-inte-prof-list">
-                              <ul>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    {" "}
-                                    <img
-                                      src="images/profiles/men5.jpg"
-                                      alt=""
-                                    />{" "}
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illunois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                      <li>
-                                        Accept on: 3:000 PM, 21 August 2024
-                                      </li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger btn-sm"
-                                    >
-                                      Denay
-                                    </button>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                          <div id="menu2" className="container tab-pane fade">
-                            <br />
-                            <div className="db-inte-prof-list">
-                              <ul>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    {" "}
-                                    <img
-                                      src="images/profiles/men1.jpg"
-                                      alt=""
-                                    />{" "}
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illunois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                      <li>
-                                        Denay on: 3:000 PM, 21 August 2024
-                                      </li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-success btn-sm"
-                                    >
-                                      Accept
-                                    </button>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
+                            {renderProfileList()}
                           </div>
                         </div>
                       </div>
@@ -438,99 +341,8 @@ const UserInterest = () => {
           </div>
         </div>
       </section>
-
-      <section className="wed-hom-footer">
-        <div className="container">
-          <div className="row foot-supp">
-            <h2>
-              <span>Free support:</span> +92 (8800) 68 - 8960
-              &nbsp;&nbsp;|&nbsp;&nbsp; <span>Email:</span>
-              info@example.com
-            </h2>
-          </div>
-          <div className="row wed-foot-link wed-foot-link-1">
-            <div className="col-md-4">
-              <h4>Get In Touch</h4>
-              <p>Address: 3812 Lena Lane City Jackson Mississippi</p>
-              <p>
-                Phone: <a href="tel:+917904462944">+92 (8800) 68 - 8960</a>
-              </p>
-              <p>
-                Email: <a href="mailto:info@example.com">info@example.com</a>
-              </p>
-            </div>
-            <div className="col-md-4">
-              <h4>HELP &amp; SUPPORT</h4>
-              <ul>
-                <li>
-                  <a href="#">About company</a>
-                </li>
-                <li>
-                  <a href="#!">Contact us</a>
-                </li>
-                <li>
-                  <a href="#!">Feedback</a>
-                </li>
-                <li>
-                  <a href="#">FAQs</a>
-                </li>
-                <li>
-                  <a href="#">Testimonials</a>
-                </li>
-              </ul>
-            </div>
-            <div className="col-md-4 fot-soc">
-              <h4>SOCIAL MEDIA</h4>
-              <ul>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/1.png" alt="" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/2.png" alt="" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/3.png" alt="" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/5.png" alt="" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="row foot-count">
-            <p>
-              Company name Site - Trusted by over thousands of Boys & Girls for
-              successfull marriage.{" "}
-              <a href="#" className="btn btn-primary btn-sm">
-                Join us today !
-              </a>
-            </p>
-          </div>
-        </div>
-      </section>
-      <section>
-        <div className="cr">
-          <div className="container">
-            <div className="row">
-              <p>
-                Copyright © <span id="cry">2017-2020</span>{" "}
-                <a href="#!" target="_blank">
-                  Company.com
-                </a>{" "}
-                All rights reserved.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Footer />
+      <CopyRights />
     </>
   );
 };

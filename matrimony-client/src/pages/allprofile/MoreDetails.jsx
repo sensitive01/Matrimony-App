@@ -5,6 +5,7 @@ import { getTheProfieMoreDetails } from "../../api/axiosService/userAuthService"
 import Footer from "../../components/Footer";
 import CopyRights from "../../components/CopyRights";
 import RelatedProfiles from "./RelatedProfiles";
+import ShowInterest from "./ShowInterest";
 
 const MoreDetails = () => {
   const { profileId } = useParams();
@@ -510,112 +511,9 @@ const MoreDetails = () => {
           </div>
         </div>
       </section>
-      {/* END PROFILE */}
-      {/* INTEREST POPUP */}
-      <div className="modal fade" id="sendInter">
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            {/* Modal Header */}
-            <div className="modal-header">
-              <h4 className="modal-title seninter-tit">
-                Send interest to{" "}
-                <span className="intename">
-                  {profileData.userName || "User"}
-                </span>
-              </h4>
-              <button type="button" className="close" data-dismiss="modal">
-                ×
-              </button>
-            </div>
-            {/* Modal body */}
-            <div className="modal-body seninter">
-              <div className="lhs">
-                <img
-                  src={profileData.profileImage || "images/profiles/1.jpg"}
-                  alt=""
-                  className="intephoto1"
-                />
-              </div>
-              <div className="rhs">
-                <h4>
-                  <span className="intename1">
-                    {profileData.userName || "User"}
-                  </span>{" "}
-                  Can able to view the below details
-                </h4>
-                <ul>
-                  <li>
-                    <div className="chbox">
-                      <input type="checkbox" id="pro_about" defaultChecked="" />
-                      <label htmlFor="pro_about">About section</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="chbox">
-                      <input type="checkbox" id="pro_photo" />
-                      <label htmlFor="pro_photo">Photo gallery</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="chbox">
-                      <input type="checkbox" id="pro_contact" />
-                      <label htmlFor="pro_contact">Contact info</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="chbox">
-                      <input type="checkbox" id="pro_person" />
-                      <label htmlFor="pro_person">Personal info</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="chbox">
-                      <input type="checkbox" id="pro_hobbi" />
-                      <label htmlFor="pro_hobbi">Hobbies</label>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="chbox">
-                      <input type="checkbox" id="pro_social" />
-                      <label htmlFor="pro_social">Social media</label>
-                    </div>
-                  </li>
-                </ul>
-                <div className="form-floating">
-                  <textarea
-                    className="form-control"
-                    id="comment"
-                    name="text"
-                    placeholder="Comment goes here"
-                    defaultValue={""}
-                  />
-                  <label htmlFor="comment">
-                    Write some message to{" "}
-                    <span className="intename">
-                      {profileData.userName || "User"}
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            {/* Modal footer */}
-            <div className="modal-footer">
-              <button type="button" className="btn btn-primary">
-                Send interest
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-danger"
-                data-dismiss="modal"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Chat UI */}
+      <ShowInterest />
+
       {isChatOpen && (
         <div className="chatbox active">
           <span

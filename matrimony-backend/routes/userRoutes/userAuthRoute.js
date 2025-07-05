@@ -12,9 +12,14 @@ const upload = multer({ dest: "uploads/" });
 userAuthRoutes.get("/get-user-info/:userId",userAuthController.getUserInformation)
 userAuthRoutes.get("/get-user-profile/:userId",userAuthController.getUserProfileImage)
 userAuthRoutes.get("/get-all-user-profile/:userId",userAuthController.getAllUserProfileData)
+userAuthRoutes.get("/get-all-user-profile-home",userAuthController.getAllUserProfileDataHome)
+
 userAuthRoutes.get("/get-profile-more-information/:profileId",userAuthController.getProfileMoreInformation)
 
 
+userAuthRoutes.post("/get-interested-profile-request/:userId",userAuthController.getInterestedProfileRequest)
+userAuthRoutes.post("/show-user-interests/:userId",userAuthController.showUserInterests)
+userAuthRoutes.put("/change-interest-status/:userId",userAuthController.changeInterestStatus)
 
 
 userAuthRoutes.post("/complete-profile-data/:userId",upload.fields([
