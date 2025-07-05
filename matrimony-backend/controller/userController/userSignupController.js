@@ -103,6 +103,7 @@ const userForgotPassword = async (req, res) => {
       success: true,
       message: "OTP sent successfully",
       userId: user._id,
+      otp: otp,
     });
   } catch (err) {
     console.error("Error in verify user in forgot password", err);

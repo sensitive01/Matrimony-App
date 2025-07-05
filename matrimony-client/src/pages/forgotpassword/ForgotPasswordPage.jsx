@@ -19,6 +19,8 @@ const ForgotPassword = () => {
     otp: ["", "", "", ""],
   });
 
+  const [displayOtp, setDisplayOtp] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -101,6 +103,8 @@ const ForgotPassword = () => {
       if (response.status === 200) {
         setSuccess(response.data.message);
         setUserId(response.data.userId);
+        setDisplayOtp(response.data.otp);
+
         setStep(2);
         setTimer(60);
         setCanResend(false);
@@ -283,6 +287,15 @@ const ForgotPassword = () => {
                               }}
                             >
                               OTP sent to {formData.emailOrPhone}
+                            </p>
+                            <p
+                              style={{
+                                fontSize: "14px",
+                                color: "red",
+                                marginBottom: "20px",
+                              }}
+                            >
+                              {`Dummy Otp is ${displayOtp}`}
                             </p>
                             <div
                               style={{
