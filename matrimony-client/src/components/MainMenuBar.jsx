@@ -60,7 +60,10 @@ const MainMenuBar = () => {
                                 Wedding page <span>Make reservation</span>
                               </h5>
                               <span className="explor-cta">More details</span>
-                              <Link to="/user/user-wedding-page" className="fclick"></Link>
+                              <Link
+                                to="/user/user-wedding-page"
+                                className="fclick"
+                              ></Link>
                             </div>
                           </li>
                           <li>
@@ -69,7 +72,10 @@ const MainMenuBar = () => {
                                 All Services <span>Lorem ipsum dummy</span>
                               </h5>
                               <span className="explor-cta">More details</span>
-                              <Link to="/user/user-service-page" className="fclick"></Link>
+                              <Link
+                                to="/user/user-service-page"
+                                className="fclick"
+                              ></Link>
                             </div>
                           </li>
                           <li>
@@ -90,7 +96,7 @@ const MainMenuBar = () => {
                   </div>
                 </li>
 
-                <li className="smenu-pare">
+                {/* <li className="smenu-pare">
                   <span className="smenu">All pages</span>
                   <div className="smenu-open smenu-multi">
                     <div className="container">
@@ -228,9 +234,9 @@ const MainMenuBar = () => {
                       </div>
                     </div>
                   </div>
-                </li>
+                </li> */}
 
-                <li className="smenu-pare">
+                {/* <li className="smenu-pare">
                   <span className="smenu">Top pages</span>
                   <div className="smenu-open smenu-single">
                     <ul>
@@ -274,7 +280,7 @@ const MainMenuBar = () => {
                       </li>
                     </ul>
                   </div>
-                </li>
+                </li> */}
 
                 <li>
                   <Link to="/plans">Plans</Link>
@@ -282,8 +288,11 @@ const MainMenuBar = () => {
                 <li>
                   <Link to="/user/user-sign-up">Register</Link>
                 </li>
+                <li>
+                  <Link to="/user/user-login">Login</Link>
+                </li>
 
-                <li className="smenu-pare">
+                {/* <li className="smenu-pare">
                   <span className="smenu">Dashboard</span>
                   <div className="smenu-open smenu-single">
                     <ul>
@@ -313,7 +322,7 @@ const MainMenuBar = () => {
                       </li>
                     </ul>
                   </div>
-                </li>
+                </li> */}
               </ul>
             </div>
 

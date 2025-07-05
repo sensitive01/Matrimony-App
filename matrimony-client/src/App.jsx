@@ -25,6 +25,8 @@ import ContactPage from "./pages/contact/ContactPage";
 import EnquiryPage from "./pages/enquirypage/EnquiryPage";
 import JoinNow from "./pages/joinnow/JoinNow";
 import MoreDetails from "./pages/allprofile/MoreDetails";
+import ForgotPassword from "./pages/forgotpassword/ForgotPasswordPage";
+import ChangePassword from "./pages/changepassword/ChangePassword";
 
 // Component to handle page reloads
 function ReloadHandler() {
@@ -80,8 +82,10 @@ function App() {
           path="/user/show-all-profiles/:searchContent"
           element={<UserAllProfilePage />}
         />
-                
 
+
+        <Route path="/reset-password/:userId" element={<ChangePassword />} />        
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile-more-details" element={<MoreDetails />} />
         <Route path="/join-now-page" element={<JoinNow />} />
         <Route path="/enquiry-page" element={<EnquiryPage />} />

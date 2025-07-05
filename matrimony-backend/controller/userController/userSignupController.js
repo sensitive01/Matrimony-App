@@ -64,7 +64,7 @@ const verifyLogin = async (req, res) => {
 
     return res.status(200).json({
       message: "Login successful",
-      userId:user._id,
+      userId: user._id,
       rememberMe,
     });
   } catch (err) {
@@ -73,7 +73,113 @@ const verifyLogin = async (req, res) => {
   }
 };
 
+const userForgotPassword = async (req, res) => {
+  try {
+    const { emailOrPhone } = req.body.emailOrPhone;
+
+    console.log("emailOrPhone", emailOrPhone);
+
+    const user = await userModel.findOne({
+      $or: [{ userEmail: emailOrPhone }, { userMobile: emailOrPhone }],
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000);
+
+    const key = `otp_${user._id}`;
+    req.app.locals[key] = {
+      otp,
+      expiresAt: Date.now() + 60 * 1000,
+    };
+
+    console.log(`Generated OTP for ${user.userEmail || user.userMobile}:`, otp);
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully",
+      userId: user._id,
+    });
+  } catch (err) {
+    console.error("Error in verify user in forgot password", err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+const userVerifyOtp = async (req, res) => {
+  try {
+    const { userId, otp } = req.body;
+
+    if (!userId || !otp) {
+      return res.status(400).json({ success: false, message: "Missing userId or OTP" });
+    }
+
+    const key = `otp_${userId}`;
+    const storedOtpData = req.app.locals[key];
+
+    if (!storedOtpData) {
+      return res.status(400).json({ success: false, message: "OTP not found or expired" });
+    }
+
+    if (Date.now() > storedOtpData.expiresAt) {
+      delete req.app.locals[key];
+      return res.status(400).json({ success: false, message: "OTP has expired" });
+    }
+
+    if (parseInt(otp) !== storedOtpData.otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    delete req.app.locals[key];
+
+    return res.status(200).json({ success: true, message: "OTP verified successfully",userId:userId });
+
+  } catch (err) {
+    console.error("Error in verify OTP", err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+const saveNewPassword = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { newPassword } = req.body;
+
+    if (!userId || !newPassword) {
+      return res.status(400).json({ success: false, message: "Missing userId or new password" });
+    }
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.userPassword = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ success: true, message: "Password updated successfully",userId });
+
+  } catch (err) {
+    console.log("Error in saving the new password", err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+
+
+
 module.exports = {
   saveSignUpData,
   verifyLogin,
+  userForgotPassword,
+  userVerifyOtp,
+  saveNewPassword
 };

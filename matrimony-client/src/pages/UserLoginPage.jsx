@@ -75,11 +75,14 @@ const UserLoginPage = () => {
         setTimeout(() => {
           navigate("/user/user-dashboard-page");
         }, 1500);
+      } else if (response.status === 401) {
+        setLoginError(response.response.data.message);
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error:", error.response.data.message);
       setLoginError(
-        "Network error. Please check your connection and try again."
+        error.response.data.message ||
+          "Network error. Please check your connection and try again."
       );
     } finally {
       setIsLoading(false);
