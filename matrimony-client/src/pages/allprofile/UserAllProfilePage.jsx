@@ -449,7 +449,7 @@ const UserAllProfilePage = () => {
                               >
                                 Send interest
                               </a>
-                              <a href={`/profile-more-details`}>More details</a>
+                              <a href={`/profile-more-details/${user._id}`}>More details</a>
                             </div>
                           </div>
                           <span

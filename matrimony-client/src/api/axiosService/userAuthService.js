@@ -25,3 +25,8 @@ export const fetchAllUserProfiles = async (userId) => {
   const response = await userInstance.get(`/get-all-user-profile/${userId}`);
   return response;
 };
+
+export const getTheProfieMoreDetails = async (userId) => {
+  const response = await userInstance.get(`/get-profile-more-information/${userId}`);
+  return response;
+};

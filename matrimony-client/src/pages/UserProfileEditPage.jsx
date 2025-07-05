@@ -24,6 +24,7 @@ const UserProfileEditPage = () => {
     phone: "",
     password: "",
     gender: "",
+    aboutMe: "",
     city: "",
     dateOfBirth: "",
     age: "",
@@ -61,18 +62,18 @@ const UserProfileEditPage = () => {
         if (response.status === 200) {
           const userData = response.data.data;
 
-          // Map API response fields to form fields with proper case handling
           setFormData({
             name: userData.userName || "",
             email: userData.userEmail || "",
             phone: userData.userMobile || "",
-            password: "", // Don't populate password from API for security
-            gender: userData.gender || "", // Remove default "Male"
+            password: "",
+            aboutMe: userData.aboutMe || "",
+            gender: userData.gender || "",
             city: userData.city || "",
             dateOfBirth: userData.dateOfBirth
               ? userData.dateOfBirth.split("T")[0]
-              : "", // Format date for input
-            age: userData.age ? userData.age.toString() : "", // Convert to string
+              : "",
+            age: userData.age ? userData.age.toString() : "",
             height: userData.height || "",
             weight: userData.weight || "",
             fathersName: userData.fathersName || "",
@@ -94,12 +95,10 @@ const UserProfileEditPage = () => {
             hobbies: Array.isArray(userData.hobbies) ? userData.hobbies : [],
           });
 
-          // Set profile image if exists
           if (userData.profileImage) {
             setProfileImagePreview(userData.profileImage);
           }
 
-          // Set additional images if they exist
           if (
             userData.additionalImages &&
             userData.additionalImages.length > 0
@@ -146,7 +145,6 @@ const UserProfileEditPage = () => {
     return age;
   };
 
-  // Fixed hobbies change handler
   const handleHobbiesChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -165,7 +163,6 @@ const UserProfileEditPage = () => {
     if (file) {
       setProfileImageFile(file);
 
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImagePreview(reader.result);
@@ -217,38 +214,31 @@ const UserProfileEditPage = () => {
 
       const submitFormData = new FormData();
 
-      // Handle form data properly
       Object.keys(formData).forEach((key) => {
         if (key === "hobbies") {
-          // Handle hobbies array properly
           if (Array.isArray(formData[key]) && formData[key].length > 0) {
             formData[key].forEach((hobby, index) => {
               submitFormData.append(`hobbies[${index}]`, hobby);
             });
           } else {
-            // Send empty array indicator
             submitFormData.append("hobbies", "");
           }
         } else {
-          // Handle all other fields
           const value = formData[key];
           submitFormData.append(key, value || "");
         }
       });
 
-      // Handle profile image
       if (profileImageFile) {
         submitFormData.append("profileImage", profileImageFile);
       }
 
-      // Handle additional images
       if (additionalImageFiles.length > 0) {
         additionalImageFiles.forEach((file, index) => {
           submitFormData.append(`additionalImages`, file);
         });
       }
 
-      // Debug: Log FormData contents
       console.log("FormData contents:");
       for (let [key, value] of submitFormData.entries()) {
         console.log(key, value);
@@ -258,7 +248,7 @@ const UserProfileEditPage = () => {
 
       if (response.status === 200) {
         alert("Profile updated successfully!");
-        // Optionally refresh the data
+
         window.location.reload();
       } else {
         alert("Error updating profile. Please try again.");
@@ -274,7 +264,6 @@ const UserProfileEditPage = () => {
   return (
     <>
       <LayoutComponent />
-
 
       <section>
         <div className="login pro-edit-update">

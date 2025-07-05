@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 // ✅ Importing image assets
@@ -9,6 +9,12 @@ import userImg from "../assets/images/icon/users.svg";
 import menuImg from "../assets/images/icon/menu.svg";
 
 const MainMenuBar = () => {
+  const [isUserActive, setIsUserActive] = useState();
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setIsUserActive(!userId);
+  }, []);
   return (
     <div className="hom-top">
       <div className="container">
@@ -281,16 +287,19 @@ const MainMenuBar = () => {
                     </ul>
                   </div>
                 </li> */}
-
                 <li>
                   <Link to="/plans">Plans</Link>
                 </li>
-                <li>
-                  <Link to="/user/user-sign-up">Register</Link>
-                </li>
-                <li>
-                  <Link to="/user/user-login">Login</Link>
-                </li>
+                {isUserActive && (
+                  <>
+                    <li>
+                      <Link to="/user/user-sign-up">Register</Link>
+                    </li>
+                    <li>
+                      <Link to="/user/user-login">Login</Link>
+                    </li>
+                  </>
+                )}
 
                 {/* <li className="smenu-pare">
                   <span className="smenu">Dashboard</span>

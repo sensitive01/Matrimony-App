@@ -86,7 +86,7 @@ function App() {
 
         <Route path="/reset-password/:userId" element={<ChangePassword />} />        
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/profile-more-details" element={<MoreDetails />} />
+        <Route path="/profile-more-details/:profileId" element={<MoreDetails />} />
         <Route path="/join-now-page" element={<JoinNow />} />
         <Route path="/enquiry-page" element={<EnquiryPage />} />
         <Route path="/contact-page" element={<ContactPage />} />

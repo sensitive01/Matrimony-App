@@ -56,6 +56,17 @@ const BasicInfoDetails = ({formData,handleInputChange}) => {
           onChange={handleInputChange}
         />
       </div>
+      <div className="form-group">
+        <label className="lb">About me:</label>
+        <textarea
+          className="form-control"
+          placeholder="Tell us about yourself"
+          name="aboutMe"
+          value={formData.aboutMe}
+          onChange={handleInputChange}
+          rows="4"
+        />
+      </div>
     </div>
   );
 };

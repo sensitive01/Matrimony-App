@@ -1,29 +1,160 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LayoutComponent from "../../components/layouts/LayoutComponent";
+import { useParams } from "react-router-dom";
+import { getTheProfieMoreDetails } from "../../api/axiosService/userAuthService";
+import Footer from "../../components/Footer";
+import CopyRights from "../../components/CopyRights";
+import RelatedProfiles from "./RelatedProfiles";
 
 const MoreDetails = () => {
+  const { profileId } = useParams();
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await getTheProfieMoreDetails(profileId);
+        if (response.status === 200) {
+          setProfileData(response.data.data);
+        } else {
+          setError("Failed to fetch profile data");
+        }
+      } catch (err) {
+        setError("Error fetching profile data");
+        console.error("Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [profileId]);
+
+  // Calculate age from date of birth
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return null;
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  // Handle chat submission
+  const handleChatSubmit = (e) => {
+    e.preventDefault();
+    if (newMessage.trim() === "") return;
+
+    const message = {
+      id: Date.now(),
+      text: newMessage,
+      sender: "user",
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    setChatMessages([...chatMessages, message]);
+    setNewMessage("");
+
+    // Simulate reply after 1 second
+    setTimeout(() => {
+      const reply = {
+        id: Date.now() + 1,
+        text: "Thanks for your message!",
+        sender: "profile",
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setChatMessages((prev) => [...prev, reply]);
+    }, 1000);
+  };
+
+  if (loading) {
+    return (
+      <>
+        <LayoutComponent />
+        <div className="loading-container">
+          <p>Loading profile...</p>
+        </div>
+        <Footer />
+        <CopyRights />
+      </>
+    );
+  }
+
+  if (error || !profileData) {
+    return (
+      <>
+        <LayoutComponent />
+        <div className="error-container">
+          <p>{error || "Profile not found"}</p>
+        </div>
+        <Footer />
+        <CopyRights />
+      </>
+    );
+  }
+
+  const calculatedAge = calculateAge(profileData.dateOfBirth);
+
   return (
     <>
       <LayoutComponent />
 
       <section>
-        <div className="profi-pg profi-ban">
-          <div className="">
-            <div className="">
+        <div className="profi-pg-container">
+          {" "}
+          {/* Added container class */}
+          <div className="profi-pg profi-ban">
+            <div className="profile-image-sticky">
+              {" "}
+              {/* Sticky image container */}
               <div className="profile">
                 <div className="pg-pro-big-im">
                   <div className="s1">
                     <img
-                      src="images/profiles/profile-large.jpg"
+                      src={
+                        profileData.profileImage ||
+                        "images/profiles/profile-large.jpg"
+                      }
                       loading="lazy"
                       className="pro"
-                      alt=""
+                      alt={profileData.userName || "Profile"}
                     />
                   </div>
                   <div className="s3">
-                    <a href="#!" className="cta fol cta-chat">
+                    <button
+                      className="cta fol cta-chat"
+                      onClick={() => setIsChatOpen(!isChatOpen)}
+                    >
                       Chat now
-                    </a>
+                    </button>
                     <span
                       className="cta cta-sendint"
                       data-toggle="modal"
@@ -34,10 +165,15 @@ const MoreDetails = () => {
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="profile-details-scrollable">
+              {" "}
+              {/* Scrollable details container */}
               <div className="profi-pg profi-bio">
                 <div className="lhs">
                   <div className="pro-pg-intro">
-                    <h1>Angelina Jolie</h1>
+                    <h1>{profileData.userName || "Name not available"}</h1>
                     <div className="pro-info-status">
                       <span className="stat-1">
                         <b>100</b> viewers
@@ -55,7 +191,10 @@ const MoreDetails = () => {
                             alt=""
                           />
                           <span>
-                            City: <strong>New York</strong>
+                            City:{" "}
+                            <strong>
+                              {profileData.city || "Not specified"}
+                            </strong>
                           </span>
                         </div>
                       </li>
@@ -67,7 +206,12 @@ const MoreDetails = () => {
                             alt=""
                           />
                           <span>
-                            Age: <strong>21</strong>
+                            Age:{" "}
+                            <strong>
+                              {calculatedAge ||
+                                profileData.age ||
+                                "Not specified"}
+                            </strong>
                           </span>
                         </div>
                       </li>
@@ -79,7 +223,12 @@ const MoreDetails = () => {
                             alt=""
                           />
                           <span>
-                            Height: <strong>5.7</strong>
+                            Height:{" "}
+                            <strong>
+                              {profileData.height
+                                ? `${profileData.height}cm`
+                                : "Not specified"}
+                            </strong>
                           </span>
                         </div>
                       </li>
@@ -91,7 +240,10 @@ const MoreDetails = () => {
                             alt=""
                           />
                           <span>
-                            Job: <strong>Working</strong>
+                            Job:{" "}
+                            <strong>
+                              {profileData.jobType || "Not specified"}
+                            </strong>
                           </span>
                         </div>
                       </li>
@@ -101,74 +253,38 @@ const MoreDetails = () => {
                   <div className="pr-bio-c pr-bio-abo">
                     <h3>About</h3>
                     <p>
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. The point of using Lorem Ipsum is that it
-                      has a more-or-less normal distribution of letters, as
-                      opposed to using 'Content here, content here', making it
-                      look like readable English.{" "}
-                    </p>
-                    <p>
-                      Many desktop publishing packages and web page editors now
-                      use Lorem Ipsum as their default model text.
+                      {profileData.aboutMe ||
+                        "No information provided about this profile."}
                     </p>
                   </div>
-                  {/* END PROFILE ABOUT */}
-                  {/* PROFILE ABOUT */}
+
                   <div className="pr-bio-c pr-bio-gal" id="gallery">
                     <h3>Photo gallery</h3>
                     <div id="image-gallery">
-                      <div className="pro-gal-imag">
-                        <div className="img-wrapper">
-                          <a href="#!">
-                            <img
-                              src="images/profiles/1.jpg"
-                              className="img-responsive"
-                              alt=""
-                            />
-                          </a>
-                          <div className="img-overlay">
-                            <i
-                              className="fa fa-arrows-alt"
-                              aria-hidden="true"
-                            />
+                      {profileData.additionalImages &&
+                      profileData.additionalImages.length > 0 ? (
+                        profileData.additionalImages.map((image, index) => (
+                          <div key={index} className="pro-gal-imag">
+                            <div className="img-wrapper">
+                              <a href="#!">
+                                <img
+                                  src={image}
+                                  className="img-responsive"
+                                  alt={`Gallery image ${index + 1}`}
+                                />
+                              </a>
+                              <div className="img-overlay">
+                                <i
+                                  className="fa fa-arrows-alt"
+                                  aria-hidden="true"
+                                />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="pro-gal-imag">
-                        <div className="img-wrapper">
-                          <a href="#!">
-                            <img
-                              src="images/profiles/6.jpg"
-                              className="img-responsive"
-                              alt=""
-                            />
-                          </a>
-                          <div className="img-overlay">
-                            <i
-                              className="fa fa-arrows-alt"
-                              aria-hidden="true"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="pro-gal-imag">
-                        <div className="img-wrapper">
-                          <a href="#!">
-                            <img
-                              src="images/profiles/14.jpg"
-                              className="img-responsive"
-                              alt=""
-                            />
-                          </a>
-                          <div className="img-overlay">
-                            <i
-                              className="fa fa-arrows-alt"
-                              aria-hidden="true"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                        ))
+                      ) : (
+                        <p>No additional images available</p>
+                      )}
                     </div>
                   </div>
                   {/* END PROFILE ABOUT */}
@@ -179,13 +295,15 @@ const MoreDetails = () => {
                       <li>
                         <span>
                           <i className="fa fa-mobile" aria-hidden="true" />
-                          <b>Phone:</b>+92 (8800) 68 - 8960
+                          <b>Phone:</b>
+                          {profileData.userMobile || "Not provided"}
                         </span>
                       </li>
                       <li>
                         <span>
                           <i className="fa fa-envelope-o" aria-hidden="true" />
-                          <b>Email:</b>angelinajoliewed@gmail.com
+                          <b>Email:</b>
+                          {profileData.userEmail || "Not provided"}
                         </span>
                       </li>
                       <li>
@@ -194,8 +312,8 @@ const MoreDetails = () => {
                             className="fa fa fa-map-marker"
                             aria-hidden="true"
                           />
-                          <b>Address: </b>28800 Orchard Lake Road, Suite 180
-                          Farmington Hills, U.S.A.
+                          <b>Address: </b>
+                          {profileData.address || "Not provided"}
                         </span>
                       </li>
                     </ul>
@@ -206,43 +324,66 @@ const MoreDetails = () => {
                     <h3>Personal information</h3>
                     <ul>
                       <li>
-                        <b>Name:</b> Angelina Jolie
+                        <b>Name:</b> {profileData.userName || "Not provided"}
                       </li>
                       <li>
-                        <b>Fatheres name:</b> John smith
+                        <b>Father's name:</b>{" "}
+                        {profileData.fathersName || "Not provided"}
                       </li>
                       <li>
-                        <b>Family name:</b> Joney family
+                        <b>Mother's name:</b>{" "}
+                        {profileData.mothersName || "Not provided"}
                       </li>
                       <li>
-                        <b>Age:</b> 24
+                        <b>Age:</b>{" "}
+                        {calculatedAge || profileData.age || "Not provided"}
                       </li>
                       <li>
-                        <b>Date of birth:</b>03 Jan 1998
+                        <b>Date of birth:</b>{" "}
+                        {formatDate(profileData.dateOfBirth) || "Not provided"}
                       </li>
                       <li>
-                        <b>Height:</b>167cm
+                        <b>Height:</b>{" "}
+                        {profileData.height
+                          ? `${profileData.height}cm`
+                          : "Not provided"}
                       </li>
                       <li>
-                        <b>Weight:</b>65kg
+                        <b>Weight:</b>{" "}
+                        {profileData.weight
+                          ? `${profileData.weight}kg`
+                          : "Not provided"}
                       </li>
                       <li>
-                        <b>Degree:</b> MSC Computer Science
+                        <b>Degree:</b> {profileData.degree || "Not provided"}
                       </li>
                       <li>
-                        <b>Religion:</b> Any
+                        <b>Gender:</b> {profileData.gender || "Not provided"}
                       </li>
                       <li>
-                        <b>Profession:</b> Working
+                        <b>College:</b> {profileData.college || "Not provided"}
                       </li>
                       <li>
-                        <b>Company:</b> Google
+                        <b>School:</b> {profileData.school || "Not provided"}
                       </li>
                       <li>
-                        <b>Position:</b> Web developer
+                        <b>Job Type:</b> {profileData.jobType || "Not provided"}
                       </li>
                       <li>
-                        <b>Salary:</b> $1000 p/m
+                        <b>Company:</b>{" "}
+                        {profileData.companyName || "Not provided"}
+                      </li>
+                      <li>
+                        <b>Job Experience:</b>{" "}
+                        {profileData.jobExperience
+                          ? `${profileData.jobExperience} years`
+                          : "Not provided"}
+                      </li>
+                      <li>
+                        <b>Salary:</b>{" "}
+                        {profileData.salary
+                          ? `₹${profileData.salary}`
+                          : "Not provided"}
                       </li>
                     </ul>
                   </div>
@@ -251,33 +392,17 @@ const MoreDetails = () => {
                   <div className="pr-bio-c pr-bio-hob">
                     <h3>Hobbies</h3>
                     <ul>
-                      <li>
-                        <span>Modelling</span>
-                      </li>
-                      <li>
-                        <span>Watching movies</span>
-                      </li>
-                      <li>
-                        <span>Playing volleyball</span>
-                      </li>
-                      <li>
-                        <span>Hangout with family</span>
-                      </li>
-                      <li>
-                        <span>Adventure travel</span>
-                      </li>
-                      <li>
-                        <span>Books reading</span>
-                      </li>
-                      <li>
-                        <span>Music</span>
-                      </li>
-                      <li>
-                        <span>Cooking</span>
-                      </li>
-                      <li>
-                        <span>Yoga</span>
-                      </li>
+                      {profileData.hobbies && profileData.hobbies.length > 0 ? (
+                        profileData.hobbies.map((hobby, index) => (
+                          <li key={index}>
+                            <span>{hobby}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li>
+                          <span>No hobbies listed</span>
+                        </li>
+                      )}
                     </ul>
                   </div>
                   {/* END PROFILE ABOUT */}
@@ -285,40 +410,84 @@ const MoreDetails = () => {
                   <div className="pr-bio-c menu-pop-soci pr-bio-soc">
                     <h3>Social media</h3>
                     <ul>
-                      <li>
-                        <a href="#!">
-                          <i className="fa fa-facebook" aria-hidden="true" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#!">
-                          <i className="fa fa-twitter" aria-hidden="true" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#!">
-                          <i className="fa fa-whatsapp" aria-hidden="true" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#!">
-                          <i className="fa fa-linkedin" aria-hidden="true" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#!">
-                          <i
-                            className="fa fa-youtube-play"
-                            aria-hidden="true"
-                          />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#!">
-                          <i className="fa fa-instagram" aria-hidden="true" />
-                        </a>
-                      </li>
+                      {profileData.facebook && (
+                        <li>
+                          <a
+                            href={profileData.facebook}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <i className="fa fa-facebook" aria-hidden="true" />
+                          </a>
+                        </li>
+                      )}
+                      {profileData.x && (
+                        <li>
+                          <a
+                            href={profileData.x}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <i className="fa fa-twitter" aria-hidden="true" />
+                          </a>
+                        </li>
+                      )}
+                      {profileData.whatsapp && (
+                        <li>
+                          <a
+                            href={`https://wa.me/${profileData.whatsapp}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <i className="fa fa-whatsapp" aria-hidden="true" />
+                          </a>
+                        </li>
+                      )}
+                      {profileData.linkedin && (
+                        <li>
+                          <a
+                            href={profileData.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <i className="fa fa-linkedin" aria-hidden="true" />
+                          </a>
+                        </li>
+                      )}
+                      {profileData.youtube && (
+                        <li>
+                          <a
+                            href={profileData.youtube}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <i
+                              className="fa fa-youtube-play"
+                              aria-hidden="true"
+                            />
+                          </a>
+                        </li>
+                      )}
+                      {profileData.instagram && (
+                        <li>
+                          <a
+                            href={profileData.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <i className="fa fa-instagram" aria-hidden="true" />
+                          </a>
+                        </li>
+                      )}
                     </ul>
+                    {!profileData.facebook &&
+                      !profileData.x &&
+                      !profileData.whatsapp &&
+                      !profileData.linkedin &&
+                      !profileData.youtube &&
+                      !profileData.instagram && (
+                        <p>No social media links provided</p>
+                      )}
                   </div>
                   {/* END PROFILE ABOUT */}
                 </div>
@@ -334,101 +503,8 @@ const MoreDetails = () => {
                       <a href="sign-up.html">Register for free</a>
                     </div>
                   </div>
-                  {/* END HELP BOX */}
-                  {/* RELATED PROFILES */}
-                  <div className="slid-inn pr-bio-c wedd-rel-pro">
-                    <h3>Related profiles</h3>
-                    <ul className="slider3">
-                      <li>
-                        <div className="wedd-rel-box">
-                          <div className="wedd-rel-img">
-                            <img src="images/profiles/1.jpg" alt="" />
-                            <span className="badge badge-success">
-                              21 Years old
-                            </span>
-                          </div>
-                          <div className="wedd-rel-con">
-                            <h5>Christine</h5>
-                            <span>
-                              City: <b>New York City</b>
-                            </span>
-                          </div>
-                          <a href="profile-details.html" className="fclick" />
-                        </div>
-                      </li>
-                      <li>
-                        <div className="wedd-rel-box">
-                          <div className="wedd-rel-img">
-                            <img src="images/profiles/2.jpg" alt="" />
-                            <span className="badge badge-success">
-                              21 Years old
-                            </span>
-                          </div>
-                          <div className="wedd-rel-con">
-                            <h5>Christine</h5>
-                            <span>
-                              City: <b>New York City</b>
-                            </span>
-                          </div>
-                          <a href="profile-details.html" className="fclick" />
-                        </div>
-                      </li>
-                      <li>
-                        <div className="wedd-rel-box">
-                          <div className="wedd-rel-img">
-                            <img src="images/profiles/3.jpg" alt="" />
-                            <span className="badge badge-success">
-                              21 Years old
-                            </span>
-                          </div>
-                          <div className="wedd-rel-con">
-                            <h5>Christine</h5>
-                            <span>
-                              City: <b>New York City</b>
-                            </span>
-                          </div>
-                          <a href="profile-details.html" className="fclick" />
-                        </div>
-                      </li>
-                      <li>
-                        <div className="wedd-rel-box">
-                          <div className="wedd-rel-img">
-                            <img src="images/profiles/4.jpg" alt="" />
-                            <span className="badge badge-success">
-                              21 Years old
-                            </span>
-                          </div>
-                          <div className="wedd-rel-con">
-                            <h5>Christine</h5>
-                            <span>
-                              City: <b>New York City</b>
-                            </span>
-                          </div>
-                          <a href="profile-details.html" className="fclick" />
-                        </div>
-                      </li>
-                      <li>
-                        <div className="wedd-rel-box">
-                          <div className="wedd-rel-img">
-                            <img src="images/profiles/6.jpg" alt="" />
-                            <span className="badge badge-success">
-                              21 Years old
-                            </span>
-                          </div>
-                          <div className="wedd-rel-con">
-                            <h5>Christine</h5>
-                            <span>
-                              City: <b>New York City</b>
-                            </span>
-                          </div>
-                          <a href="profile-details.html" className="fclick" />
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  {/* END RELATED PROFILES */}
+                  <RelatedProfiles />
                 </div>
-                {/* END PROFILE lHS */}
               </div>
             </div>
           </div>
@@ -442,7 +518,10 @@ const MoreDetails = () => {
             {/* Modal Header */}
             <div className="modal-header">
               <h4 className="modal-title seninter-tit">
-                Send interest to <span className="intename">Jolia</span>
+                Send interest to{" "}
+                <span className="intename">
+                  {profileData.userName || "User"}
+                </span>
               </h4>
               <button type="button" className="close" data-dismiss="modal">
                 ×
@@ -452,15 +531,17 @@ const MoreDetails = () => {
             <div className="modal-body seninter">
               <div className="lhs">
                 <img
-                  src="images/profiles/1.jpg"
+                  src={profileData.profileImage || "images/profiles/1.jpg"}
                   alt=""
                   className="intephoto1"
                 />
               </div>
               <div className="rhs">
                 <h4>
-                  <span className="intename1">Jolia</span> Can able to view the
-                  below details
+                  <span className="intename1">
+                    {profileData.userName || "User"}
+                  </span>{" "}
+                  Can able to view the below details
                 </h4>
                 <ul>
                   <li>
@@ -509,7 +590,10 @@ const MoreDetails = () => {
                     defaultValue={""}
                   />
                   <label htmlFor="comment">
-                    Write some message to <span className="intename" />
+                    Write some message to{" "}
+                    <span className="intename">
+                      {profileData.userName || "User"}
+                    </span>
                   </label>
                 </div>
               </div>
@@ -530,139 +614,70 @@ const MoreDetails = () => {
           </div>
         </div>
       </div>
-      {/* END INTEREST POPUP */}
-      {/*- CHAT CONVERSATION BOX START -*/}
-      <div className="chatbox">
-        <span className="comm-msg-pop-clo">
-          <i className="fa fa-times" aria-hidden="true" />
-        </span>
-        <div className="inn">
-          <form name="new_chat_form" method="post">
-            <div className="s1">
-              <img src="images/profiles/2.jpg" className="intephoto2" alt="" />
-              <h4>
-                <b>Angelina Jolie</b>,
-              </h4>
-              <span className="avlsta avilyes">Available online</span>
-            </div>
-            <div className="s2 chat-box-messages">
-              <span className="chat-wel">Start a new chat!!! now</span>
-              <div className="chat-con">
-                <div className="chat-lhs">Hi</div>
-                <div className="chat-rhs">Hi</div>
+
+      {/* Chat UI */}
+      {isChatOpen && (
+        <div className="chatbox active">
+          <span
+            className="comm-msg-pop-clo"
+            onClick={() => setIsChatOpen(false)}
+          >
+            <i className="fa fa-times" aria-hidden="true" />
+          </span>
+          <div className="inn">
+            <form onSubmit={handleChatSubmit}>
+              <div className="s1">
+                <img
+                  src={profileData.profileImage || "images/profiles/2.jpg"}
+                  className="intephoto2"
+                  alt=""
+                />
+                <h4>
+                  <b>{profileData.userName || "User"},</b>
+                </h4>
+                <span className="avlsta avilyes">Available online</span>
               </div>
-              {/*<span>Start A New Chat!!! Now</span>*/}
-            </div>
-            <div className="s3">
-              <input
-                type="text"
-                name="chat_message"
-                placeholder="Type a message here.."
-                required=""
-              />
-              <button id="chat_send1" name="chat_send" type="submit">
-                Send <i className="fa fa-paper-plane-o" aria-hidden="true" />
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-      {/*- END -*/}
-      {/* FOOTER */}
-      <section className="wed-hom-footer">
-        <div className="container">
-          <div className="row foot-supp">
-            <h2>
-              <span>Free support:</span> +92 (8800) 68 - 8960
-              &nbsp;&nbsp;|&nbsp;&nbsp; <span>Email:</span>
-              info@example.com
-            </h2>
-          </div>
-          <div className="row wed-foot-link wed-foot-link-1">
-            <div className="col-md-4">
-              <h4>Get In Touch</h4>
-              <p>Address: 3812 Lena Lane City Jackson Mississippi</p>
-              <p>
-                Phone: <a href="tel:+917904462944">+92 (8800) 68 - 8960</a>
-              </p>
-              <p>
-                Email: <a href="mailto:info@example.com">info@example.com</a>
-              </p>
-            </div>
-            <div className="col-md-4">
-              <h4>HELP &amp; SUPPORT</h4>
-              <ul>
-                <li>
-                  <a href="about-us.html">About company</a>
-                </li>
-                <li>
-                  <a href="#!">Contact us</a>
-                </li>
-                <li>
-                  <a href="#!">Feedback</a>
-                </li>
-                <li>
-                  <a href="about-us.html#faq">FAQs</a>
-                </li>
-                <li>
-                  <a href="about-us.html#testimonials">Testimonials</a>
-                </li>
-              </ul>
-            </div>
-            <div className="col-md-4 fot-soc">
-              <h4>SOCIAL MEDIA</h4>
-              <ul>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/1.png" alt="" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/2.png" alt="" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/3.png" alt="" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <img src="images/social/5.png" alt="" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="row foot-count">
-            <p>
-              Company name Site - Trusted by over thousands of Boys &amp; Girls
-              for successfull marriage.{" "}
-              <a href="sign-up.html" className="btn btn-primary btn-sm">
-                Join us today !
-              </a>
-            </p>
+              <div className="s2 chat-box-messages">
+                {chatMessages.length === 0 ? (
+                  <span className="chat-wel">Start a new chat!!! now</span>
+                ) : (
+                  <div className="chat-con">
+                    {chatMessages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`chat-${
+                          message.sender === "user" ? "rhs" : "lhs"
+                        }`}
+                      >
+                        {message.text}
+                        <span className="message-time">
+                          {message.timestamp}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="s3">
+                <input
+                  type="text"
+                  name="chat_message"
+                  placeholder="Type a message here.."
+                  required
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                />
+                <button id="chat_send1" name="chat_send" type="submit">
+                  Send <i className="fa fa-paper-plane-o" aria-hidden="true" />
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </section>
-      {/* END */}
-      {/* COPYRIGHTS */}
-      <section>
-        <div className="cr">
-          <div className="container">
-            <div className="row">
-              <p>
-                Copyright © <span id="cry">2017-2020</span>{" "}
-                <a href="#!" target="_blank">
-                  Company.com
-                </a>{" "}
-                All rights reserved.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      )}
+
+      <Footer />
+      <CopyRights />
     </>
   );
 };

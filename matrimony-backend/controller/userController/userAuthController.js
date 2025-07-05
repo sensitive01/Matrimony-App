@@ -55,6 +55,7 @@ const completeProfileData = async (req, res) => {
       city,
       height,
       weight,
+      aboutMe,
       fathersName,
       mothersName,
       address,
@@ -88,6 +89,7 @@ const completeProfileData = async (req, res) => {
       weight,
       fathersName,
       mothersName,
+      aboutMe,
       address,
       jobType,
       companyName,
@@ -211,9 +213,40 @@ const getAllUserProfileData = async (req, res) => {
   }
 };
 
+const getProfileMoreInformation = async (req, res) => {
+  try {
+    const { profileId } = req.params;
+
+    const profileData = await userModel.findById(
+      { _id: profileId },
+      { userPassword: 0 }
+    );
+
+    if (!profileData) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile data fetched successfully",
+      data: profileData,
+    });
+  } catch (err) {
+    console.log("Error in getting the more details of the profile", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   getUserProfileImage,
   getUserInformation,
   completeProfileData,
   getAllUserProfileData,
+  getProfileMoreInformation,
 };

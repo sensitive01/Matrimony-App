@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
     userPassword: { type: String, required: true },
     isEmailVerified: { type: Boolean, default: false },
     isTermsAggreed: { type: Boolean, default: false },
+    aboutMe:{type:String},
 
     gender: {
       type: String,
