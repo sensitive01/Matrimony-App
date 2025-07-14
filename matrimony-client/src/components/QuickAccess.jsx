@@ -18,7 +18,7 @@ const QuickAccess = () => {
             </div>
             {/* END BACKGROUND SHAPE */}
             <div className="home-tit">
-              <p>Quick Access</p>
+              <p style={{color:"white"}} >Quick Access</p>
               <h2>
                 <span>Our Services</span>
               </h2>

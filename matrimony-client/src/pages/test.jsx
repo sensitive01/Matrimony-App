@@ -18,7 +18,7 @@ const UserHomePage = () => {
           <div className="container">
             <div className="row">
               <div className="home-tit">
-                <p style={{ color: "black" }}>trusted brand</p>
+                <p style={{color:"black"}} >trusted brand</p>
                 <h2>
                   <span>
                     Trust by <b className="num">1500</b>+ Couples
@@ -309,7 +309,7 @@ const UserHomePage = () => {
                     <i className="fa fa-users" aria-hidden="true" />
                     <div>
                       <h4>4000+</h4>
-                      <span >Registerents</span>
+                      <span>Registerents</span>
                     </div>
                   </div>
                 </li>
@@ -343,7 +343,7 @@ const UserHomePage = () => {
           <div className="container">
             <div className="row">
               <div className="home-tit">
-                <p style={{ color: "black" }}>Moments</p>
+                <p style={{color:"black"}}>Moments</p>
                 <h2>
                   <span>How it works</span>
                 </h2>
@@ -368,7 +368,7 @@ const UserHomePage = () => {
                         className="tline-con animate animate__animated animate__slow"
                         data-ani="animate__fadeInUp"
                       >
-                        <h5 style={{color:"#A020F0"}}>Register</h5>
+                        <h5>Register</h5>
                         <span>Timing: 7:00 PM</span>
                         <p>
                           Lorem Ipsum is simply dummy text of the printing and
@@ -384,7 +384,7 @@ const UserHomePage = () => {
                         className="tline-con animate animate__animated animate__slower"
                         data-ani="animate__fadeInUp"
                       >
-                        <h5 style={{color:"#A020F0"}}>Find your Match</h5>
+                        <h5 >Find your Match</h5>
                         <span>Timing: 7:00 PM</span>
                         <p>
                           Lorem Ipsum is simply dummy text of the printing and
@@ -420,7 +420,7 @@ const UserHomePage = () => {
                         className="tline-con animate animate__animated animate__slow"
                         data-ani="animate__fadeInUp"
                       >
-                        <h5 style={{color:"#A020F0"}}>Send Interest</h5>
+                        <h5>Send Interest</h5>
                         <span>Timing: 7:00 PM</span>
                         <p>
                           Lorem Ipsum is simply dummy text of the printing and
@@ -436,7 +436,7 @@ const UserHomePage = () => {
                         className="tline-con animate animate__animated animate__slower"
                         data-ani="animate__fadeInUp"
                       >
-                        <h5 style={{color:"#A020F0"}}>Get Profile Information</h5>
+                        <h5>Get Profile Information</h5>
                         <span>Timing: 7:00 PM</span>
                         <p>
                           Lorem Ipsum is simply dummy text of the printing and
@@ -472,7 +472,7 @@ const UserHomePage = () => {
                         className="tline-con animate animate__animated animate__slow"
                         data-ani="animate__fadeInUp"
                       >
-                        <h5 style={{color:"#A020F0"}}>Start Meetups</h5>
+                        <h5>Start Meetups</h5>
                         <span>Timing: 7:00 PM</span>
                         <p>
                           Lorem Ipsum is simply dummy text of the printing and
@@ -488,7 +488,7 @@ const UserHomePage = () => {
                         className="tline-con animate animate__animated animate__slower"
                         data-ani="animate__fadeInUp"
                       >
-                        <h5 style={{color:"#A020F0"}}>Getting Marriage</h5>
+                        <h5>Getting Marriage</h5>
                         <span>Timing: 7:00 PM</span>
                         <p>
                           Lorem Ipsum is simply dummy text of the printing and
@@ -521,7 +521,7 @@ const UserHomePage = () => {
           <div className="container">
             <div className="row">
               <div className="home-tit">
-                <p style={{ color: "black" }}>trusted brand</p>
+                <p style={{color:"black"}}>trusted brand</p>
                 <h2>
                   <span>Recent Couples</span>
                 </h2>
@@ -687,7 +687,7 @@ const UserHomePage = () => {
           <div className="container">
             <div className="row">
               <div className="home-tit">
-                <p style={{ color: "black" }}>OUR PROFESSIONALS</p>
+                <p style={{color:"black"}}>OUR PROFESSIONALS</p>
                 <h2>
                   <span>Meet Our Team</span>
                 </h2>
@@ -858,7 +858,7 @@ const UserHomePage = () => {
           <div className="">
             <div className="gall-inn">
               <div className="home-tit">
-                <p style={{ color: "black" }}>collections</p>
+                <p style={{color:"black"}}>collections</p>
                 <h2>
                   <span>Photo gallery</span>
                 </h2>
@@ -1036,7 +1036,7 @@ const UserHomePage = () => {
           <div className="container">
             <div className="row">
               <div className="home-tit">
-                <p style={{ color: "black" }}>Blog posts</p>
+                <p style={{color:"black"}}>Blog posts</p>
                 <h2>
                   <span>Blog &amp; Articles</span>
                 </h2>
@@ -1058,11 +1058,7 @@ const UserHomePage = () => {
                         It is a long established fact that a reader will be
                         distracted by the readable content.
                       </p>
-                      <a
-                        href="#"
-                        className="cta-dark"
-                        style={{ background: "#A020F0" }}
-                      >
+                      <a href="#" className="cta-dark" style={{background:"#A020F0"}}>
                         <span>Read more</span>
                       </a>
                     </div>
@@ -1080,11 +1076,7 @@ const UserHomePage = () => {
                         It is a long established fact that a reader will be
                         distracted by the readable content.
                       </p>
-                      <a
-                        href="#"
-                        className="cta-dark"
-                        style={{ background: "#A020F0" }}
-                      >
+                      <a href="#" className="cta-dark" style={{background:"#A020F0"}} >
                         <span>Read more</span>
                       </a>
                     </div>
@@ -1102,11 +1094,7 @@ const UserHomePage = () => {
                         It is a long established fact that a reader will be
                         distracted by the readable content.
                       </p>
-                      <a
-                        href="#"
-                        className="cta-dark"
-                        style={{ background: "#A020F0" }}
-                      >
+                      <a href="#" className="cta-dark" style={{background:"#A020F0"}}>
                         <span>Read more</span>
                       </a>
                     </div>
@@ -1125,19 +1113,13 @@ const UserHomePage = () => {
             <div className="row">
               <div className="fot-ban-inn">
                 <div className="lhs">
-                  <h2 style={{ color: "#A020F0" }}>
-                    Find your perfect Match now
-                  </h2>
+                  <h2 style={{color:"#A020F0"}}>Find your perfect Match now</h2>
                   <p>
                     lacinia viverra lectus. Fusce imperdiet ullamcorper metus eu
                     fringilla.Lorem Ipsum is simply dummy text of the printing
                     and typesetting industry.
                   </p>
-                  <a
-                    href="#"
-                    className="cta-3"
-                    style={{ background: "#A020F0" }}
-                  >
+                  <a href="#" className="cta-3" style={{background:"#A020F0"}}>
                     Register Now
                   </a>
                   <a href="#" className="cta-4">
@@ -1152,64 +1134,46 @@ const UserHomePage = () => {
       {/* END */}
       {/* FOOTER */}
       <section className="wed-hom-footer" style={{ background: "#A020F0" }}>
-        <div className="container">
+        <div className="container" >
           <div className="row foot-supp" style={{ background: "black" }}>
-            <h2>
+            <h2 >
               <span>Free support:</span> +92 (8800) 68 - 8960
               &nbsp;&nbsp;|&nbsp;&nbsp; <span>Email:</span> info@example.com
             </h2>
           </div>
-          <div className="row wed-foot-link wed-foot-link-1">
+          <div className="row wed-foot-link wed-foot-link-1" >
             <div className="col-md-4">
-              <h4 style={{ color: "white" }}>Get In Touch</h4>
-              <p style={{ color: "white" }}>
-                Address: 3812 Lena Lane City Jackson Mississippi
+              <h4 style={{color:"white"}}>Get In Touch</h4>
+              <p style={{color:"white"}}>Address: 3812 Lena Lane City Jackson Mississippi</p>
+              <p style={{color:"white"}}>
+                Phone: <a href="tel:+917904462944" style={{color:"white"}}>+92 (8800) 68 - 8960</a>
               </p>
-              <p style={{ color: "white" }}>
-                Phone:{" "}
-                <a href="tel:+917904462944" style={{ color: "white" }}>
-                  +92 (8800) 68 - 8960
-                </a>
-              </p>
-              <p style={{ color: "white" }}>
-                Email:{" "}
-                <a href="mailto:info@example.com" style={{ color: "white" }}>
-                  info@example.com
-                </a>
+              <p style={{color:"white"}}>
+                Email: <a href="mailto:info@example.com" style={{color:"white"}}>info@example.com</a>
               </p>
             </div>
-            <div className="col-md-4" style={{ color: "white" }}>
-              <h4 style={{ color: "white" }}>HELP &amp; SUPPORT</h4>
+            <div className="col-md-4" style={{color:"white"}}>
+              <h4 style={{color:"white"}}>HELP &amp; SUPPORT</h4>
               <ul>
                 <li>
-                  <a href="#" style={{ color: "white" }}>
-                    About company
-                  </a>
+                  <a href="#" style={{color:"white"}}>About company</a>
                 </li>
                 <li>
-                  <a href="#!" style={{ color: "white" }}>
-                    Contact us
-                  </a>
+                  <a href="#!" style={{color:"white"}}>Contact us</a>
                 </li>
                 <li>
-                  <a href="#!" style={{ color: "white" }}>
-                    Feedback
-                  </a>
+                  <a href="#!" style={{color:"white"}}>Feedback</a>
                 </li>
                 <li>
-                  <a href="#" style={{ color: "white" }}>
-                    FAQs
-                  </a>
+                  <a href="#" style={{color:"white"}}>FAQs</a>
                 </li>
                 <li>
-                  <a href="#" style={{ color: "white" }}>
-                    Testimonials
-                  </a>
+                  <a href="#" style={{color:"white"}}>Testimonials</a>
                 </li>
               </ul>
             </div>
             <div className="col-md-4 fot-soc">
-              <h4 style={{ color: "white" }}>SOCIAL MEDIA</h4>
+              <h4 style={{color:"white"}}>SOCIAL MEDIA</h4>
               <ul>
                 <li>
                   <a href="#!">
@@ -1251,7 +1215,7 @@ const UserHomePage = () => {
             </div>
           </div>
           <div className="row foot-count">
-            <p style={{ color: "white" }}>
+            <p style={{color:"white"}}>
               Company name Site - Trusted by over thousands of Boys &amp; Girls
               for successfull marriage.
               <a href="#" className="btn btn-primary btn-sm">

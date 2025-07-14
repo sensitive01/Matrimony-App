@@ -15,7 +15,7 @@ const BannerAndSearch = () => {
                   <h1>
                     Find your
                     <br />
-                    <b>Right Match</b> here
+                    <b style={{ color: "#A020F0" }}>Right Match</b> here
                   </h1>
                   <p>Most trusted Matrimony Brand in the World.</p>
                 </div>
@@ -25,7 +25,7 @@ const BannerAndSearch = () => {
                       <li className="sr-look">
                         <div className="form-group">
                           <label>I'm looking for</label>
-                          <select className="chosen-select">
+                          <select className="chosen-select" >
                             <option value="">I'm looking for</option>
                             <option value="Men">Men</option>
                             <option value="Women">Women</option>
@@ -75,7 +75,11 @@ const BannerAndSearch = () => {
                         </div>
                       </li>
                       <li className="sr-btn">
-                        <input type="submit" defaultValue="Search" />
+                        <input
+                          type="submit"
+                          defaultValue="Search"
+                          style={{ background: "#A020F0" }}
+                        />
                       </li>
                     </ul>
                   </form>

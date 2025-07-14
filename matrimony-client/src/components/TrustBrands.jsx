@@ -31,7 +31,7 @@ const TrustBrands = () => {
                       typesetting industry. Lorem Ipsum has been the industry's
                       standard dummy text ever since the 1500s,{" "}
                     </p>
-                    <h5>Jack danial</h5>
+                    <h5 style={{ color: "#a020f0" }}>Jack danials</h5>
                     <span>New york</span>
                   </div>
                 </li>

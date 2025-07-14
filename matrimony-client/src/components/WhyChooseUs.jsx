@@ -14,7 +14,7 @@ const WhyChooseUs = () => {
                   data-dely="0.1"
                 >
                   <img src="images/icon/prize.png" alt="" loading="lazy" />
-                  <h4>Genuine profiles</h4>
+                  <h4 style={{color:"#A020F0"}} >Genuine profiless</h4>
                   <p>Contact genuine profiles with 100% verified mobile</p>
                 </div>
               </li>

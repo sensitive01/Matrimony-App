@@ -15,20 +15,34 @@ const MainMenuBar = () => {
     const userId = localStorage.getItem("userId");
     setIsUserActive(!userId);
   }, []);
+
   const handleLogOut = () => {
     localStorage.clear();
-
     window.location.href = "/";
   };
 
+  // ✅ Inline CSS for hover background effect
+  const style = `
+    .menu-purple {
+      background-color: #A020F0;
+      transition: background-color 0.3s ease;
+    }
+    .menu-purple:hover {
+      background-color: #A020F0;
+    }
+  `;
+
   return (
     <div className="hom-top">
+      {/* Inject the style block for hover effect */}
+      <style>{style}</style>
+
       <div className="container">
         <div className="row">
           <div className="hom-nav">
             {/* LOGO */}
             <div className="logo">
-              <span className="menu desk-menu">
+              <span className="menu desk-menu menu-purple">
                 <i />
                 <i />
                 <i />
@@ -108,191 +122,6 @@ const MainMenuBar = () => {
                   </div>
                 </li>
 
-                {/* <li className="smenu-pare">
-                  <span className="smenu">All pages</span>
-                  <div className="smenu-open smenu-multi">
-                    <div className="container">
-                      <div className="row">
-                        {[1, 2, 3, 4].map((set, index) => (
-                          <div className="multi-col" key={index}>
-                            <div className="inn">
-                              <h4>{`Page sets ${set}`}</h4>
-                              <ul>
-                                {set === 1 && (
-                                  <>
-                                    <li>
-                                      <Link to="/user/show-all-profiles/all-profiles">
-                                        Browse Profiles
-                                      </Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/profile-more-details">
-                                        Profile Details
-                                      </Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/user/user-wedding-page">Wedding</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/user/user-service-page">Services</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/photo-gallery">
-                                        Photo Gallery
-                                      </Link>
-                                    </li>
-                                  </>
-                                )}
-                                {set === 2 && (
-                                  <>
-                                    <li>
-                                      <Link to="/plans">Plans</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/user/user-login">Login</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/user/user-sign-up">
-                                        Sign Up
-                                      </Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/photo-gallery">
-                                        Photo Gallery
-                                      </Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/photo-gallery-1">
-                                        Photo Gallery 1
-                                      </Link>
-                                    </li>
-                                  </>
-                                )}
-                                {set === 3 && (
-                                  <>
-                                    <li>
-                                      <Link to="/contact">Contact</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/about">About</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/blog">Blog</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/blog-detail">Blog Detail</Link>
-                                    </li>
-                                  </>
-                                )}
-                                {set === 4 && (
-                                  <>
-                                    <li>
-                                      <Link to="/enquiry">Enquiry</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/make-reservation">
-                                        Make Reservation
-                                      </Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/faq">FAQ</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/coming-soon">Coming Soon</Link>
-                                    </li>
-                                    <li>
-                                      <Link to="/404">404</Link>
-                                    </li>
-                                  </>
-                                )}
-                              </ul>
-                            </div>
-                          </div>
-                        ))}
-
-                        <div className="multi-col full">
-                          <div className="inn">
-                            <h4>User dashboard pages</h4>
-                            <ul>
-                              <li>
-                                <Link to="/user/dashboard">User Dashboard</Link>
-                              </li>
-                              <li>
-                                <Link to="/user/profile">User Profile</Link>
-                              </li>
-                              <li>
-                                <Link to="/user/interests">User Interests</Link>
-                              </li>
-                              <li>
-                                <Link to="/user/chat">User Chat</Link>
-                              </li>
-                              <li>
-                                <Link to="/user/plan">User Plan</Link>
-                              </li>
-                              <li>
-                                <Link to="/user/settings">User Settings</Link>
-                              </li>
-                              <li>
-                                <Link to="/user/profile-edit">
-                                  User Profile Edit
-                                </Link>
-                              </li>
-                              <li>
-                                <Link to="/user/user-login">Login</Link>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li> */}
-
-                {/* <li className="smenu-pare">
-                  <span className="smenu">Top pages</span>
-                  <div className="smenu-open smenu-single">
-                    <ul>
-                      <li>
-                        <Link to="/user/show-all-profiles/all-profiles">
-                          Browse Profiles
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/profile-more-details">Profile Details</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/user-wedding-page">Wedding</Link>
-                      </li>
-                      <li>
-                        <Link to="/blog">Blog</Link>
-                      </li>
-                      <li>
-                        <Link to="/blog-detail">Blog Detail</Link>
-                      </li>
-                      <li>
-                        <Link to="/about">About</Link>
-                      </li>
-                      <li>
-                        <Link to="/contact">Contact</Link>
-                      </li>
-                      <li>
-                        <Link to="/photo-gallery">Photo Gallery</Link>
-                      </li>
-                      <li>
-                        <Link to="/photo-gallery-1">Photo Gallery 1</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/user-login">Login</Link>
-                      </li>
-                      <li>
-                        <Link to="/user/user-sign-up">Sign Up</Link>
-                      </li>
-                      <li>
-                        <Link to="/plans">Plans</Link>
-                      </li>
-                    </ul>
-                  </div>
-                </li> */}
                 <li>
                   <Link to="/plans">Plans</Link>
                 </li>
@@ -322,7 +151,6 @@ const MainMenuBar = () => {
                             User Profile
                           </Link>
                         </li>
-
                         <li>
                           <Link to="/user/user-chat-page">User Chat</Link>
                         </li>
