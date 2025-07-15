@@ -13,7 +13,7 @@ const Moments = () => {
         <div className="container">
           <div className="row">
             <div className="home-tit">
-              <p style={{ color: "black" }}>Moments</p>
+              <p style={{ color: "black" }}>Momentzs</p>
               <h2>
                 <span>How it works</span>
               </h2>
