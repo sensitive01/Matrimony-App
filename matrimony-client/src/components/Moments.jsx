@@ -1,4 +1,10 @@
 import React from "react";
+import ringIcon from "../assets/images/icon/rings.png";
+import wedding1 from "../assets/images/icon/wedding-2.png";
+import birdsIcon from "../assets/images/icon/love-birds.png";
+import networkIcon from "../assets/images/icon/network.png";
+import chatIcon from "../assets/images/icon/chat.png";
+import weddingCoupleIcon from "../assets/images/icon/wedding-couple.png";
 
 const Moments = () => {
   return (
@@ -23,7 +29,7 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src="/images/icon/rings.png"
+                        src={ringIcon}
                         alt="ring_icon"
                         loading="lazy"
                       />
@@ -61,8 +67,8 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src="/images/icon/love-birds.png"
-                        alt="love birds icon"
+                        src="../assets/images/icon/love-birds.png"
+                        alt=""
                         loading="lazy"
                       />
                     </div>
@@ -75,8 +81,8 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src="/images/icon/love-birds.png"
-                        alt="love birds icon"
+                        src={birdsIcon}
+                        alt=""
                         loading="lazy"
                       />
                     </div>
@@ -115,8 +121,8 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src="/images/icon/network.png"
-                        alt="network icon"
+                        src={networkIcon}
+                        alt=""
                         loading="lazy"
                       />
                     </div>
@@ -129,8 +135,8 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src="/images/icon/chat.png"
-                        alt="chat icon"
+                        src={chatIcon}
+                        alt=""
                         loading="lazy"
                       />
                     </div>
@@ -167,8 +173,8 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src="../assets/images/icon/wedding-1.png"
-                        alt="wedding couple icon"
+                        src={weddingCoupleIcon}
+                        alt=""
                         loading="lazy"
                       />
                     </div>
