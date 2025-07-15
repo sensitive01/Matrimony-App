@@ -2,6 +2,7 @@ import React from "react";
 
 import UserSideBar from "../components/UserSideBar";
 import LayoutComponent from "../components/layouts/LayoutComponent";
+import planIcon from "../assets/images/icon/plan.png"
 
 const UserPlanPage = () => {
   return (
@@ -22,7 +23,7 @@ const UserPlanPage = () => {
                     <div className="db-pro-stat">
                       <h6 className="tit-top-curv">Current plan</h6>
                       <div className="db-plan-card">
-                        <img src="images/icon/plan.png" alt="" />
+                        <img src={planIcon} alt="" />
                       </div>
                       <div className="db-plan-detil">
                         <ul>

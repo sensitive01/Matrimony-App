@@ -1,4 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import accountIcon from "../assets/images/profiles/1.jpg";
+import planIcon from "../assets/images/icon/plan.png";
+import menIcon from "../assets/images/icon/user.png";
+import men1 from "../assets/images/profiles/men1.jpg";
+import men2 from "../assets/images/profiles/men2.jpg";
+import men3 from "../assets/images/profiles/men3.jpg";
+import men4 from "../assets/images/profiles/men4.jpg";
 
 import Footer from "../components/Footer";
 import CopyRights from "../components/CopyRights";
@@ -7,10 +15,87 @@ import LayoutComponent from "../components/layouts/LayoutComponent";
 import { newProfileMatch } from "../api/axiosService/userAuthService";
 
 const UserDashboardPage = () => {
+  const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const [profileMatches, setProfileMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const sliderRef = useRef(null);
+  const chartRef = useRef(null);
+  const hasInitialized = useRef(false);
+
+  // Function to safely destroy slider
+  const destroySlider = () => {
+    if (
+      sliderRef.current &&
+      typeof window.$ !== "undefined" &&
+      window.$(sliderRef.current).hasClass("slick-initialized")
+    ) {
+      try {
+        window.$(sliderRef.current).slick("unslick");
+      } catch (error) {
+        console.warn("Error destroying slider:", error);
+      }
+    }
+  };
+
+  // Function to initialize slider
+  const initializeSlider = () => {
+    if (
+      profileMatches.length > 0 &&
+      sliderRef.current &&
+      typeof window.$ !== "undefined" &&
+      window.$.fn.slick
+    ) {
+      try {
+        // Destroy existing slider first
+        destroySlider();
+
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          if (sliderRef.current) {
+            window.$(sliderRef.current).slick({
+              infinite: false,
+              slidesToShow: Math.min(5, profileMatches.length),
+              arrows: false,
+              slidesToScroll: 1,
+              autoplay: true,
+              autoplaySpeed: 3000,
+              dots: false,
+              responsive: [
+                {
+                  breakpoint: 992,
+                  settings: {
+                    slidesToShow: Math.min(3, profileMatches.length),
+                    slidesToScroll: 1,
+                    centerMode: false,
+                  },
+                },
+                {
+                  breakpoint: 768,
+                  settings: {
+                    slidesToShow: Math.min(2, profileMatches.length),
+                    slidesToScroll: 1,
+                    centerMode: false,
+                  },
+                },
+                {
+                  breakpoint: 576,
+                  settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    centerMode: false,
+                  },
+                },
+              ],
+            });
+          }
+        }, 100);
+      } catch (error) {
+        console.error("Error initializing slider:", error);
+      }
+    }
+  };
 
   // Function to fetch profile matches
   const fetchProfileMatches = async () => {
@@ -19,7 +104,7 @@ const UserDashboardPage = () => {
       const response = await newProfileMatch(userId);
 
       // Assuming the response structure matches your provided data
-      if (response.status===200) {
+      if (response.status === 200) {
         setProfileMatches(response.data.matches);
       } else if (Array.isArray(response)) {
         setProfileMatches(response);
@@ -30,12 +115,18 @@ const UserDashboardPage = () => {
       setError(null);
     } catch (err) {
       console.error("Error fetching profile matches:", err);
-      setError("Failed to fetch profile matches");
+      setError("Failed to load profile matches. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle profile click navigation
+  const handleProfileClick = (profileId) => {
+    navigate(`/profile-more-details/${profileId}`);
+  };
+
+  // Initialize components on first load
   useEffect(() => {
     const hasReloaded = sessionStorage.getItem("userDashboardReloaded");
     if (!hasReloaded) {
@@ -45,43 +136,8 @@ const UserDashboardPage = () => {
     }
 
     const initializeComponents = () => {
-      if (typeof window.$ !== "undefined" && window.$.fn.slick) {
-        window.$(".slider").slick({
-          infinite: false,
-          slidesToShow: 5,
-          arrows: false,
-          slidesToScroll: 1,
-          autoplay: true,
-          autoplaySpeed: 3000,
-          dots: false,
-          responsive: [
-            {
-              breakpoint: 992,
-              settings: {
-                slidesToShow: 3,
-                slidesToScroll: 1,
-                centerMode: false,
-              },
-            },
-            {
-              breakpoint: 768,
-              settings: {
-                slidesToShow: 2,
-                slidesToScroll: 1,
-                centerMode: false,
-              },
-            },
-            {
-              breakpoint: 576,
-              settings: {
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                centerMode: false,
-              },
-            },
-          ],
-        });
-
+      // Initialize counter animation
+      if (typeof window.$ !== "undefined") {
         window.$(".count").each(function () {
           window
             .$(this)
@@ -99,50 +155,52 @@ const UserDashboardPage = () => {
               }
             );
         });
+
+        // Initialize tooltips if available
+        if (window.$.fn.tooltip) {
+          window.$('[data-bs-toggle="tooltip"]').tooltip();
+        }
       }
 
       // Chart initialization
-      if (typeof window.Chart !== "undefined") {
-        const xValues = ["0"];
-        const yValues = [50];
+      if (typeof window.Chart !== "undefined" && !chartRef.current) {
+        const chartElement = document.getElementById("Chart_leads");
+        if (chartElement) {
+          const xValues = ["0"];
+          const yValues = [50];
 
-        new window.Chart("Chart_leads", {
-          type: "line",
-          data: {
-            labels: xValues,
-            datasets: [
-              {
-                fill: false,
-                lineTension: 0,
-                backgroundColor: "#f1bb51",
-                borderColor: "#fae9c8",
-                data: yValues,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            legend: { display: false },
-            scales: {
-              yAxes: [{ ticks: { min: 0, max: 100 } }],
+          chartRef.current = new window.Chart(chartElement, {
+            type: "line",
+            data: {
+              labels: xValues,
+              datasets: [
+                {
+                  fill: false,
+                  lineTension: 0,
+                  backgroundColor: "#f1bb51",
+                  borderColor: "#fae9c8",
+                  data: yValues,
+                },
+              ],
             },
-          },
-        });
+            options: {
+              responsive: true,
+              legend: { display: false },
+              scales: {
+                yAxes: [{ ticks: { min: 0, max: 100 } }],
+              },
+            },
+          });
+        }
       }
+
+      hasInitialized.current = true;
     };
 
-    const timer = setTimeout(initializeComponents, 100);
-
-    return () => {
-      clearTimeout(timer);
-      // Cleanup slick slider if it exists
-      if (
-        typeof window.$ !== "undefined" &&
-        window.$(".slider").hasClass("slick-initialized")
-      ) {
-        window.$(".slider").slick("unslick");
-      }
-    };
+    if (!hasInitialized.current) {
+      const timer = setTimeout(initializeComponents, 100);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Initial fetch and set up interval for periodic updates
@@ -150,11 +208,10 @@ const UserDashboardPage = () => {
     // Initial fetch
     fetchProfileMatches();
 
-    // Set up interval to fetch new data every 30 seconds (30000ms)
-    // You can adjust this interval as needed
+    // Set up interval to fetch new data every 30 seconds
     const interval = setInterval(() => {
       fetchProfileMatches();
-    }, 30000); // 30 seconds
+    }, 30000);
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
@@ -162,54 +219,24 @@ const UserDashboardPage = () => {
 
   // Re-initialize slider when profile matches change
   useEffect(() => {
-    if (profileMatches.length > 0) {
-      setTimeout(() => {
-        if (typeof window.$ !== "undefined" && window.$.fn.slick) {
-          // Destroy existing slider if it exists
-          if (window.$(".slider").hasClass("slick-initialized")) {
-            window.$(".slider").slick("unslick");
-          }
-
-          // Reinitialize slider with new data
-          window.$(".slider").slick({
-            infinite: false,
-            slidesToShow: Math.min(5, profileMatches.length),
-            arrows: false,
-            slidesToScroll: 1,
-            autoplay: true,
-            autoplaySpeed: 3000,
-            dots: false,
-            responsive: [
-              {
-                breakpoint: 992,
-                settings: {
-                  slidesToShow: Math.min(3, profileMatches.length),
-                  slidesToScroll: 1,
-                  centerMode: false,
-                },
-              },
-              {
-                breakpoint: 768,
-                settings: {
-                  slidesToShow: Math.min(2, profileMatches.length),
-                  slidesToScroll: 1,
-                  centerMode: false,
-                },
-              },
-              {
-                breakpoint: 576,
-                settings: {
-                  slidesToShow: 1,
-                  slidesToScroll: 1,
-                  centerMode: false,
-                },
-              },
-            ],
-          });
-        }
-      }, 100);
+    if (profileMatches.length > 0 && hasInitialized.current) {
+      initializeSlider();
     }
   }, [profileMatches]);
+
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      destroySlider();
+      if (chartRef.current) {
+        try {
+          chartRef.current.destroy();
+        } catch (error) {
+          console.warn("Error destroying chart:", error);
+        }
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -241,7 +268,7 @@ const UserDashboardPage = () => {
                   )}
 
                   {profileMatches.length > 0 ? (
-                    <ul className="slider">
+                    <ul className="slider" ref={sliderRef}>
                       {profileMatches.map((profile, index) => (
                         <li key={profile._id || index}>
                           <div className="db-new-pro">
@@ -258,8 +285,8 @@ const UserDashboardPage = () => {
                             />
                             <div>
                               <h5>{profile.userName}</h5>
-                              <span className="city">{profile.city}</span>
-                              <span className="age">
+                              <span className="city mr-5">{profile.city}</span>
+                              <span className="age ml-5">
                                 {profile.age} Years old
                               </span>
                             </div>
@@ -272,14 +299,13 @@ const UserDashboardPage = () => {
                                 <span className="pro-ave-yes"></span>
                               </div>
                             )}
-                            <a
-                              href={`/profile/${profile._id}`}
+                            <div
                               className="fclick"
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              onClick={() => handleProfileClick(profile._id)}
+                              style={{ cursor: "pointer" }}
                             >
                               &nbsp;
-                            </a>
+                            </div>
                           </div>
                         </li>
                       ))}
@@ -412,7 +438,7 @@ const UserDashboardPage = () => {
                         </ul>
                       </div>
                       <div className="db-plan-card">
-                        <img src="images/icon/plan.png" alt="Plan" />
+                        <img src={planIcon} alt="Plan" />
                       </div>
                       <div className="db-plan-detil">
                         <ul>
@@ -443,10 +469,7 @@ const UserDashboardPage = () => {
                           {[2, 16, 13, 14].map((profileNum, index) => (
                             <li key={index}>
                               <div className="db-int-pro-1">
-                                <img
-                                  src={`images/profiles/${profileNum}.jpg`}
-                                  alt="Profile"
-                                />
+                                <img src={accountIcon} alt="Profile" />
                               </div>
                               <div className="db-int-pro-2">
                                 <h5>Julia Ann</h5>
@@ -456,287 +479,6 @@ const UserDashboardPage = () => {
                           ))}
                         </ul>
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-12 db-sec-com">
-                    <h2 className="db-tit">Interest request</h2>
-                    <div className="db-pro-stat">
-                      <div className="dropdown">
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary"
-                          data-bs-toggle="dropdown"
-                        >
-                          <i
-                            className="fa fa-ellipsis-h"
-                            aria-hidden="true"
-                          ></i>
-                        </button>
-                        <ul className="dropdown-menu">
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Edit profile
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              View profile
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Plan change
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Download invoice now
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="db-inte-main">
-                        <ul className="nav nav-tabs" role="tablist">
-                          <li className="nav-item">
-                            <a
-                              className="nav-link active"
-                              data-bs-toggle="tab"
-                              href="#home"
-                            >
-                              New requests
-                            </a>
-                          </li>
-                          <li className="nav-item">
-                            <a
-                              className="nav-link"
-                              data-bs-toggle="tab"
-                              href="#menu1"
-                            >
-                              Accept request
-                            </a>
-                          </li>
-                          <li className="nav-item">
-                            <a
-                              className="nav-link"
-                              data-bs-toggle="tab"
-                              href="#menu2"
-                            >
-                              Deny request
-                            </a>
-                          </li>
-                        </ul>
-
-                        <div className="tab-content">
-                          <div id="home" className="container tab-pane active">
-                            <br />
-                            <div className="db-inte-prof-list">
-                              <ul>
-                                {["men1", "men2", "men3", "men4"].map(
-                                  (profile, index) => {
-                                    const badges = [
-                                      "Platinum user",
-                                      "Gold user",
-                                      "Free user",
-                                      "",
-                                    ];
-                                    const badgeClasses = [
-                                      "user-pla-pat",
-                                      "user-pla-gold",
-                                      "user-pla-free",
-                                      "",
-                                    ];
-
-                                    return (
-                                      <li key={index}>
-                                        <div className="db-int-pro-1">
-                                          <img
-                                            src={`images/profiles/${profile}.jpg`}
-                                            alt="Profile"
-                                          />
-                                          {badges[index] && (
-                                            <span
-                                              className={`badge bg-primary ${badgeClasses[index]}`}
-                                            >
-                                              {badges[index]}
-                                            </span>
-                                          )}
-                                        </div>
-                                        <div className="db-int-pro-2">
-                                          <h5>John Smith</h5>
-                                          <ol className="poi">
-                                            <li>
-                                              City: <strong>Illinois</strong>
-                                            </li>
-                                            <li>
-                                              Age: <strong>21</strong>
-                                            </li>
-                                            <li>
-                                              Height: <strong>5.7</strong>
-                                            </li>
-                                            <li>
-                                              Job: <strong>Working</strong>
-                                            </li>
-                                          </ol>
-                                          <ol className="poi poi-date">
-                                            <li>
-                                              Request on: 10:30 AM, 18 August
-                                              2024
-                                            </li>
-                                          </ol>
-                                          <a
-                                            href="#"
-                                            className="cta-5"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            View full profile
-                                          </a>
-                                        </div>
-                                        <div className="db-int-pro-3">
-                                          <button
-                                            type="button"
-                                            className="btn btn-success btn-sm"
-                                          >
-                                            Accept
-                                          </button>
-                                          <button
-                                            type="button"
-                                            className="btn btn-outline-danger btn-sm"
-                                          >
-                                            Deny
-                                          </button>
-                                        </div>
-                                      </li>
-                                    );
-                                  }
-                                )}
-                              </ul>
-                            </div>
-                          </div>
-
-                          <div id="menu1" className="container tab-pane fade">
-                            <br />
-                            <div className="db-inte-prof-list">
-                              <ul>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    <img
-                                      src="images/profiles/men5.jpg"
-                                      alt="Profile"
-                                    />
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illinois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                      <li>
-                                        Accept on: 3:00 PM, 21 August 2024
-                                      </li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger btn-sm"
-                                    >
-                                      Deny
-                                    </button>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-
-                          <div id="menu2" className="container tab-pane fade">
-                            <br />
-                            <div className="db-inte-prof-list">
-                              <ul>
-                                <li>
-                                  <div className="db-int-pro-1">
-                                    <img
-                                      src="images/profiles/men1.jpg"
-                                      alt="Profile"
-                                    />
-                                  </div>
-                                  <div className="db-int-pro-2">
-                                    <h5>John Smith</h5>
-                                    <ol className="poi">
-                                      <li>
-                                        City: <strong>Illinois</strong>
-                                      </li>
-                                      <li>
-                                        Age: <strong>21</strong>
-                                      </li>
-                                      <li>
-                                        Height: <strong>5.7</strong>
-                                      </li>
-                                      <li>
-                                        Job: <strong>Working</strong>
-                                      </li>
-                                    </ol>
-                                    <ol className="poi poi-date">
-                                      <li>
-                                        Request on: 10:30 AM, 18 August 2024
-                                      </li>
-                                      <li>Deny on: 3:00 PM, 21 August 2024</li>
-                                    </ol>
-                                    <a
-                                      href="#"
-                                      className="cta-5"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      View full profile
-                                    </a>
-                                  </div>
-                                  <div className="db-int-pro-3">
-                                    <button
-                                      type="button"
-                                      className="btn btn-success btn-sm"
-                                    >
-                                      Accept
-                                    </button>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-md-12 db-sec-com">
-                    <h2 className="db-tit">Profiles views</h2>
-                    <div className="chartin">
-                      <canvas id="Chart_leads"></canvas>
                     </div>
                   </div>
                 </div>

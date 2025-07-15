@@ -123,7 +123,7 @@ const MainMenuBar = () => {
                 </li>
 
                 <li>
-                  <Link to="/plans">Plans</Link>
+                  <Link to="/user/user-plan-selection">Plans</Link>
                 </li>
                 {isUserActive && (
                   <>

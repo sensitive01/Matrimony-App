@@ -27,6 +27,7 @@ import JoinNow from "./pages/joinnow/JoinNow";
 import MoreDetails from "./pages/allprofile/MoreDetails";
 import ForgotPassword from "./pages/forgotpassword/ForgotPasswordPage";
 import ChangePassword from "./pages/changepassword/ChangePassword";
+import UserPlanSelection from "./pages/userplanselection/UserPlanSelection";
 
 // Component to handle page reloads
 function ReloadHandler() {
@@ -70,6 +71,8 @@ function App() {
           path="/user/user-profile-edit-page/:userId"
           element={<UserProfileEditPage />}
         />
+
+        <Route path="/user/user-plan-selection" element={<UserPlanSelection />} />
         <Route path="/user/user-plan-page" element={<UserPlanPage />} />
         <Route path="/user/user-interest-page" element={<UserInterest />} />
         <Route path="/user/user-chat-page" element={<UserChatPage />} />

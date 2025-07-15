@@ -1,4 +1,8 @@
 import React, { useEffect } from "react";
+import profile1 from "../assets/images/profiles/1.jpg"
+import profile2 from "../assets/images/profiles/2.jpg"
+import profile3 from "../assets/images/profiles/3.jpg"
+import user1 from "../assets/images/user/1.jpg"
 
 import UserSideBar from "../components/UserSideBar";
 import LayoutComponent from "../components/layouts/LayoutComponent";
@@ -45,7 +49,7 @@ const UserChatPage = () => {
                         <ul>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/1.jpg" alt="" />
+                              <img src={profile1} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Ashley emyy</h5>
@@ -60,7 +64,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/16.jpg" alt="" />
+                              <img src={profile2} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Julia Ann</h5>
@@ -75,7 +79,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/12.jpg" alt="" />
+                              <img src={profile3} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Elizabeth Taylor</h5>
@@ -90,7 +94,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/13.jpg" alt="" />
+                              <img src={profile2} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Angelina Jolie</h5>
@@ -104,7 +108,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/14.jpg" alt="" />
+                              <img src={profile1} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Olivia mia</h5>
@@ -118,7 +122,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/1.jpg" alt="" />
+                              <img src={profile2} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Ashley emyy</h5>
@@ -132,7 +136,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/16.jpg" alt="" />
+                              <img src={profile1} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Julia Ann</h5>
@@ -146,7 +150,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/12.jpg" alt="" />
+                              <img src={profile1} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Elizabeth Taylor</h5>
@@ -160,7 +164,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/13.jpg" alt="" />
+                              <img src={profile2} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Angelina Jolie</h5>
@@ -174,7 +178,7 @@ const UserChatPage = () => {
                           </li>
                           <li className="db-chat-trig">
                             <div className="db-chat-pro">
-                              <img src="images/profiles/14.jpg" alt="" />
+                              <img src={profile3} alt="" />
                             </div>
                             <div className="db-chat-bio">
                               <h5>Olivia mia</h5>
@@ -300,7 +304,7 @@ const UserChatPage = () => {
         <div className="inn">
           <form name="new_chat_form" method="post">
             <div className="s1">
-              <img src="images/user/2.jpg" className="intephoto2" alt="" />
+              <img src={user1} className="intephoto2" alt="" />
               <h4>
                 <b className="intename2">Julia</b>,
               </h4>
