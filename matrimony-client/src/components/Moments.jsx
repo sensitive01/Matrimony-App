@@ -31,7 +31,6 @@ const Moments = () => {
                       <img
                         src={ringIcon}
                         alt="ring_icon"
-                        loading="lazy"
                       />
                     </div>
                     <div
