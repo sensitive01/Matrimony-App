@@ -30,7 +30,7 @@ const Moments = () => {
                     >
                       <img
                         src={ringIcon}
-                        alt=""
+                        alt="ring_icon"
                         loading="lazy"
                       />
                     </div>
@@ -67,7 +67,7 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src={wedding1}
+                        src="../assets/images/icon/love-birds.png"
                         alt=""
                         loading="lazy"
                       />
