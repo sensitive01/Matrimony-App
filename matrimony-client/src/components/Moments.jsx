@@ -66,7 +66,7 @@ const Moments = () => {
                       data-ani="animate__fadeInUp"
                     >
                       <img
-                        src="../assets/images/icon/love-birds.png"
+                        src={wedding1}
                         alt=""
                         loading="lazy"
                       />
