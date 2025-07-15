@@ -13,6 +13,8 @@ userAuthRoutes.get("/get-user-info/:userId",userAuthController.getUserInformatio
 userAuthRoutes.get("/get-user-profile/:userId",userAuthController.getUserProfileImage)
 userAuthRoutes.get("/get-all-user-profile/:userId",userAuthController.getAllUserProfileData)
 userAuthRoutes.get("/get-all-user-profile-home",userAuthController.getAllUserProfileDataHome)
+userAuthRoutes.get("/new-profile-matches/:userId",userAuthController.getNewProfileMatches)
+
 
 userAuthRoutes.get("/get-profile-more-information/:profileId",userAuthController.getProfileMoreInformation)
 

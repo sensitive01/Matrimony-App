@@ -1,9 +1,10 @@
 import React from "react";
-import weddingImg from "../assets/images/icon/gate.png";
-import allServiceImg from "../assets/images/icon/couple.png";
-import joinNowImg from "../assets/images/icon/hall.png";
-import photoGalaryImg from "../assets/images/icon/photo-camera.png";
-import articleImg from "../assets/images/icon/cake.png";
+import userIcon from "../assets/images/icon/user.png"
+import gateIcon from "../assets/images/icon/gate.png";
+import coupleIcon from "../assets/images/icon/couple.png";
+import hallIcon from "../assets/images/icon/hall.png";
+import cameraIcon from "../assets/images/icon/photo-camera.png";
+import cakeIcon from "../assets/images/icon/cake.png";
 
 const QuickAccess = () => {
   return (
@@ -33,7 +34,7 @@ const QuickAccess = () => {
                     data-wow-delay="0.1s"
                   >
                     <div className="con">
-                      <img src="" alt="" loading="lazy" />
+                      <img src={userIcon} alt="" loading="lazy" />
                       <h4>Browse Profiles</h4>
                       <p>120+ Profilessss</p>
                       <a href="/user/show-all-profiles">View more</a>
@@ -46,7 +47,7 @@ const QuickAccess = () => {
                     data-wow-delay="0.2s"
                   >
                     <div className="con">
-                      <img src="" alt="" loading="lazy" />
+                      <img src={gateIcon} alt="" loading="lazy" />
                       <h4>Wedding</h4>
                       <p>1200+ Profiles</p>
                       <a href="#">View more</a>
@@ -59,7 +60,7 @@ const QuickAccess = () => {
                     data-wow-delay="0.3s"
                   >
                     <div className="con">
-                      <img src="" alt="" loading="lazy" />
+                      <img src={coupleIcon} alt="" loading="lazy" />
                       <h4>All Services</h4>
                       <p>1200+ Profiles</p>
                       <a href="#">View more</a>
@@ -72,7 +73,7 @@ const QuickAccess = () => {
                     data-wow-delay="0.4s"
                   >
                     <div className="con">
-                      <img src="" alt="" loading="lazy" />
+                      <img src={hallIcon} alt="" loading="lazy" />
                       <h4>Join Now</h4>
                       <p>Start for free</p>
                       <a href="#">Get started</a>
@@ -85,7 +86,7 @@ const QuickAccess = () => {
                     data-wow-delay="0.3s"
                   >
                     <div className="con">
-                      <img src="" alt="" loading="lazy" />
+                      <img src={cameraIcon} alt="" loading="lazy" />
                       <h4>Photo gallery</h4>
                       <p>1200+ Profiles</p>
                       <a href="#">View more</a>
@@ -98,7 +99,7 @@ const QuickAccess = () => {
                     data-wow-delay="0.4s"
                   >
                     <div className="con">
-                      <img src="" alt="" loading="lazy" />
+                      <img src={cakeIcon} alt="" loading="lazy" />
                       <h4>Blog &amp; Articles</h4>
                       <p>Start for free</p>
                       <a href="#">Get started</a>

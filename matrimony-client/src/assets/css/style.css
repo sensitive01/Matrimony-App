@@ -543,7 +543,7 @@ img {
 /*-------------------------------------------------------*/
 .inn-ban {
   padding: 60px 30px 80px;
-  background: url(../images/banner.jpg) 0px -105px / cover no-repeat;
+  background: url("/src/assets/images/banner.jpg") 0px -105px / cover no-repeat;
   position: relative;
   width: 100%;
   float: left;
@@ -568,7 +568,7 @@ img {
 .inn-ban::after {
   content: "";
   position: absolute;
-  background: url(../images/login-bg.png);
+  background: url("/src/assets/images/login-bg.png");
   width: 100%;
   height: 53px;
   bottom: 0;
@@ -913,19 +913,19 @@ img {
   color: #fff;
 }
 .menu-box-1 {
-  background-image: url("../images/gallery/2.jpg");
+  background-image: url("/src/assets/images/gallery/2.jpg");
 }
 
 .menu-box-2 {
-  background-image: url("../images/profiles/2.jpg");
+  background-image: url("/src/assets/images/profiles/2.jpg");
 }
 
 .menu-box-3 {
-  background-image: url("../images/profiles/3.jpg");
+  background-image: url("/src/assets/images/profiles/3.jpg");
 }
 
 .menu-box-4 {
-  background-image: url("../images/profiles/4.jpg");
+  background-image: url("/src/assets/images/profiles/4.jpg");
 }
 
 .menu-box-1:before {
@@ -1845,7 +1845,7 @@ i.fa-instagram:hover {
   position: absolute;
   width: 100px;
   height: 106px;
-  background: url("../images/leaf/1.png") 0% 0% / 100% no-repeat;
+  background: url("/src/assets/images/leaf/1.png") 0% 0% / 100% no-repeat;
   top: -5px;
   transition: all 0.4s ease-in-out 0s;
 }
@@ -2057,7 +2057,7 @@ table td {
   bottom: 0px;
   height: 100vh;
   width: 110px;
-  background: url("../images/leaf/long.html") 0% 0% / 100% no-repeat;
+  background: url("/src/assets/images/leaf/long.html") 0% 0% / 100% no-repeat;
   z-index: 2;
   opacity: 0.6;
 }
@@ -2120,7 +2120,7 @@ table td {
 .pg-wedd-vid:before {
   content: "";
   position: absolute;
-  background: url("../images/grass.png") no-repeat;
+  background: url("/src/assets/images/grass.png") no-repeat;
   width: 100%;
   height: 50px;
   bottom: -50px;
@@ -2149,7 +2149,7 @@ table td {
 }
 
 .home-acces ul li div.hacc {
-  background-image: url("../images/couples/1.jpg");
+  background-image: url("/src/assets/images/couples/1.jpg");
   background-repeat: no-repeat;
   background-size: 100%;
   float: left;
@@ -2228,19 +2228,19 @@ table td {
 }
 
 .home-acces ul li div.hacc1 {
-  background-image: url("../images/couples/1.jpg");
+  background-image: url("/src/assets/images/couples/1.jpg");
 }
 
 .home-acces ul li div.hacc2 {
-  background-image: url("../images/couples/2.jpg");
+  background-image: url("/src/assets/images/couples/2.jpg");
 }
 
 .home-acces ul li div.hacc3 {
-  background-image: url("../images/couples/11.jpg");
+  background-image: url("/src/assets/images/couples/11.jpg");
 }
 
 .home-acces ul li div.hacc4 {
-  background-image: url("../images/couples/4.jpg");
+  background-image: url("/src/assets/images/couples/4.jpg");
 }
 
 .home-acces ul li div.hacc .con {
@@ -2565,7 +2565,7 @@ table td {
 .login .lhs .log-bg {
   width: 100%;
   height: 77px;
-  background: url("../images/login-bg.png") center bottom / 300px;
+  background: url("/src/assets/images/login-bg.png") center bottom / 300px;
   position: absolute;
   left: 0px;
   bottom: 0px;
@@ -2745,7 +2745,7 @@ table td {
 .wed-hom-footer:before {
   content: "";
   position: absolute;
-  background: url(../images/grass.png) no-repeat;
+  background: url(/src/assets/images/grass.png) no-repeat;
   width: 100%;
   height: 50px;
   top: -50px;
@@ -3124,7 +3124,7 @@ table td {
 }
 
 .lhs-search ul li:nth-child(2) input {
-  background: url("../images/icon/search.html") center center / 17px no-repeat,
+  background: url("/src/assets/images/icon/search.html") center center / 17px no-repeat,
     rgb(217, 220, 225);
   border: 0px;
   font-size: 14px;
@@ -3236,7 +3236,7 @@ table td {
 
 .all-pro-head {
   padding: 35px 30px 38px;
-  background: url("../images/banner.jpg") 0px -105px / cover no-repeat;
+  background: url("/src/assets/images/banner.jpg") 0px -105px / cover no-repeat;
   position: relative;
   width: 100%;
   float: left;
@@ -4098,11 +4098,11 @@ span.mail::before {
 }
 
 .chosen-container .chosen-results-scroll-down span {
-  background: url("../images/icon/chosen-sprite.png") -4px -3px no-repeat;
+  background: url("/src/assets/images/icon/chosen-sprite.png") -4px -3px no-repeat;
 }
 
 .chosen-container .chosen-results-scroll-up span {
-  background: url("../images/icon/chosen-sprite.png") -22px -3px no-repeat;
+  background: url("/src/assets/images/icon/chosen-sprite.png") -22px -3px no-repeat;
 }
 
 .chosen-container-single .chosen-single {
@@ -4131,7 +4131,7 @@ span.mail::before {
 }
 
 .chosen-container-single .chosen-single abbr {
-  background: url("../images/icon/chosen-sprite.png") right top no-repeat;
+  background: url("/src/assets/images/icon/chosen-sprite.png") right top no-repeat;
   display: block;
   font-size: 1px;
   height: 10px;
@@ -4258,7 +4258,7 @@ span.mail::before {
 }
 
 .chosen-container-multi .chosen-choices .search-choice .search-choice-close {
-  background: url("../images/icon/chosen-sprite.png") right top no-repeat;
+  background: url("/src/assets/images/icon/chosen-sprite.png") right top no-repeat;
   display: block;
   font-size: 1px;
   height: 10px;
@@ -4417,7 +4417,7 @@ span.mail::before {
 }
 
 .chosen-rtl .chosen-search input[type="text"] {
-  background: url("../images/icon/chosen-sprite.png") -28px -20px no-repeat,
+  background: url("/src/assets/images/icon/chosen-sprite.png") -28px -20px no-repeat,
     rgb(255, 255, 255);
   direction: rtl;
   padding: 4px 5px 4px 20px;
@@ -4555,7 +4555,7 @@ span.mail::before {
 .fot-ban-inn .lhs:before {
   content: "";
   position: absolute;
-  background: url(../images/login-bg.png);
+  background: url("/src/assets/images/login-bg.png");
   width: 100%;
   height: 62px;
   bottom: 0;
@@ -4746,7 +4746,7 @@ span.mail::before {
 }
 
 .prof-rhs-help {
-  background: url("../images/tell-us.jpg") 0% 0% / cover no-repeat;
+  background: url("/src/assets/images/tell-us.jpg") 0% 0% / cover no-repeat;
   padding: 25px;
   border-radius: 10px;
   margin: 0 0 25px 0;
@@ -5447,7 +5447,7 @@ span.mail::before {
 .ban-home:before {
   content: "";
   position: absolute;
-  background: url("../images/icon/why-us-1.png");
+  background: url("/src/assets/images/icon/why-us-1.png");
   width: 500px;
   height: 344px;
   background-size: cover;
@@ -5785,7 +5785,7 @@ span.mail::before {
 .abo-shap-4 {
   width: 37px;
   height: 87px;
-  background: url("../images/icon/dot1.png");
+  background: url("/src/assets/images/icon/dot1.png");
   right: 5%;
   top: 5%;
   animation: 5s linear 0s infinite normal both running updown1;
@@ -5794,7 +5794,7 @@ span.mail::before {
 .abo-shap-5 {
   width: 37px;
   height: 87px;
-  background: url("../images/icon/dot1.png");
+  background: url("/src/assets/images/icon/dot1.png");
   left: 5%;
   bottom: 5%;
   transform: rotate(90deg);
@@ -5805,7 +5805,7 @@ span.mail::before {
 .abo-shap-6 {
   width: 37px;
   height: 87px;
-  background: url("../images/icon/dot1.png");
+  background: url("/src/assets/images/icon/dot1.png");
   left: 5%;
   bottom: 5%;
   filter: hue-rotate(445deg);
@@ -6568,7 +6568,7 @@ span.mail::before {
   position: absolute;
   width: 150px;
   height: 184px;
-  background: url("../images/leaf/4.png") 0% 0% / 100% no-repeat;
+  background: url("/src/assets/images/leaf/4.png") 0% 0% / 100% no-repeat;
   top: -71px;
   transition: all 0.4s ease-in-out 0s;
 }
@@ -7004,7 +7004,7 @@ span.mail::before {
   left: 0;
   width: 188px;
   height: 188px;
-  background: url("../images/leaf/5.png") no-repeat;
+  background: url("/src/assets/images/leaf/5.png") no-repeat;
   background-size: 300px;
   background-position: -78px -70px;
 }
@@ -7017,7 +7017,7 @@ span.mail::before {
   right: 0;
   width: 123px;
   height: 300px;
-  background: url("../images/leaf/8.png") no-repeat;
+  background: url("/src/assets/images/leaf/8.png") no-repeat;
   background-size: 121px;
   background-position: center right;
 }
@@ -7050,7 +7050,7 @@ span.mail::before {
 }
 
 .wedd-leaf-1 {
-  background: url(../images/leaf/1.png) no-repeat;
+  background: url("/src/assets/images/leaf/1.png") no-repeat;
   width: 150px;
   height: 75px;
   background-size: 100%;
@@ -7060,7 +7060,7 @@ span.mail::before {
 }
 
 .wedd-leaf-2 {
-  background: url(../images/leaf/2.png) no-repeat;
+  background: url("/src/assets/images/leaf/2.png") no-repeat;
   width: 55px;
   height: 175px;
   background-size: 100%;
@@ -7085,7 +7085,7 @@ span.mail::before {
   position: absolute;
   width: 460px;
   height: 644px;
-  background: url(../images/leaf/9.png) no-repeat;
+  background: url("/src/assets/images/leaf/9.png") no-repeat;
   background-size: cover;
   background-position: 4px 0px;
   left: 0;
@@ -7178,7 +7178,7 @@ span.mail::before {
 .wedd-vid-tre-1 {
   left: -103px;
   bottom: -93px;
-  background: url(../images/leaf/10.png) no-repeat;
+  background: url("/src/assets/images/leaf/10.png") no-repeat;
   background-size: cover;
   width: 231px;
   height: 345px;
@@ -7188,7 +7188,7 @@ span.mail::before {
 .wedd-vid-tre-2 {
   right: -35px;
   bottom: -104px;
-  background: url(../images/leaf/11.png) no-repeat;
+  background: url("/src/assets/images/leaf/11.png") no-repeat;
   background-size: cover;
   width: 175px;
   height: 175px;
@@ -8391,7 +8391,7 @@ span.mail::before {
 }
 
 .blog-rhs-cate ul li a {
-  background: url(../images/ban-bg.jpg);
+  background: url("/src/assets/images/ban-bg.jpg");
   display: block;
   padding: 15px 50px 15px 25px;
   border-radius: 5px;
@@ -8826,7 +8826,7 @@ span.mail::before {
 /*-------------------------------------------------------*/
 /* CONTACT
 /*-------------------------------------------------------*/
-.pg-cont..ban-inn {
+.pg-cont/src/assetsban-inn {
 }
 
 .pg-cont.ab-sec2 ul li div h4 {
@@ -8930,7 +8930,7 @@ span.mail::before {
   padding: 80px 0 50px 0;
   height: 100vh;
   position: relative;
-  background: url(../images/grass.png) no-repeat;
+  background: url("/src/assets/images/grass.png") no-repeat;
   background-position: center top;
   margin-top: 0;
 }
@@ -10229,7 +10229,7 @@ select {
 
   .hom-head {
     height: initial;
-    background: url(../images/ban-bg.jpg) 0px center / cover no-repeat;
+    background: url("/src/assets/images/ban-bg.jpg") 0px center / cover no-repeat;
     padding: 80px 0;
   }
 

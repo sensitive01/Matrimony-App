@@ -1,172 +1,150 @@
 import React from "react";
+import couple6 from "../assets/images/couples/6.jpg"
+import couple7 from "../assets/images/couples/7.jpg"
+import couple8 from "../assets/images/couples/8.jpg"
+import couple9 from "../assets/images/couples/9.jpg"
+import couple10 from "../assets/images/couples/10.jpg"
+
 
 const RecentCouples = () => {
   return (
     <section>
-      <div className="wedd-tline">
+      <div className="hom-couples-all">
         <div className="container">
           <div className="row">
             <div className="home-tit">
-              <p>Moments</p>
+              <p style={{ color: "black" }}>trusted brand</p>
               <h2>
-                <span>How it works</span>
+                <span>Recent Couples</span>
               </h2>
-              <span className="leaf1"></span>
-              <span className="tit-ani-"></span>
-            </div>
-            <div className="inn">
-              <ul>
-                <li>
-                  <div className="tline-inn">
-                    <div
-                      className="tline-im animate animate__animated animate__slower"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <img src="images/icon/rings.png" alt="" loading="lazy" />
-                    </div>
-                    <div
-                      className="tline-con animate animate__animated animate__slow"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <h5>Register</h5>
-                      <span>Timing: 7:00 PM</span>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever.
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div className="tline-inn tline-inn-reve">
-                    <div
-                      className="tline-con animate animate__animated animate__slower"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <h5>Find your Match</h5>
-                      <span>Timing: 7:00 PM</span>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever.
-                      </p>
-                    </div>
-                    <div
-                      className="tline-im animate animate__animated animate__slow"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <img
-                        src="images/icon/wedding-2.png"
-                        alt=""
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div className="tline-inn">
-                    <div
-                      className="tline-im animate animate__animated animate__slower"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <img
-                        src="images/icon/love-birds.png"
-                        alt=""
-                        loading="lazy"
-                      />
-                    </div>
-                    <div
-                      className="tline-con animate animate__animated animate__slow"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <h5>Send Interest</h5>
-                      <span>Timing: 7:00 PM</span>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever.
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div className="tline-inn tline-inn-reve">
-                    <div
-                      className="tline-con animate animate__animated animate__slower"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <h5>Get Profile Information</h5>
-                      <span>Timing: 7:00 PM</span>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever.
-                      </p>
-                    </div>
-                    <div
-                      className="tline-im animate animate__animated animate__slow"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <img
-                        src="images/icon/network.png"
-                        alt=""
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div className="tline-inn">
-                    <div
-                      className="tline-im animate animate__animated animate__slower"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <img src="images/icon/chat.png" alt="" loading="lazy" />
-                    </div>
-                    <div
-                      className="tline-con animate animate__animated animate__slow"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <h5>Start Meetups</h5>
-                      <span>Timing: 7:00 PM</span>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever.
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div className="tline-inn tline-inn-reve">
-                    <div
-                      className="tline-con animate animate__animated animate__slower"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <h5>Getting Marriage</h5>
-                      <span>Timing: 7:00 PM</span>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever.
-                      </p>
-                    </div>
-                    <div
-                      className="tline-im animate animate__animated animate__slow"
-                      data-ani="animate__fadeInUp"
-                    >
-                      <img
-                        src="images/icon/wedding-couple.png"
-                        alt=""
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
-                </li>
-              </ul>
+              <span className="leaf1" />
+              <span className="tit-ani-" />
             </div>
           </div>
+        </div>
+        <div className="hom-coup-test">
+          <ul className="couple-sli">
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img src={couple6} alt="" loading="lazy" />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img src={couple7} alt="" loading="lazy" />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img src={couple8} alt="" loading="lazy" />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img src={couple9} alt="" loading="lazy" />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img src={couple10} alt="" loading="lazy" />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img src={couple6} alt="" loading="lazy" />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img
+                  src={couple9}
+                  alt=""
+                  loading="lazy"
+                />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="hom-coup-box">
+                <span className="leaf" />
+                <img
+                  src={couple8}
+                  alt=""
+                  loading="lazy"
+                />
+                <div className="bx">
+                  <h4>
+                    Dany &amp; July <span>New York</span>
+                  </h4>
+                  <a href="#" className="sml-cta cta-dark">
+                    View more
+                  </a>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </section>

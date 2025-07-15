@@ -74,6 +74,23 @@ const completeProfileData = async (req, res) => {
       youtube,
       linkedin,
       password,
+      religion,
+      state,
+      pincode,
+
+      diet,
+      smoking,
+      drinking,
+      exercise,
+
+      desiredAgeFrom,
+      desiredAgeTo,
+      desiredReligion,
+      desiredCaste,
+      desiredEducation,
+      desiredLocation,
+      desiredHeightFrom,
+      desiredHeightTo,
     } = req.body;
 
     let hobbies = req.body.hobbies;
@@ -106,6 +123,22 @@ const completeProfileData = async (req, res) => {
       youtube,
       linkedin,
       hobbies,
+      religion,
+      state,
+      pincode,
+      diet,
+      smoking,
+      drinking,
+      exercise,
+
+      desiredAgeFrom,
+      desiredAgeTo,
+      desiredReligion,
+      desiredCaste,
+      desiredEducation,
+      desiredLocation,
+      desiredHeightFrom,
+      desiredHeightTo,
     };
 
     // ✅ Only update password if provided
@@ -437,8 +470,75 @@ const changeInterestStatus = async (req, res) => {
     });
   }
 };
+const getNewProfileMatches = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const currentUser = await userModel.findById(userId);
+    if (!currentUser) return res.status(404).json({ message: "User not found" });
+
+    const {
+      gender,
+      desiredAgeFrom,
+      desiredAgeTo,
+      desiredReligion,
+      desiredCaste,
+      desiredLocation,
+      desiredHeightFrom,
+      desiredHeightTo,
+    } = currentUser;
+
+    const oppositeGender = gender === "Male" ? "Female" : "Male";
+
+    // Calculate DOB range
+    const currentYear = new Date().getFullYear();
+    const minDOB = new Date(currentYear - Number(desiredAgeTo), 0, 1);
+    const maxDOB = new Date(currentYear - Number(desiredAgeFrom), 11, 31);
+
+    const filters = [
+      { dateOfBirth: { $gte: minDOB, $lte: maxDOB } },
+      desiredReligion ? { religion: desiredReligion } : null,
+      desiredCaste ? { caste: desiredCaste } : null,
+      desiredLocation ? { city: desiredLocation } : null,
+      desiredHeightFrom && desiredHeightTo
+        ? { height: { $gte: desiredHeightFrom, $lte: desiredHeightTo } }
+        : null,
+    ].filter(Boolean);
+
+    const rawMatches = await userModel
+      .find({
+        _id: { $ne: userId },
+        gender: oppositeGender,
+        $or: filters,
+      })
+      .limit(5);
+
+    // Return only selected fields + calculated age
+    const matches = rawMatches.map((user) => {
+      const dob = new Date(user.dateOfBirth);
+      const age = new Date().getFullYear() - dob.getFullYear();
+
+      return {
+        _id: user._id,
+        userName: user.userName,
+        profileImage: user.profileImage,
+        city: user.city,
+        age,
+      };
+    });
+
+    console.log("matches",matches)
+
+    res.status(200).json({ matches });
+  } catch (err) {
+    console.error("Error in getting the new profile matches", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 
 module.exports = {
+  getNewProfileMatches,
   getAllUserProfileDataHome,
   changeInterestStatus,
   getInterestedProfileRequest,

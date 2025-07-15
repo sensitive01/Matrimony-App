@@ -15,6 +15,7 @@ import AdvancedBioInformation from "./userprofile/AdvancedBioInformation";
 import SocialMediaDetails from "./userprofile/SocialMediaDetails";
 import HobbiesDetails from "./userprofile/HobbiesDetails";
 import LayoutComponent from "../components/layouts/LayoutComponent";
+import LifestylePartnerPreferences from "./userprofile/LifestylePartnerPreferences";
 
 const UserProfileEditPage = () => {
   const { userId } = useParams();
@@ -47,6 +48,20 @@ const UserProfileEditPage = () => {
     youtube: "",
     linkedin: "",
     hobbies: [],
+    diet: "",
+    smoking: "",
+    drinking: "",
+    exercise: "",
+
+    // Partner Preferences
+    desiredAgeFrom: "",
+    desiredAgeTo: "",
+    desiredReligion: "",
+    desiredCaste: "",
+    desiredEducation: "",
+    desiredLocation: "",
+    desiredHeightFrom: "",
+    desiredHeightTo: "",
   });
 
   const [profileImageFile, setProfileImageFile] = useState(null);
@@ -93,6 +108,23 @@ const UserProfileEditPage = () => {
             youtube: userData.youtube || "",
             linkedin: userData.linkedin || "",
             hobbies: Array.isArray(userData.hobbies) ? userData.hobbies : [],
+            pincode: userData.pincode||"",
+            state: userData.state||"",
+            religion: userData.religion||"",
+            diet: userData.diet||"",
+            smoking:userData.smoking||"",
+            drinking: userData.drinking||"",
+            exercise: userData.exercise||"",
+
+            // Partner Preferences
+            desiredAgeFrom:userData.desiredAgeFrom||"",
+            desiredAgeTo: userData.desiredAgeTo||"",
+            desiredReligion: userData.desiredReligion||"",
+            desiredCaste: userData.desiredCaste||"",
+            desiredEducation: userData.desiredEducation||"",
+            desiredLocation: userData.desiredLocation||"",
+            desiredHeightFrom:userData.desiredHeightFrom||"",
+            desiredHeightTo: userData.desiredHeightTo||"",
           });
 
           if (userData.profileImage) {
@@ -295,6 +327,7 @@ const UserProfileEditPage = () => {
                       <AdvancedBioInformation
                         formData={formData}
                         handleInputChange={handleInputChange}
+                        setFormData={setFormData}
                       />
 
                       {/* Job & Education Section */}
@@ -313,6 +346,10 @@ const UserProfileEditPage = () => {
                       <HobbiesDetails
                         formData={formData}
                         handleHobbiesChange={handleHobbiesChange}
+                      />
+                      <LifestylePartnerPreferences
+                        formData={formData}
+                        handleInputChange={handleInputChange}
                       />
 
                       <button

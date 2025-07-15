@@ -1,178 +1,91 @@
 import React from "react";
+import blog1 from "../assets/images/blog/1.jpg"
+import blog2 from "../assets/images/blog/2.jpg"
+import blog3 from "../assets/images/blog/3.jpg"
 
 const BlogPostStart = () => {
   return (
     <section>
-      <div className="wedd-gall home-wedd-gall">
-        <div className="">
-          <div className="gall-inn">
+      <div className="hom-blog">
+        <div className="container">
+          <div className="row">
             <div className="home-tit">
-              <p>collections</p>
+              <p style={{ color: "black" }}>Blog posts</p>
               <h2>
-                <span>Photo gallery</span>
+                <span>Blog &amp; Articles</span>
               </h2>
-              <span className="leaf1"></span>
-              <span className="tit-ani-"></span>
+              <span className="leaf1" />
+              <span className="tit-ani-" />
             </div>
-            <div className="col-sm-6 col-md-2">
-              <div
-                className="gal-im animate animate__animated animate__slow"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/1.jpg"
-                  className="gal-siz-1"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/9.jpg"
-                  className="gal-siz-2"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm-6 col-md-3">
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/3.jpg"
-                  className="gal-siz-2"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/4.jpg"
-                  className="gal-siz-1"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm-6 col-md-2">
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/5.jpg"
-                  className="gal-siz-1"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/6.jpg"
-                  className="gal-siz-2"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm-6 col-md-3">
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/7.jpg"
-                  className="gal-siz-2"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/gallery/8.jpg"
-                  className="gal-siz-1"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-2">
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/couples/9.jpg"
-                  className="gal-siz-2"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
-              <div
-                className="gal-im animate animate__animated animate__slower"
-                data-ani="animate__flipInX"
-              >
-                <img
-                  src="images/couples/11.jpg"
-                  className="gal-siz-1"
-                  alt=""
-                  loading="lazy"
-                />
-                <div className="txt">
-                  <span>Wedding</span>
-                  <h4>Bride & Groom</h4>
-                </div>
-              </div>
+            <div className="blog">
+              <ul>
+                <li>
+                  <div className="blog-box">
+                    <img
+                      src={blog1}
+                      alt=""
+                      loading="lazy"
+                    />
+                    <span>Wedding - Johnny</span>
+                    <h2>Wedding arrangements</h2>
+                    <p>
+                      It is a long established fact that a reader will be
+                      distracted by the readable content.
+                    </p>
+                    <a
+                      href="#"
+                      className="cta-dark"
+                      style={{ background: "#A020F0" }}
+                    >
+                      <span>Read more</span>
+                    </a>
+                  </div>
+                </li>
+                <li>
+                  <div className="blog-box">
+                    <img
+                      src={blog2}
+                      alt=""
+                      loading="lazy"
+                    />
+                    <span>Wedding - Johnny</span>
+                    <h2>Wedding arrangements</h2>
+                    <p>
+                      It is a long established fact that a reader will be
+                      distracted by the readable content.
+                    </p>
+                    <a
+                      href="#"
+                      className="cta-dark"
+                      style={{ background: "#A020F0" }}
+                    >
+                      <span>Read more</span>
+                    </a>
+                  </div>
+                </li>
+                <li>
+                  <div className="blog-box">
+                    <img
+                      src={blog3}
+                      alt=""
+                      loading="lazy"
+                    />
+                    <span>Wedding - Johnny</span>
+                    <h2>Invitation cards</h2>
+                    <p>
+                      It is a long established fact that a reader will be
+                      distracted by the readable content.
+                    </p>
+                    <a
+                      href="#"
+                      className="cta-dark"
+                      style={{ background: "#A020F0" }}
+                    >
+                      <span>Read more</span>
+                    </a>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

@@ -1,11 +1,41 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import Footer from "../components/Footer";
 import CopyRights from "../components/CopyRights";
 import UserSideBar from "../components/UserSideBar";
 import LayoutComponent from "../components/layouts/LayoutComponent";
+import { newProfileMatch } from "../api/axiosService/userAuthService";
 
 const UserDashboardPage = () => {
+  const userId = localStorage.getItem("userId");
+  const [profileMatches, setProfileMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Function to fetch profile matches
+  const fetchProfileMatches = async () => {
+    try {
+      setLoading(true);
+      const response = await newProfileMatch(userId);
+
+      // Assuming the response structure matches your provided data
+      if (response.status===200) {
+        setProfileMatches(response.data.matches);
+      } else if (Array.isArray(response)) {
+        setProfileMatches(response);
+      } else {
+        setProfileMatches([]);
+      }
+
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching profile matches:", err);
+      setError("Failed to fetch profile matches");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const hasReloaded = sessionStorage.getItem("userDashboardReloaded");
     if (!hasReloaded) {
@@ -13,6 +43,7 @@ const UserDashboardPage = () => {
       window.location.reload();
       return;
     }
+
     const initializeComponents = () => {
       if (typeof window.$ !== "undefined" && window.$.fn.slick) {
         window.$(".slider").slick({
@@ -28,6 +59,22 @@ const UserDashboardPage = () => {
               breakpoint: 992,
               settings: {
                 slidesToShow: 3,
+                slidesToScroll: 1,
+                centerMode: false,
+              },
+            },
+            {
+              breakpoint: 768,
+              settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                centerMode: false,
+              },
+            },
+            {
+              breakpoint: 576,
+              settings: {
+                slidesToShow: 1,
                 slidesToScroll: 1,
                 centerMode: false,
               },
@@ -84,7 +131,6 @@ const UserDashboardPage = () => {
       }
     };
 
-    // Delay initialization to ensure DOM is ready
     const timer = setTimeout(initializeComponents, 100);
 
     return () => {
@@ -99,10 +145,75 @@ const UserDashboardPage = () => {
     };
   }, []);
 
+  // Initial fetch and set up interval for periodic updates
+  useEffect(() => {
+    // Initial fetch
+    fetchProfileMatches();
+
+    // Set up interval to fetch new data every 30 seconds (30000ms)
+    // You can adjust this interval as needed
+    const interval = setInterval(() => {
+      fetchProfileMatches();
+    }, 30000); // 30 seconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, [userId]);
+
+  // Re-initialize slider when profile matches change
+  useEffect(() => {
+    if (profileMatches.length > 0) {
+      setTimeout(() => {
+        if (typeof window.$ !== "undefined" && window.$.fn.slick) {
+          // Destroy existing slider if it exists
+          if (window.$(".slider").hasClass("slick-initialized")) {
+            window.$(".slider").slick("unslick");
+          }
+
+          // Reinitialize slider with new data
+          window.$(".slider").slick({
+            infinite: false,
+            slidesToShow: Math.min(5, profileMatches.length),
+            arrows: false,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 3000,
+            dots: false,
+            responsive: [
+              {
+                breakpoint: 992,
+                settings: {
+                  slidesToShow: Math.min(3, profileMatches.length),
+                  slidesToScroll: 1,
+                  centerMode: false,
+                },
+              },
+              {
+                breakpoint: 768,
+                settings: {
+                  slidesToShow: Math.min(2, profileMatches.length),
+                  slidesToScroll: 1,
+                  centerMode: false,
+                },
+              },
+              {
+                breakpoint: 576,
+                settings: {
+                  slidesToShow: 1,
+                  slidesToScroll: 1,
+                  centerMode: false,
+                },
+              },
+            ],
+          });
+        }
+      }, 100);
+    }
+  }, [profileMatches]);
+
   return (
     <>
-       <LayoutComponent />
-
+      <LayoutComponent />
 
       <section>
         <div className="db">
@@ -111,43 +222,75 @@ const UserDashboardPage = () => {
               <UserSideBar />
               <div className="col-md-8 col-lg-9">
                 <div className="col-md-12 db-sec-com db-new-pro-main">
-                  <h2 className="db-tit">New Profiles Matches</h2>
-                  <ul className="slider">
-                    {[16, 2, 3, 4, 5, 6, 14].map((profileNum, index) => (
-                      <li key={index}>
-                        <div className="db-new-pro">
-                          <img
-                            src={`images/profiles/${profileNum}.jpg`}
-                            alt="Profile"
-                            className="profile"
-                          />
-                          <div>
-                            <h5>Julia ann</h5>
-                            <span className="city">New york</span>
-                            <span className="age">22 Years old</span>
-                          </div>
-                          {(profileNum === 16 ||
-                            profileNum === 6 ||
-                            profileNum === 14) && (
-                            <div
-                              className="pro-ave"
-                              title="User currently available"
-                            >
-                              <span className="pro-ave-yes"></span>
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h2 className="db-tit">New Profiles Matches</h2>
+                    {loading && (
+                      <div
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                      >
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {error && (
+                    <div className="alert alert-danger" role="alert">
+                      {error}
+                    </div>
+                  )}
+
+                  {profileMatches.length > 0 ? (
+                    <ul className="slider">
+                      {profileMatches.map((profile, index) => (
+                        <li key={profile._id || index}>
+                          <div className="db-new-pro">
+                            <img
+                              src={
+                                profile.profileImage ||
+                                "images/profiles/default.jpg"
+                              }
+                              alt={`${profile.userName}'s Profile`}
+                              className="profile"
+                              onError={(e) => {
+                                e.target.src = "images/profiles/default.jpg";
+                              }}
+                            />
+                            <div>
+                              <h5>{profile.userName}</h5>
+                              <span className="city">{profile.city}</span>
+                              <span className="age">
+                                {profile.age} Years old
+                              </span>
                             </div>
-                          )}
-                          <a
-                            href="#"
-                            className="fclick"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            &nbsp;
-                          </a>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                            {/* Optional: Add online status indicator */}
+                            {index % 3 === 0 && (
+                              <div
+                                className="pro-ave"
+                                title="User currently available"
+                              >
+                                <span className="pro-ave-yes"></span>
+                              </div>
+                            )}
+                            <a
+                              href={`/profile/${profile._id}`}
+                              className="fclick"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              &nbsp;
+                            </a>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    !loading && (
+                      <div className="alert alert-info" role="alert">
+                        No profile matches found at the moment.
+                      </div>
+                    )
+                  )}
                 </div>
 
                 <div className="row">

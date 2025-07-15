@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     userPassword: { type: String, required: true },
     isEmailVerified: { type: Boolean, default: false },
     isTermsAggreed: { type: Boolean, default: false },
-    aboutMe:{type:String},
+    aboutMe: { type: String },
 
     gender: {
       type: String,
@@ -27,6 +27,24 @@ const userSchema = new mongoose.Schema(
     fathersName: { type: String, trim: true },
     mothersName: { type: String, trim: true },
     address: { type: String },
+    religion: { type: String },
+    state: { type: String },
+    pincode: { type: String },
+
+    diet: { type: String },
+    smoking: { type: String },
+    drinking: { type: String },
+    exercise: { type: String },
+
+    // Partner Preferences
+    desiredAgeFrom: { type: String },
+    desiredAgeTo: { type: String },
+    desiredReligion: { type: String },
+    desiredCaste: { type: String },
+    desiredEducation: { type: String },
+    desiredLocation: { type: String },
+    desiredHeightFrom: { type: String },
+    desiredHeightTo: { type: String },
 
     jobType: { type: String },
     companyName: { type: String },
