@@ -1,10 +1,10 @@
 import React from "react";
-import ringIcon from "../assets/images/icon/rings.png"
-import wedding1 from "../assets/images/icon/wedding-2.png"
-import birdsIcon from "../assets/images/icon/love-birds.png"
-import networkIcon from "../assets/images/icon/network.png"
-import chatIcon from "../assets/images/icon/chat.png"
-import weddingCoupleIcon from "../assets/images/icon/wedding-couple.png"
+import ringIcon from "../assets/images/icon/rings.png";
+import wedding1 from "../assets/images/icon/wedding-2.png";
+import birdsIcon from "../assets/images/icon/love-birds.png";
+import networkIcon from "../assets/images/icon/network.png";
+import chatIcon from "../assets/images/icon/chat.png";
+import weddingCoupleIcon from "../assets/images/icon/wedding-couple.png";
 
 const Moments = () => {
   return (
