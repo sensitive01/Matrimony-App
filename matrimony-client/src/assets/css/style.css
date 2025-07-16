@@ -2515,17 +2515,15 @@ table td {
 .login .lhs {
   float: left;
   width: 40%;
-  background: linear-gradient(
-    45deg,
-    rgb(242, 209, 132),
-    rgb(255, 238, 178) 80%
-  );
+  background: #A020F0;
   padding: 45px;
   position: absolute;
   height: 100%;
   border-radius: 10px 0px 0px 10px;
   overflow: hidden;
+  
 }
+
 
 .login .lhs .tit {
   padding: 0px 0px 30px;

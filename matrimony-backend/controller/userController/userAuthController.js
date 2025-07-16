@@ -475,7 +475,8 @@ const getNewProfileMatches = async (req, res) => {
     const { userId } = req.params;
 
     const currentUser = await userModel.findById(userId);
-    if (!currentUser) return res.status(404).json({ message: "User not found" });
+    if (!currentUser)
+      return res.status(404).json({ message: "User not found" });
 
     const {
       gender,
@@ -527,7 +528,7 @@ const getNewProfileMatches = async (req, res) => {
       };
     });
 
-    console.log("matches",matches)
+    console.log("matches", matches);
 
     res.status(200).json({ matches });
   } catch (err) {
@@ -536,8 +537,53 @@ const getNewProfileMatches = async (req, res) => {
   }
 };
 
+const getSearchedProfileData = async (req, res) => {
+  try {
+    console.log(req.body)
+    const { formData } = req.body;
+    const { lookingFor, age, community, city } = formData;
+
+    // Always include only approved users
+    const filters = {};
+
+    // Dynamically add filters only if values are present
+    if (lookingFor) filters.gender = lookingFor;
+    if (community) filters.religion = community;
+    if (city) filters.city = city;
+    if (age) filters.age = parseInt(age); // exact age match
+
+
+
+    const users = await userModel.find(filters, {
+      _id: 1,
+      userName: 1,
+      profileImage: 1,
+      city: 1,
+      age: 1,
+      gender: 1,
+      religion: 1,
+    });
+
+
+    const results = users.map((user) => ({
+      _id: user._id,
+      userName: user.userName,
+      profileImage: user.profileImage,
+      city: user.city,
+      age: user.age,
+      gender: user.gender,
+      religion: user.religion,
+    }));
+
+    res.status(200).json({ success: true, data: results });
+  } catch (err) {
+    console.error("Error in getSearchedProfileData:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 module.exports = {
+  getSearchedProfileData,
   getNewProfileMatches,
   getAllUserProfileDataHome,
   changeInterestStatus,

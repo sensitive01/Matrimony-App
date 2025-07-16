@@ -102,7 +102,7 @@ const UserLoginPage = () => {
                   <div className="tit">
                     <h2>
                       Now{" "}
-                      <b>
+                      <b style={{ color: "white" }}>
                         Find <br /> your life partner
                       </b>{" "}
                       Easy and fast.
@@ -194,8 +194,13 @@ const UserLoginPage = () => {
 
                         <button
                           type="submit"
-                          className="btn btn-primary"
+                          className="btn"
                           disabled={isLoading}
+                          style={{
+                            background: "#A020F0",
+                            borderColor: "#A020F0",
+                            color: "#fff",
+                          }}
                         >
                           {isLoading ? "Signing in..." : "Sign in"}
                         </button>

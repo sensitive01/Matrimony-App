@@ -28,6 +28,7 @@ import MoreDetails from "./pages/allprofile/MoreDetails";
 import ForgotPassword from "./pages/forgotpassword/ForgotPasswordPage";
 import ChangePassword from "./pages/changepassword/ChangePassword";
 import UserPlanSelection from "./pages/userplanselection/UserPlanSelection";
+import UserSearchResult from "./pages/userSearch/UserSearchResult";
 
 // Component to handle page reloads
 function ReloadHandler() {
@@ -87,6 +88,9 @@ function App() {
         />
 
 
+
+
+        <Route path="/show-searched-result" element={<UserSearchResult />} />        
         <Route path="/reset-password/:userId" element={<ChangePassword />} />        
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile-more-details/:profileId" element={<MoreDetails />} />

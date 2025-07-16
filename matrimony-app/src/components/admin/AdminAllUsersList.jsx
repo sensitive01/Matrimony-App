@@ -13,14 +13,13 @@ const AdminAllUsersList = () => {
   const [filterPlan, setFilterPlan] = useState("all");
   const [filterPayment, setFilterPayment] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAllUserData();
-        if (response.status===200) {
-          // Map API data to include missing fields with default values
+        if (response.status === 200) {
           const mappedUsers = response.data.data.map((user) => ({
             ...user,
             city: user.city || "N/A",
@@ -28,8 +27,8 @@ const AdminAllUsersList = () => {
             expiryDate: user.expiryDate || "N/A",
             payment: user.payment || "Pending",
             planType: user.planType || "Basic",
+            profileImg: user.profileImage || "",
           }));
-          console.log("mappedUsers",mappedUsers)
           setUsers(mappedUsers);
           setFilteredUsers(mappedUsers);
         }
@@ -105,14 +104,305 @@ const AdminAllUsersList = () => {
       .toUpperCase();
   };
 
+  // Format date
+  const formatDate = (dateString) => {
+    if (dateString === "N/A") return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  // Table styles (matching the AdminNewUserRequest layout)
+  const tableStyles = {
+    tableContainer: {
+      backgroundColor: "#fff",
+      borderRadius: "8px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      overflow: "hidden",
+    },
+    table: {
+      width: "100%",
+      borderCollapse: "collapse",
+      fontSize: "14px",
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    },
+    tableHeader: {
+      backgroundColor: "#f8f9fa",
+      borderBottom: "2px solid #e9ecef",
+    },
+    th: {
+      padding: "12px 15px",
+      textAlign: "left",
+      fontWeight: "600",
+      color: "#495057",
+      fontSize: "13px",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
+      cursor: "pointer",
+    },
+    td: {
+      padding: "12px 15px",
+      borderBottom: "1px solid #e9ecef",
+      color: "#212529",
+      fontSize: "14px",
+      fontWeight: "400",
+    },
+    profileCell: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
+    },
+    profileImage: {
+      width: "40px",
+      height: "40px",
+      borderRadius: "50%",
+      objectFit: "cover",
+      border: "2px solid #e9ecef",
+    },
+    profileInfo: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "3px",
+    },
+    profileName: {
+      fontWeight: "600",
+      color: "#212529",
+      fontSize: "14px",
+      margin: "0",
+      lineHeight: "1.2",
+    },
+    profileEmail: {
+      color: "#6c757d",
+      fontSize: "12px",
+      margin: "0",
+      lineHeight: "1.2",
+    },
+    profileMobile: {
+      color: "#495057",
+      fontSize: "12px",
+      margin: "0",
+      lineHeight: "1.2",
+      fontWeight: "500",
+    },
+    dateTimeContainer: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "2px",
+    },
+    dateText: {
+      fontSize: "13px",
+      fontWeight: "600",
+      color: "#212529",
+      margin: "0",
+      lineHeight: "1.2",
+    },
+    timeText: {
+      fontSize: "11px",
+      color: "#6c757d",
+      margin: "0",
+      lineHeight: "1.2",
+    },
+    badge: {
+      padding: "4px 8px",
+      borderRadius: "12px",
+      fontSize: "11px",
+      fontWeight: "600",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
+    },
+    paidStatus: {
+      backgroundColor: "#e8f5e8",
+      color: "#2e7d32",
+    },
+    unpaidStatus: {
+      backgroundColor: "#ffebee",
+      color: "#d32f2f",
+    },
+    pendingStatus: {
+      backgroundColor: "#fff3e0",
+      color: "#f57c00",
+    },
+    premiumBadge: {
+      backgroundColor: "#e8f5e8",
+      color: "#2e7d32",
+    },
+    basicBadge: {
+      backgroundColor: "#e3f2fd",
+      color: "#1976d2",
+    },
+    dropdownButton: {
+      padding: "6px 10px",
+      backgroundColor: "transparent",
+      border: "1px solid #dee2e6",
+      borderRadius: "4px",
+      color: "#495057",
+      cursor: "pointer",
+      fontSize: "12px",
+    },
+  };
+
+  // Pagination component (matching AdminNewUserRequest)
+  const Pagination = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    const paginationStyles = {
+      pagination: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        listStyle: "none",
+        padding: "0",
+        margin: "20px 0",
+        gap: "5px",
+      },
+      pageItem: {
+        display: "inline-block",
+      },
+      pageLink: {
+        display: "block",
+        padding: "8px 12px",
+        textDecoration: "none",
+        color: "#007bff",
+        backgroundColor: "#fff",
+        border: "1px solid #dee2e6",
+        borderRadius: "4px",
+        fontSize: "14px",
+        fontWeight: "500",
+        transition: "all 0.2s ease-in-out",
+        cursor: "pointer",
+      },
+      activePage: {
+        backgroundColor: "#007bff",
+        color: "#fff",
+        borderColor: "#007bff",
+      },
+      disabledPage: {
+        color: "#6c757d",
+        backgroundColor: "#f8f9fa",
+        borderColor: "#dee2e6",
+        cursor: "not-allowed",
+      },
+    };
+
+    return (
+      <nav aria-label="Page navigation">
+        <ul style={paginationStyles.pagination}>
+          <li style={paginationStyles.pageItem}>
+            <button
+              style={{
+                ...paginationStyles.pageLink,
+                ...(currentPage === 1 ? paginationStyles.disabledPage : {}),
+              }}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+          </li>
+
+          {startPage > 1 && (
+            <>
+              <li style={paginationStyles.pageItem}>
+                <button
+                  style={paginationStyles.pageLink}
+                  onClick={() => setCurrentPage(1)}
+                >
+                  1
+                </button>
+              </li>
+              {startPage > 2 && (
+                <li style={paginationStyles.pageItem}>
+                  <span
+                    style={{ ...paginationStyles.pageLink, cursor: "default" }}
+                  >
+                    ...
+                  </span>
+                </li>
+              )}
+            </>
+          )}
+
+          {pageNumbers.map((number) => (
+            <li key={number} style={paginationStyles.pageItem}>
+              <button
+                style={{
+                  ...paginationStyles.pageLink,
+                  ...(currentPage === number
+                    ? paginationStyles.activePage
+                    : {}),
+                }}
+                onClick={() => setCurrentPage(number)}
+              >
+                {number}
+              </button>
+            </li>
+          ))}
+
+          {endPage < totalPages && (
+            <>
+              {endPage < totalPages - 1 && (
+                <li style={paginationStyles.pageItem}>
+                  <span
+                    style={{ ...paginationStyles.pageLink, cursor: "default" }}
+                  >
+                    ...
+                  </span>
+                </li>
+              )}
+              <li style={paginationStyles.pageItem}>
+                <button
+                  style={paginationStyles.pageLink}
+                  onClick={() => setCurrentPage(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              </li>
+            </>
+          )}
+
+          <li style={paginationStyles.pageItem}>
+            <button
+              style={{
+                ...paginationStyles.pageLink,
+                ...(currentPage === totalPages
+                  ? paginationStyles.disabledPage
+                  : {}),
+              }}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </li>
+        </ul>
+      </nav>
+    );
+  };
+
   return (
     <NewLayout>
       <div className="row">
         <div className="col-md-12">
           <div className="box-com box-qui box-lig box-tab">
             <div className="tit">
-              <h3>All users</h3>
-              <p>All user profiles ({filteredUsers.length} total)</p>
+              <h3>All Users</h3>
+              <p>All user profiles ({filteredUsers.length} users)</p>
               <div className="dropdown">
                 <button
                   type="button"
@@ -155,17 +445,14 @@ const AdminAllUsersList = () => {
               </div>
             </div>
 
-            {/* Search and Filter Section */}
-            <div className="row mb-3 p-3 bg-light">
-              <div className="col-md-4">
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="fa fa-search"></i>
-                  </span>
+            {/* Search and Filter Controls */}
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <div className="form-group">
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Search users..."
+                    placeholder="Search by name, email, or phone..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -173,7 +460,7 @@ const AdminAllUsersList = () => {
               </div>
               <div className="col-md-2">
                 <select
-                  className="form-select"
+                  className="form-control"
                   value={filterPlan}
                   onChange={(e) => setFilterPlan(e.target.value)}
                 >
@@ -184,7 +471,7 @@ const AdminAllUsersList = () => {
               </div>
               <div className="col-md-2">
                 <select
-                  className="form-select"
+                  className="form-control"
                   value={filterPayment}
                   onChange={(e) => setFilterPayment(e.target.value)}
                 >
@@ -194,22 +481,16 @@ const AdminAllUsersList = () => {
                 </select>
               </div>
               <div className="col-md-2">
-                <select
-                  className="form-select"
-                  value={itemsPerPage}
-                  onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                <button
+                  className="btn btn-secondary w-100"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setFilterPlan("all");
+                    setFilterPayment("all");
+                  }}
                 >
-                  <option value={5}>5 per page</option>
-                  <option value={10}>10 per page</option>
-                  <option value={20}>20 per page</option>
-                </select>
-              </div>
-              <div className="col-md-2">
-                <small className="text-muted">
-                  Showing {indexOfFirstItem + 1}-
-                  {Math.min(indexOfLastItem, filteredUsers.length)} of{" "}
-                  {filteredUsers.length}
-                </small>
+                  Clear
+                </button>
               </div>
             </div>
 
@@ -220,273 +501,199 @@ const AdminAllUsersList = () => {
                 </div>
               </div>
             ) : (
-              <div className="table-responsive">
-                <table className="table">
-                  <thead>
+              <div style={tableStyles.tableContainer}>
+                <table style={tableStyles.table}>
+                  <thead style={tableStyles.tableHeader}>
                     <tr>
-                      <th>No</th>
+                      <th style={tableStyles.th}>No</th>
                       <th
-                        style={{ cursor: "pointer" }}
+                        style={tableStyles.th}
                         onClick={() => handleSort("userName")}
                       >
                         Profile {getSortIcon("userName")}
                       </th>
                       <th
-                        style={{ cursor: "pointer" }}
+                        style={tableStyles.th}
                         onClick={() => handleSort("userMobile")}
                       >
                         Phone {getSortIcon("userMobile")}
                       </th>
                       <th
-                        style={{ cursor: "pointer" }}
+                        style={tableStyles.th}
                         onClick={() => handleSort("city")}
                       >
                         City {getSortIcon("city")}
                       </th>
-                      <th>Plan start</th>
-                      <th>Expiry date</th>
+                      <th style={tableStyles.th}>Plan Start</th>
+                      <th style={tableStyles.th}>Expiry Date</th>
                       <th
-                        style={{ cursor: "pointer" }}
+                        style={tableStyles.th}
                         onClick={() => handleSort("payment")}
                       >
                         Payment {getSortIcon("payment")}
                       </th>
                       <th
-                        style={{ cursor: "pointer" }}
+                        style={tableStyles.th}
                         onClick={() => handleSort("planType")}
                       >
-                        Plan type {getSortIcon("planType")}
+                        Plan Type {getSortIcon("planType")}
                       </th>
-                      <th>More</th>
+                      <th style={tableStyles.th}>More</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {/* Static row - keeping your original example */}
-                    <tr>
-                      <td>1</td>
-                      <td>
-                        <div className="prof-table-thum">
-                          <div className="pro">
-                            <img src={img1} alt="" />
-                          </div>
-                          <div className="pro-info">
-                            <h5>Ashley emyy</h5>
-                            <p>ashleyipsum@gmail.com</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td>01 321-998-91</td>
-                      <td>New York</td>
-                      <td>22, Feb 2024</td>
-                      <td>
-                        <span className="hig-red">22, Feb 2025</span>
-                      </td>
-                      <td>
-                        <span className="hig-blu">Paid</span>
-                      </td>
-                      <td>
-                        <span className="hig-grn">Premium</span>
-                      </td>
-                      <td>
-                        <div className="dropdown">
-                          <button
-                            type="button"
-                            className="btn btn-outline-secondary"
-                            data-bs-toggle="dropdown"
-                          >
-                            <i
-                              className="fa fa-ellipsis-h"
-                              aria-hidden="true"
-                            ></i>
-                          </button>
-                          <ul className="dropdown-menu">
-                            <li>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                            </li>
-                            <li>
-                              <a className="dropdown-item" href="#">
-                                Delete
-                              </a>
-                            </li>
-                            <li>
-                              <a className="dropdown-item" href="#">
-                                Billing info
-                              </a>
-                            </li>
-                            <li>
-                              <a className="dropdown-item" href="#">
-                                View more details
-                              </a>
-                            </li>
-                            <li>
-                              <a className="dropdown-item" href="#">
-                                View profile
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-                    {/* Dynamic rows from API */}
-                    {currentItems.map((user, index) => (
-                      <tr key={user._id}>
-                        <td>{indexOfFirstItem + index + 2}</td>
-                        <td>
-                          <div className="prof-table-thum">
-                            <div className="pro">
-                              <div
-                                className="d-flex align-items-center justify-content-center"
+                    {currentItems.length > 0 ? (
+                      currentItems.map((user, index) => {
+                        const serialNumber = indexOfFirstItem + index + 1;
+                        return (
+                          <tr key={user._id}>
+                            <td style={tableStyles.td}>{serialNumber}</td>
+                            <td style={tableStyles.td}>
+                              <div style={tableStyles.profileCell}>
+                                <div
+                                  style={{
+                                    ...tableStyles.profileImage,
+                                    backgroundColor: "#007bff",
+                                    color: "white",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {/* {getInitials(user.userName)} */}
+                                  <img
+                                    src={user.profileImage}
+                                    alt={getInitials(user.userName)}
+                                    style={tableStyles.profileImage}
+                                  />
+                                </div>
+                                <div style={tableStyles.profileInfo}>
+                                  <h5 style={tableStyles.profileName}>
+                                    {user.userName}
+                                  </h5>
+                                  <p style={tableStyles.profileEmail}>
+                                    {user.userEmail}
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+                            <td style={tableStyles.td}>{user.userMobile}</td>
+                            <td style={tableStyles.td}>{user.city}</td>
+                            <td style={tableStyles.td}>
+                              {formatDate(user.planStart)}
+                            </td>
+                            <td style={tableStyles.td}>
+                              <span
                                 style={{
-                                  width: "40px",
-                                  height: "40px",
-                                  borderRadius: "50%",
-                                  backgroundColor: "#007bff",
-                                  color: "white",
-                                  fontSize: "14px",
-                                  fontWeight: "bold",
+                                  ...tableStyles.badge,
+                                  ...(user.expiryDate === "N/A"
+                                    ? {
+                                        color: "#6c757d",
+                                        backgroundColor: "#f8f9fa",
+                                      }
+                                    : tableStyles.unpaidStatus),
                                 }}
                               >
-                                {getInitials(user.userName)}
+                                {formatDate(user.expiryDate)}
+                              </span>
+                            </td>
+                            <td style={tableStyles.td}>
+                              <span
+                                style={{
+                                  ...tableStyles.badge,
+                                  ...(user.payment === "Paid"
+                                    ? tableStyles.paidStatus
+                                    : tableStyles.unpaidStatus),
+                                }}
+                              >
+                                {user.payment}
+                              </span>
+                            </td>
+                            <td style={tableStyles.td}>
+                              <span
+                                style={{
+                                  ...tableStyles.badge,
+                                  ...(user.planType === "Premium"
+                                    ? tableStyles.premiumBadge
+                                    : tableStyles.basicBadge),
+                                }}
+                              >
+                                {user.planType}
+                              </span>
+                            </td>
+                            <td style={tableStyles.td}>
+                              <div className="dropdown">
+                                <button
+                                  type="button"
+                                  style={tableStyles.dropdownButton}
+                                  data-bs-toggle="dropdown"
+                                >
+                                  <i
+                                    className="fa fa-ellipsis-h"
+                                    aria-hidden="true"
+                                  ></i>
+                                </button>
+                                <ul className="dropdown-menu">
+                                  <li>
+                                    <a className="dropdown-item" href="#">
+                                      Edit
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a className="dropdown-item" href="#">
+                                      Delete
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a className="dropdown-item" href="#">
+                                      Billing info
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a className="dropdown-item" href="#">
+                                      View more details
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a className="dropdown-item" href="#">
+                                      View profile
+                                    </a>
+                                  </li>
+                                </ul>
                               </div>
-                            </div>
-                            <div className="pro-info">
-                              <h5>{user.userName}</h5>
-                              <p>{user.userEmail}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{user.userMobile}</td>
-                        <td>{user.city}</td>
-                        <td>{user.planStart}</td>
-                        <td>
-                          <span
-                            className={
-                              user.expiryDate !== "N/A"
-                                ? "hig-red"
-                                : "text-muted"
-                            }
-                          >
-                            {user.expiryDate}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className={
-                              user.payment === "Paid" ? "hig-blu" : "hig-red"
-                            }
-                          >
-                            {user.payment}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className={
-                              user.planType === "Premium"
-                                ? "hig-grn"
-                                : "hig-yel"
-                            }
-                          >
-                            {user.planType}
-                          </span>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <button
-                              type="button"
-                              className="btn btn-outline-secondary"
-                              data-bs-toggle="dropdown"
-                            >
-                              <i
-                                className="fa fa-ellipsis-h"
-                                aria-hidden="true"
-                              ></i>
-                            </button>
-                            <ul className="dropdown-menu">
-                              <li>
-                                <a className="dropdown-item" href="#">
-                                  Edit
-                                </a>
-                              </li>
-                              <li>
-                                <a className="dropdown-item" href="#">
-                                  Delete
-                                </a>
-                              </li>
-                              <li>
-                                <a className="dropdown-item" href="#">
-                                  Billing info
-                                </a>
-                              </li>
-                              <li>
-                                <a className="dropdown-item" href="#">
-                                  View more details
-                                </a>
-                              </li>
-                              <li>
-                                <a className="dropdown-item" href="#">
-                                  View profile
-                                </a>
-                              </li>
-                            </ul>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="9"
+                          style={{ ...tableStyles.td, textAlign: "center" }}
+                        >
+                          <div className="p-4">
+                            <i className="fa fa-search fa-2x text-muted mb-3"></i>
+                            <h5>No users found</h5>
+                            <p className="text-muted">
+                              Try adjusting your search or filter criteria
+                            </p>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
             )}
 
             {/* Pagination */}
-            <nav aria-label="Page navigation">
-              <ul className="pagination justify-content-center">
-                <li
-                  className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-                >
-                  <button
-                    className="page-link"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </button>
-                </li>
-                {[...Array(totalPages)].map((_, i) => (
-                  <li
-                    key={i + 1}
-                    className={`page-item ${
-                      currentPage === i + 1 ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(i + 1)}
-                    >
-                      {i + 1}
-                    </button>
-                  </li>
-                ))}
-                <li
-                  className={`page-item ${
-                    currentPage === totalPages ? "disabled" : ""
-                  }`}
-                >
-                  <button
-                    className="page-link"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
+            {totalPages > 1 && (
+              <div className="mt-4">
+                <Pagination />
+              </div>
+            )}
           </div>
         </div>
       </div>

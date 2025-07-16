@@ -83,7 +83,7 @@ const getAllUsersData = async (req, res) => {
   try {
     const userData = await userModel.find(
       {},
-      { userEmail: 1, userMobile: 1, userName: 1, gender: 1 ,city:1}
+      { userEmail: 1, userMobile: 1, userName: 1, gender: 1 ,city:1,profileImage:1}
     ).sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -100,6 +100,27 @@ const getAllUsersData = async (req, res) => {
   }
 };
 
+const getAllNewRequestedUsersData = async (req, res) => {
+  try {
+    const userData = await userModel.find(
+      { isApproved: false },
+      {
+        userEmail: 1,
+        userMobile: 1,
+        userName: 1,
+        gender: 1,
+        profileImage: 1,
+        paymentDetails: 1,
+        createdAt: 1,
+      }
+    ).sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: userData });
+  } catch (err) {
+    console.error("Error fetching unapproved users:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 
 
@@ -107,6 +128,7 @@ const getAllUsersData = async (req, res) => {
 
 
 module.exports = {
+  getAllNewRequestedUsersData,
   registerAdmin,
   verifyAdmin,
   getAllUsersData

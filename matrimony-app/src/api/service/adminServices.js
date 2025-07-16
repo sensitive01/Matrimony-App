@@ -15,3 +15,8 @@ export const getAllUserData = async () => {
   return response;
 };
 
+
+export const getNewRequestedUsers = async () => {
+  const response = await adminInstance.get(`/get-all-new-requested-users`);
+  return response;
+};

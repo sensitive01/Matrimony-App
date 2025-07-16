@@ -16,9 +16,11 @@ userAuthRoutes.get("/get-all-user-profile-home",userAuthController.getAllUserPro
 userAuthRoutes.get("/new-profile-matches/:userId",userAuthController.getNewProfileMatches)
 
 
+
 userAuthRoutes.get("/get-profile-more-information/:profileId",userAuthController.getProfileMoreInformation)
 
 
+userAuthRoutes.post("/get-searched-profile-data",userAuthController.getSearchedProfileData)
 userAuthRoutes.post("/get-interested-profile-request/:userId",userAuthController.getInterestedProfileRequest)
 userAuthRoutes.post("/show-user-interests/:userId",userAuthController.showUserInterests)
 userAuthRoutes.put("/change-interest-status/:userId",userAuthController.changeInterestStatus)

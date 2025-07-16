@@ -70,3 +70,9 @@ export const newProfileMatch = async (userId) => {
   const response = await userInstance.get(`/new-profile-matches/${userId}`);
   return response;
 };
+
+
+export const fetchSearchedProfileData = async (formData) => {
+  const response = await userInstance.post(`/get-searched-profile-data`,formData);
+  return response;
+};

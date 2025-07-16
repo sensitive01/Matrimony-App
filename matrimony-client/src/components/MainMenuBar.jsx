@@ -21,7 +21,7 @@ const MainMenuBar = () => {
     window.location.href = "/";
   };
 
-  // ✅ Inline CSS for hover background effect
+  // ✅ Inline CSS for hover background effect and profile dropdown styling
   const style = `
     .menu-purple {
       background-color: #A020F0;
@@ -29,6 +29,25 @@ const MainMenuBar = () => {
     }
     .menu-purple:hover {
       background-color: #A020F0;
+    }
+    
+    /* Profile dropdown styling */
+    .head-pro .smenu-open {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    
+    .head-pro .smenu-open ul {
+      font-size: 13px;
+    }
+    
+    .head-pro .smenu-open ul li a {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+    
+    .head-pro .smenu {
+      font-size: 14px;
     }
   `;
 
@@ -42,11 +61,11 @@ const MainMenuBar = () => {
           <div className="hom-nav">
             {/* LOGO */}
             <div className="logo">
-              <span className="menu desk-menu menu-purple">
+              {/* <span className="menu desk-menu menu-purple">
                 <i />
                 <i />
                 <i />
-              </span>
+              </span> */}
               <Link to="/" className="logo-brand">
                 <img
                   src={logoImg}
@@ -60,6 +79,9 @@ const MainMenuBar = () => {
             {/* MENU START */}
             <div className="bl">
               <ul>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
                 <li className="smenu-pare">
                   <span className="smenu">Explore</span>
                   <div className="smenu-open smenu-box">
@@ -125,6 +147,12 @@ const MainMenuBar = () => {
                 <li>
                   <Link to="/user/user-plan-selection">Plans</Link>
                 </li>
+                <li>
+                  <Link to="#">Success Stories</Link>
+                </li>
+                <li>
+                  <Link to="#">Help & Support</Link>
+                </li>
                 {isUserActive && (
                   <>
                     <li>
@@ -135,57 +163,40 @@ const MainMenuBar = () => {
                     </li>
                   </>
                 )}
-
-                {!isUserActive && (
-                  <li className="smenu-pare">
-                    <span className="smenu">Dashboard</span>
-                    <div className="smenu-open smenu-single">
-                      <ul>
-                        <li>
-                          <Link to="/user/user-dashboard-page">
-                            User Dashboard
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="/user/show-all-profiles/all-profile">
-                            User Profile
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="/user/user-chat-page">User Chat</Link>
-                        </li>
-                        <li>
-                          <Link to="/user/user-plan-page">User Plan</Link>
-                        </li>
-                        <li>
-                          <Link to="/user/user-settings-page">
-                            User Settings
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                )}
-                {!isUserActive && (
-                  <li>
-                    <Link to="#" onClick={handleLogOut}>
-                      Logout
-                    </Link>
-                  </li>
-                )}
               </ul>
             </div>
 
-            {/* USER PROFILE */}
-            <div className="al">
-              <div className="head-pro">
-                <img src={profImg1} alt="Profile" loading="lazy" />
-                <b>Advisor</b>
-                <br />
-                <h4>Ashley emyy</h4>
-                <span className="fclick"></span>
+            {!isUserActive && (
+              <div className="al">
+                <div className="head-pro smenu-pare">
+                  <img src={profImg1} alt="Profile" loading="lazy" />
+                  <h4 style={{ marginTop: "5px" }}>Ashley emyy</h4>
+                  <b className="smenu">My Profile</b>
+                  <div className="smenu-open smenu-single">
+                    <ul>
+                      <li>
+                        <Link to="/user/user-dashboard-page">My Profile</Link>
+                      </li>
+                      <li>
+                        <Link to="/user/show-all-profiles/all-profile">
+                          My Chats
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link to="/user/user-settings-page">User Settings</Link>
+                      </li>
+                      <li>
+                        <Link to="#" onClick={handleLogOut}>
+                          Logout
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                  <span className="fclick"></span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* MOBILE MENU */}
             <div className="mob-menu">

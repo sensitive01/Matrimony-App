@@ -79,7 +79,9 @@ const UserSignUp = () => {
                 <div className="lhs">
                   <div className="tit">
                     <h2>
-                      Now <b>Find your life partner</b> Easy and fast.
+                      Now{" "}
+                      <b style={{ color: "white" }}>Find your life partner</b>{" "}
+                      Easy and fast.
                     </h2>
                   </div>
                   <div className="im">
@@ -176,8 +178,13 @@ const UserSignUp = () => {
                         </div>
                         <button
                           type="submit"
-                          className="btn btn-primary"
+                          className="btn"
                           disabled={loading}
+                          style={{
+                            background: "#A020F0",
+                            borderColor: "#A020F0",
+                            color: "#fff",
+                          }}
                         >
                           {loading ? "Creating Account..." : "Create Account"}
                         </button>

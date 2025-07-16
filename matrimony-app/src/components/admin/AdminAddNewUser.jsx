@@ -1,7 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import NewLayout from "./layout/NewLayout";
 
 const AdminAddNewUser = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    gender: "",
+    aboutMe: "",
+    city: "",
+    dateOfBirth: "",
+    age: "",
+    height: "",
+    weight: "",
+    fathersName: "",
+    mothersName: "",
+    address: "",
+    jobType: "",
+    companyName: "",
+    salary: "",
+    jobExperience: "",
+    degree: "",
+    school: "",
+    college: "",
+    whatsapp: "",
+    facebook: "",
+    instagram: "",
+    x: "",
+    youtube: "",
+    linkedin: "",
+    hobbies: [],
+    diet: "",
+    smoking: "",
+    drinking: "",
+    exercise: "",
+
+    // Partner Preferences
+    desiredAgeFrom: "",
+    desiredAgeTo: "",
+    desiredReligion: "",
+    desiredCaste: "",
+    desiredEducation: "",
+    desiredLocation: "",
+    desiredHeightFrom: "",
+    desiredHeightTo: "",
+  });
   return (
     <NewLayout>
       <div className="pan-rhs">

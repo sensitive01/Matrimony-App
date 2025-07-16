@@ -12,9 +12,30 @@ const userSchema = new mongoose.Schema(
     },
     userMobile: { type: String, required: true, unique: true, trim: true },
     userPassword: { type: String, required: true },
-    isEmailVerified: { type: Boolean, default: false },
     isTermsAggreed: { type: Boolean, default: false },
     aboutMe: { type: String },
+
+    isEmailVerified: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
+    isProfileCompleted: { type: Boolean, default: false },
+    profileStatus: { type: String, default: "Pending" },
+    profileVisibility: { type: String, default: "Private" },
+
+    paymentDetails: [
+      {
+        subscriptionValidFrom: { type: Date },
+        subscriptionValidTo: { type: Date },
+        subscriptionType: { type: String },
+        subscriptionAmount: { type: Number },
+        subscriptionStatus: { type: String, default: "Pending" },
+        subscriptionTransactionDate: { type: Date },
+        subscriptionTransactionId: { type: String },
+        subscriptionOrderId: { type: String },
+        isEmployeeAssisted: { type: Boolean, default: false },
+        assistedEmployeeId: { type: String },
+        assistedEmployeeName: { type: String },
+      },
+    ],
 
     gender: {
       type: String,

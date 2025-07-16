@@ -20,7 +20,7 @@ const Sidebar = () => {
       <div className="ad-menu">
         <ul>
           <li className="ic-db">
-            <a href="/dashboard">Dashboard</a>
+            <a href="/admin/dashboard">Dashboard</a>
           </li>
 
           <li className="ic-user">

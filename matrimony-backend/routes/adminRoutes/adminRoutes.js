@@ -4,6 +4,10 @@ const adminController = require("../../controller/adminController/adminControlle
 
 adminRoutes.get("/",adminController.registerAdmin);
 adminRoutes.get("/get-all-users",adminController.getAllUsersData);
+adminRoutes.get("/get-all-new-requested-users",adminController.getAllNewRequestedUsersData);
+
+
+
 
 
 
