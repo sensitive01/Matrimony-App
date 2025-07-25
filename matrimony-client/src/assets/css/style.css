@@ -1845,7 +1845,7 @@ i.fa-instagram:hover {
   position: absolute;
   width: 100px;
   height: 106px;
-  background: url("/src/assets/images/leaf/1.png") 0% 0% / 100% no-repeat;
+  /* background: url("/src/assets/images/leaf/1.png") 0% 0% / 100% no-repeat; */
   top: -5px;
   transition: all 0.4s ease-in-out 0s;
 }
@@ -2057,7 +2057,7 @@ table td {
   bottom: 0px;
   height: 100vh;
   width: 110px;
-  background: url("/src/assets/images/leaf/long.html") 0% 0% / 100% no-repeat;
+  /* background: url("/src/assets/images/leaf/long.html") 0% 0% / 100% no-repeat; */
   z-index: 2;
   opacity: 0.6;
 }
@@ -5535,7 +5535,7 @@ span.mail::before {
   object-fit: cover;
   z-index: 1;
   position: relative;
-  margin: 47% 10% 5% 15%;
+  margin: 0% 10% 5% 15%;
   border-width: 15px 0px 0px 15px;
   border-top-style: solid;
   border-left-style: solid;
@@ -6566,7 +6566,7 @@ span.mail::before {
   position: absolute;
   width: 150px;
   height: 184px;
-  background: url("/src/assets/images/leaf/4.png") 0% 0% / 100% no-repeat;
+  /* background: url("/src/assets/images/leaf/4.png") 0% 0% / 100% no-repeat; */
   top: -71px;
   transition: all 0.4s ease-in-out 0s;
 }
@@ -7002,7 +7002,7 @@ span.mail::before {
   left: 0;
   width: 188px;
   height: 188px;
-  background: url("/src/assets/images/leaf/5.png") no-repeat;
+  /* background: url("/src/assets/images/leaf/5.png") no-repeat; */
   background-size: 300px;
   background-position: -78px -70px;
 }
@@ -7015,7 +7015,7 @@ span.mail::before {
   right: 0;
   width: 123px;
   height: 300px;
-  background: url("/src/assets/images/leaf/8.png") no-repeat;
+  /* background: url("/src/assets/images/leaf/8.png") no-repeat; */
   background-size: 121px;
   background-position: center right;
 }

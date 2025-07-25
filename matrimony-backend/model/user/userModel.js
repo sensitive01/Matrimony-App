@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema(
     isProfileCompleted: { type: Boolean, default: false },
     profileStatus: { type: String, default: "Pending" },
     profileVisibility: { type: String, default: "Private" },
+    isAnySubscriptionTaken:{type:Boolean,default:false},
 
     paymentDetails: [
       {

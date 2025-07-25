@@ -1,5 +1,7 @@
 const cloudinary = require("cloudinary").v2;
 const bcrypt = require("bcrypt");
+const moment = require("moment");
+const crypto = require("crypto");
 
 const {
   CLOUDINARY_CLOUD_NAME,
@@ -8,6 +10,8 @@ const {
 } = require("../../config/variables/variables");
 const userModel = require("../../model/user/userModel");
 const interestModel = require("../../model/user/interestModel");
+const planModel = require("../../model/admin/planModel");
+const paymentModel = require("../../model/user/planBookings");
 const fs = require("fs");
 
 cloudinary.config({
@@ -15,6 +19,24 @@ cloudinary.config({
   api_key: CLOUDINARY_API_KEY,
   api_secret: CLOUDINARY_API_SECRET,
 });
+
+const generateOrderId = () => {
+  const randomNumber = Math.floor(100000 + Math.random() * 900000);
+  return `AGPW${randomNumber}`;
+};
+
+const calculateValidTo = (fromDate, priceType) => {
+  switch (priceType) {
+    case "Per day":
+      return moment(fromDate).add(1, "days").toDate();
+    case "Per month":
+      return moment(fromDate).add(1, "months").toDate();
+    case "Per Year":
+      return moment(fromDate).add(1, "years").toDate();
+    default:
+      return fromDate; // fallback if unknown type
+  }
+};
 
 const getUserInformation = async (req, res) => {
   try {
@@ -539,20 +561,28 @@ const getNewProfileMatches = async (req, res) => {
 
 const getSearchedProfileData = async (req, res) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     const { formData } = req.body;
-    const { lookingFor, age, community, city } = formData;
+    let { lookingFor, age, community, city } = formData;
+
+    let person;
+
+    if (lookingFor === "Bride") {
+      person = "Female";
+    } else {
+      person = "Male";
+    }
 
     // Always include only approved users
     const filters = {};
 
     // Dynamically add filters only if values are present
-    if (lookingFor) filters.gender = lookingFor;
+    if (person) filters.gender = person;
     if (community) filters.religion = community;
     if (city) filters.city = city;
     if (age) filters.age = parseInt(age); // exact age match
 
-
+    console.log("filters", filters);
 
     const users = await userModel.find(filters, {
       _id: 1,
@@ -564,7 +594,6 @@ const getSearchedProfileData = async (req, res) => {
       religion: 1,
     });
 
-
     const results = users.map((user) => ({
       _id: user._id,
       userName: user.userName,
@@ -574,6 +603,7 @@ const getSearchedProfileData = async (req, res) => {
       gender: user.gender,
       religion: user.religion,
     }));
+    console.log("results", results);
 
     res.status(200).json({ success: true, data: results });
   } catch (err) {
@@ -582,7 +612,87 @@ const getSearchedProfileData = async (req, res) => {
   }
 };
 
+const getPlanDetails = async (req, res) => {
+  try {
+    const planData = await planModel.find({ status: "Active" });
+
+    res.status(200).json({
+      success: true,
+      message: "Active plans fetched successfully",
+      data: planData,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const savePlanDetails = async (req, res) => {
+  try {
+    const { paymentData } = req.body;
+    console.log("paymentData", paymentData);
+
+    const validFrom = new Date(paymentData.timestamp);
+    const validTo = calculateValidTo(
+      validFrom,
+      paymentData.planDetails.priceType
+    );
+    const orderId = generateOrderId();
+
+    // Step 1: Save payment info to PaymentModel
+    const payment = new paymentModel({
+      userId: paymentData.userId,
+      razorpayPaymentId: paymentData.razorpayPaymentId,
+      planId: paymentData.planId,
+      planName: paymentData.planName,
+      amount: paymentData.amount,
+      currency: paymentData.currency,
+      paymentStatus: paymentData.paymentStatus,
+      paymentMethod: paymentData.paymentMethod,
+      timestamp: validFrom,
+      planDetails: paymentData.planDetails,
+      orderId: orderId,
+    });
+
+    await payment.save();
+
+    // Step 2: Update User with subscription info
+    await userModel.findByIdAndUpdate(paymentData.userId, {
+      subscriptionValidFrom: validFrom,
+      subscriptionValidTo: validTo,
+      subscriptionType: paymentData.planName,
+      subscriptionAmount: paymentData.amount,
+      subscriptionStatus:
+        paymentData.paymentStatus === "success" ? "Active" : "Pending",
+      subscriptionTransactionDate: validFrom,
+      subscriptionTransactionId: paymentData.razorpayPaymentId,
+      subscriptionOrderId: orderId,
+      isEmployeeAssisted: false,
+      assistedEmployeeId: "",
+      assistedEmployeeName: "",
+      isAnySubscriptionTaken: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Subscription updated and payment recorded successfully.",
+      orderId: orderId,
+    });
+  } catch (error) {
+    console.error("Error in saving plan details:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save subscription/payment details.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
+  savePlanDetails,
+  getPlanDetails,
   getSearchedProfileData,
   getNewProfileMatches,
   getAllUserProfileDataHome,

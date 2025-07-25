@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import img1 from "../../assets/images/profiles/1.jpg";
 import NewLayout from "./layout/NewLayout";
-import { getNewRequestedUsers } from "../../api/service/adminServices";
+import {
+  approveNewUser,
+  getNewRequestedUsers,
+} from "../../api/service/adminServices";
 
 export default function AdminNewUserRequest() {
   const [users, setUsers] = useState([]);
@@ -108,27 +111,24 @@ export default function AdminNewUserRequest() {
 
   // Approve user function
   const handleApproveUser = async (userId) => {
-    setApprovingUsers(prev => new Set(prev).add(userId));
-    
+    setApprovingUsers((prev) => new Set(prev).add(userId));
+
     try {
-      // Replace this with your actual approve user API call
-      // const response = await approveUser(userId);
-      
-      // Simulated API call - replace with actual implementation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Update the users list by removing the approved user
-      setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
-      setFilteredUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
-      
-      // Show success message (you can use a toast library)
-      alert("User approved successfully!");
-      
+      const response = await approveNewUser(userId);
+      if (response.status === 200) {
+        setFilteredUsers((prevUsers) =>
+          prevUsers.filter((user) => user._id !== userId)
+        );
+        setUsers((prevUsers) =>
+          prevUsers.filter((user) => user._id !== userId)
+        );
+        alert(response.data.message);
+      }
     } catch (error) {
       console.error("Error approving user:", error);
       alert("Failed to approve user. Please try again.");
     } finally {
-      setApprovingUsers(prev => {
+      setApprovingUsers((prev) => {
         const newSet = new Set(prev);
         newSet.delete(userId);
         return newSet;
@@ -154,41 +154,41 @@ export default function AdminNewUserRequest() {
 
     const paginationStyles = {
       pagination: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        listStyle: 'none',
-        padding: '0',
-        margin: '20px 0',
-        gap: '5px'
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        listStyle: "none",
+        padding: "0",
+        margin: "20px 0",
+        gap: "5px",
       },
       pageItem: {
-        display: 'inline-block'
+        display: "inline-block",
       },
       pageLink: {
-        display: 'block',
-        padding: '8px 12px',
-        textDecoration: 'none',
-        color: '#007bff',
-        backgroundColor: '#fff',
-        border: '1px solid #dee2e6',
-        borderRadius: '4px',
-        fontSize: '14px',
-        fontWeight: '500',
-        transition: 'all 0.2s ease-in-out',
-        cursor: 'pointer'
+        display: "block",
+        padding: "8px 12px",
+        textDecoration: "none",
+        color: "#007bff",
+        backgroundColor: "#fff",
+        border: "1px solid #dee2e6",
+        borderRadius: "4px",
+        fontSize: "14px",
+        fontWeight: "500",
+        transition: "all 0.2s ease-in-out",
+        cursor: "pointer",
       },
       activePage: {
-        backgroundColor: '#007bff',
-        color: '#fff',
-        borderColor: '#007bff'
+        backgroundColor: "#007bff",
+        color: "#fff",
+        borderColor: "#007bff",
       },
       disabledPage: {
-        color: '#6c757d',
-        backgroundColor: '#f8f9fa',
-        borderColor: '#dee2e6',
-        cursor: 'not-allowed'
-      }
+        color: "#6c757d",
+        backgroundColor: "#f8f9fa",
+        borderColor: "#dee2e6",
+        cursor: "not-allowed",
+      },
     };
 
     return (
@@ -198,7 +198,7 @@ export default function AdminNewUserRequest() {
             <button
               style={{
                 ...paginationStyles.pageLink,
-                ...(currentPage === 1 ? paginationStyles.disabledPage : {})
+                ...(currentPage === 1 ? paginationStyles.disabledPage : {}),
               }}
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
@@ -210,8 +210,8 @@ export default function AdminNewUserRequest() {
           {startPage > 1 && (
             <>
               <li style={paginationStyles.pageItem}>
-                <button 
-                  style={paginationStyles.pageLink} 
+                <button
+                  style={paginationStyles.pageLink}
                   onClick={() => setCurrentPage(1)}
                 >
                   1
@@ -219,7 +219,11 @@ export default function AdminNewUserRequest() {
               </li>
               {startPage > 2 && (
                 <li style={paginationStyles.pageItem}>
-                  <span style={{...paginationStyles.pageLink, cursor: 'default'}}>...</span>
+                  <span
+                    style={{ ...paginationStyles.pageLink, cursor: "default" }}
+                  >
+                    ...
+                  </span>
                 </li>
               )}
             </>
@@ -230,7 +234,9 @@ export default function AdminNewUserRequest() {
               <button
                 style={{
                   ...paginationStyles.pageLink,
-                  ...(currentPage === number ? paginationStyles.activePage : {})
+                  ...(currentPage === number
+                    ? paginationStyles.activePage
+                    : {}),
                 }}
                 onClick={() => setCurrentPage(number)}
               >
@@ -243,7 +249,11 @@ export default function AdminNewUserRequest() {
             <>
               {endPage < totalPages - 1 && (
                 <li style={paginationStyles.pageItem}>
-                  <span style={{...paginationStyles.pageLink, cursor: 'default'}}>...</span>
+                  <span
+                    style={{ ...paginationStyles.pageLink, cursor: "default" }}
+                  >
+                    ...
+                  </span>
                 </li>
               )}
               <li style={paginationStyles.pageItem}>
@@ -261,7 +271,9 @@ export default function AdminNewUserRequest() {
             <button
               style={{
                 ...paginationStyles.pageLink,
-                ...(currentPage === totalPages ? paginationStyles.disabledPage : {})
+                ...(currentPage === totalPages
+                  ? paginationStyles.disabledPage
+                  : {}),
               }}
               onClick={() => setCurrentPage(currentPage + 1)}
               disabled={currentPage === totalPages}
@@ -277,158 +289,159 @@ export default function AdminNewUserRequest() {
   // Table styles
   const tableStyles = {
     tableContainer: {
-      backgroundColor: '#fff',
-      borderRadius: '8px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      overflow: 'hidden'
+      backgroundColor: "#fff",
+      borderRadius: "8px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      overflow: "hidden",
     },
     table: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      fontSize: '14px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      width: "100%",
+      borderCollapse: "collapse",
+      fontSize: "14px",
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     },
     tableHeader: {
-      backgroundColor: '#f8f9fa',
-      borderBottom: '2px solid #e9ecef'
+      backgroundColor: "#f8f9fa",
+      borderBottom: "2px solid #e9ecef",
     },
     th: {
-      padding: '12px 15px',
-      textAlign: 'left',
-      fontWeight: '600',
-      color: '#495057',
-      fontSize: '13px',
-      textTransform: 'uppercase',
-      letterSpacing: '0.5px'
+      padding: "12px 15px",
+      textAlign: "left",
+      fontWeight: "600",
+      color: "#495057",
+      fontSize: "13px",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
     },
     td: {
-      padding: '12px 15px',
-      borderBottom: '1px solid #e9ecef',
-      color: '#212529',
-      fontSize: '14px',
-      fontWeight: '400'
+      padding: "12px 15px",
+      borderBottom: "1px solid #e9ecef",
+      color: "#212529",
+      fontSize: "14px",
+      fontWeight: "400",
     },
     profileCell: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px'
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
     },
     profileImage: {
-      width: '40px',
-      height: '40px',
-      borderRadius: '50%',
-      objectFit: 'cover',
-      border: '2px solid #e9ecef'
+      width: "40px",
+      height: "40px",
+      borderRadius: "50%",
+      objectFit: "cover",
+      border: "2px solid #e9ecef",
     },
     profileInfo: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '3px'
+      display: "flex",
+      flexDirection: "column",
+      gap: "3px",
     },
     profileName: {
-      fontWeight: '600',
-      color: '#212529',
-      fontSize: '14px',
-      margin: '0',
-      lineHeight: '1.2'
+      fontWeight: "600",
+      color: "#212529",
+      fontSize: "14px",
+      margin: "0",
+      lineHeight: "1.2",
     },
     profileEmail: {
-      color: '#6c757d',
-      fontSize: '12px',
-      margin: '0',
-      lineHeight: '1.2'
+      color: "#6c757d",
+      fontSize: "12px",
+      margin: "0",
+      lineHeight: "1.2",
     },
     profileMobile: {
-      color: '#495057',
-      fontSize: '12px',
-      margin: '0',
-      lineHeight: '1.2',
-      fontWeight: '500'
+      color: "#495057",
+      fontSize: "12px",
+      margin: "0",
+      lineHeight: "1.2",
+      fontWeight: "500",
     },
     dateTimeContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '2px'
+      display: "flex",
+      flexDirection: "column",
+      gap: "2px",
     },
     dateText: {
-      fontSize: '13px',
-      fontWeight: '600',
-      color: '#212529',
-      margin: '0',
-      lineHeight: '1.2'
+      fontSize: "13px",
+      fontWeight: "600",
+      color: "#212529",
+      margin: "0",
+      lineHeight: "1.2",
     },
     timeText: {
-      fontSize: '11px',
-      color: '#6c757d',
-      margin: '0',
-      lineHeight: '1.2'
+      fontSize: "11px",
+      color: "#6c757d",
+      margin: "0",
+      lineHeight: "1.2",
     },
     badge: {
-      padding: '4px 8px',
-      borderRadius: '12px',
-      fontSize: '11px',
-      fontWeight: '600',
-      textTransform: 'uppercase',
-      letterSpacing: '0.5px'
+      padding: "4px 8px",
+      borderRadius: "12px",
+      fontSize: "11px",
+      fontWeight: "600",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
     },
     maleBadge: {
-      backgroundColor: '#e3f2fd',
-      color: '#1976d2'
+      backgroundColor: "#e3f2fd",
+      color: "#1976d2",
     },
     femaleBadge: {
-      backgroundColor: '#fce4ec',
-      color: '#c2185b'
+      backgroundColor: "#fce4ec",
+      color: "#c2185b",
     },
     statusBadge: {
-      padding: '4px 8px',
-      borderRadius: '12px',
-      fontSize: '11px',
-      fontWeight: '600',
-      textTransform: 'uppercase'
+      padding: "4px 8px",
+      borderRadius: "12px",
+      fontSize: "11px",
+      fontWeight: "600",
+      textTransform: "uppercase",
     },
     paidStatus: {
-      backgroundColor: '#e8f5e8',
-      color: '#2e7d32'
+      backgroundColor: "#e8f5e8",
+      color: "#2e7d32",
     },
     unpaidStatus: {
-      backgroundColor: '#ffebee',
-      color: '#d32f2f'
+      backgroundColor: "#ffebee",
+      color: "#d32f2f",
     },
     pendingStatus: {
-      backgroundColor: '#fff3e0',
-      color: '#f57c00'
+      backgroundColor: "#fff3e0",
+      color: "#f57c00",
     },
     approveButton: {
-      padding: '6px 16px',
-      backgroundColor: '#28a745',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      fontSize: '12px',
-      fontWeight: '600',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease-in-out',
-      textTransform: 'uppercase',
-      letterSpacing: '0.5px'
+      padding: "6px 16px",
+      backgroundColor: "#28a745",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      fontSize: "12px",
+      fontWeight: "600",
+      cursor: "pointer",
+      transition: "all 0.2s ease-in-out",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
     },
     approveButtonHover: {
-      backgroundColor: '#218838',
-      transform: 'translateY(-1px)'
+      backgroundColor: "#218838",
+      transform: "translateY(-1px)",
     },
     approveButtonDisabled: {
-      backgroundColor: '#6c757d',
-      cursor: 'not-allowed',
-      transform: 'none'
+      backgroundColor: "#6c757d",
+      cursor: "not-allowed",
+      transform: "none",
     },
     dropdownButton: {
-      padding: '6px 10px',
-      backgroundColor: 'transparent',
-      border: '1px solid #dee2e6',
-      borderRadius: '4px',
-      color: '#495057',
-      cursor: 'pointer',
-      fontSize: '12px'
-    }
+      padding: "6px 10px",
+      backgroundColor: "transparent",
+      border: "1px solid #dee2e6",
+      borderRadius: "4px",
+      color: "#495057",
+      cursor: "pointer",
+      fontSize: "12px",
+    },
   };
 
   if (loading) {
@@ -585,9 +598,15 @@ export default function AdminNewUserRequest() {
                                   }}
                                 />
                                 <div style={tableStyles.profileInfo}>
-                                  <h5 style={tableStyles.profileName}>{user.userName}</h5>
-                                  <p style={tableStyles.profileEmail}>{user.userEmail}</p>
-                                  <p style={tableStyles.profileMobile}>{user.userMobile}</p>
+                                  <h5 style={tableStyles.profileName}>
+                                    {user.userName}
+                                  </h5>
+                                  <p style={tableStyles.profileEmail}>
+                                    {user.userEmail}
+                                  </p>
+                                  <p style={tableStyles.profileMobile}>
+                                    {user.userMobile}
+                                  </p>
                                 </div>
                               </div>
                             </td>
@@ -595,9 +614,9 @@ export default function AdminNewUserRequest() {
                               <span
                                 style={{
                                   ...tableStyles.badge,
-                                  ...(user.gender === "Male" 
-                                    ? tableStyles.maleBadge 
-                                    : tableStyles.femaleBadge)
+                                  ...(user.gender === "Male"
+                                    ? tableStyles.maleBadge
+                                    : tableStyles.femaleBadge),
                                 }}
                               >
                                 {user.gender}
@@ -605,8 +624,12 @@ export default function AdminNewUserRequest() {
                             </td>
                             <td style={tableStyles.td}>
                               <div style={tableStyles.dateTimeContainer}>
-                                <p style={tableStyles.dateText}>{formatDate(user.createdAt)}</p>
-                                <p style={tableStyles.timeText}>{formatTime(user.createdAt)}</p>
+                                <p style={tableStyles.dateText}>
+                                  {formatDate(user.createdAt)}
+                                </p>
+                                <p style={tableStyles.timeText}>
+                                  {formatTime(user.createdAt)}
+                                </p>
                               </div>
                             </td>
                             <td style={tableStyles.td}>
@@ -617,7 +640,7 @@ export default function AdminNewUserRequest() {
                                     ? tableStyles.paidStatus
                                     : paymentInfo.status === "Pending"
                                     ? tableStyles.pendingStatus
-                                    : tableStyles.unpaidStatus)
+                                    : tableStyles.unpaidStatus),
                                 }}
                               >
                                 {paymentInfo.status}
@@ -627,8 +650,14 @@ export default function AdminNewUserRequest() {
                               <span
                                 style={{
                                   ...tableStyles.statusBadge,
-                                  backgroundColor: paymentInfo.type === "Premium" ? '#e8f5e8' : '#e3f2fd',
-                                  color: paymentInfo.type === "Premium" ? '#2e7d32' : '#1976d2'
+                                  backgroundColor:
+                                    paymentInfo.type === "Premium"
+                                      ? "#e8f5e8"
+                                      : "#e3f2fd",
+                                  color:
+                                    paymentInfo.type === "Premium"
+                                      ? "#2e7d32"
+                                      : "#1976d2",
                                 }}
                               >
                                 {paymentInfo.type}
@@ -645,12 +674,26 @@ export default function AdminNewUserRequest() {
                               <button
                                 style={{
                                   ...tableStyles.approveButton,
-                                  ...(isApproving ? tableStyles.approveButtonDisabled : {})
+                                  ...(isApproving
+                                    ? tableStyles.approveButtonDisabled
+                                    : {}),
                                 }}
                                 onClick={() => handleApproveUser(user._id)}
                                 disabled={isApproving}
-                                onMouseOver={(e) => !isApproving && Object.assign(e.target.style, tableStyles.approveButtonHover)}
-                                onMouseOut={(e) => !isApproving && Object.assign(e.target.style, tableStyles.approveButton)}
+                                onMouseOver={(e) =>
+                                  !isApproving &&
+                                  Object.assign(
+                                    e.target.style,
+                                    tableStyles.approveButtonHover
+                                  )
+                                }
+                                onMouseOut={(e) =>
+                                  !isApproving &&
+                                  Object.assign(
+                                    e.target.style,
+                                    tableStyles.approveButton
+                                  )
+                                }
                               >
                                 {isApproving ? "Approving..." : "Approve"}
                               </button>
@@ -701,7 +744,10 @@ export default function AdminNewUserRequest() {
                       })
                     ) : (
                       <tr>
-                        <td colSpan="9" style={{...tableStyles.td, textAlign: 'center'}}>
+                        <td
+                          colSpan="9"
+                          style={{ ...tableStyles.td, textAlign: "center" }}
+                        >
                           <div className="p-4">
                             <i className="fa fa-search fa-2x text-muted mb-3"></i>
                             <h5>No users found</h5>

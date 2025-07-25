@@ -4,7 +4,7 @@ const {
   ADMIN_PASSWORD,
 } = require("../../config/variables/variables");
 const adminModel = require("../../model/admin/adminModel");
-const userModel = require("../../model/user/userModel")
+const userModel = require("../../model/user/userModel");
 
 const registerAdmin = async (req, res) => {
   try {
@@ -81,10 +81,49 @@ const verifyAdmin = async (req, res) => {
 
 const getAllUsersData = async (req, res) => {
   try {
-    const userData = await userModel.find(
-      {},
-      { userEmail: 1, userMobile: 1, userName: 1, gender: 1 ,city:1,profileImage:1}
-    ).sort({ createdAt: -1 });
+    const userData = await userModel
+      .find(
+        { isApproved: true },
+        {
+          userEmail: 1,
+          userMobile: 1,
+          userName: 1,
+          gender: 1,
+          city: 1,
+          profileImage: 1,
+        }
+      )
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      message: "All users fetched successfully",
+      data: userData,
+    });
+  } catch (err) {
+    console.error("Error in getAllUsersData", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const getUnPaidUsersData = async (req, res) => {
+  try {
+    const userData = await userModel
+      .find(
+        { isAnySubscriptionTaken: false },
+        {
+          userEmail: 1,
+          userMobile: 1,
+          userName: 1,
+          gender: 1,
+          city: 1,
+          profileImage: 1,
+        }
+      )
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -102,18 +141,20 @@ const getAllUsersData = async (req, res) => {
 
 const getAllNewRequestedUsersData = async (req, res) => {
   try {
-    const userData = await userModel.find(
-      { isApproved: false },
-      {
-        userEmail: 1,
-        userMobile: 1,
-        userName: 1,
-        gender: 1,
-        profileImage: 1,
-        paymentDetails: 1,
-        createdAt: 1,
-      }
-    ).sort({ createdAt: -1 });
+    const userData = await userModel
+      .find(
+        { isApproved: false },
+        {
+          userEmail: 1,
+          userMobile: 1,
+          userName: 1,
+          gender: 1,
+          profileImage: 1,
+          paymentDetails: 1,
+          createdAt: 1,
+        }
+      )
+      .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, data: userData });
   } catch (err) {
@@ -122,14 +163,40 @@ const getAllNewRequestedUsersData = async (req, res) => {
   }
 };
 
+const approveNewUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const userData = await userModel.findByIdAndUpdate(
+      userId,
+      { isApproved: true },
+      { new: true }
+    );
 
+    if (!userData) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
-
-
+    return res.status(200).json({
+      success: true,
+      message: "User approved successfully",
+    });
+  } catch (err) {
+    console.error("Error approving user:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 
 module.exports = {
+  getUnPaidUsersData,
+  approveNewUser,
   getAllNewRequestedUsersData,
   registerAdmin,
   verifyAdmin,
-  getAllUsersData
+  getAllUsersData,
 };

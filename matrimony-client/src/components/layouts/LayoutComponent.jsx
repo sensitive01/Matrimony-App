@@ -7,17 +7,19 @@ import MenuPopUp2 from "../../components/MenuPopUp2";
 import MainMenuBar from "../../components/MainMenuBar";
 import ExploreMenuPopUp from "../../components/ExploreMenuPopUp";
 import MobileUserProfileMenu from "../../components/MobileUserProfileMenu";
+import MainLayout from "../agapeows-components/layout/MainLayout";
 const LayoutComponent = () => {
   return (
     <>
       {/* <PreLoader /> */}
-      <PopUpSearch />
+      <MainLayout />
+      {/* <PopUpSearch />
       <TopMenu />
       <MenuPopUp1 />
       <MenuPopUp2 />
       <MainMenuBar />
       <ExploreMenuPopUp />
-      <MobileUserProfileMenu />
+      <MobileUserProfileMenu /> */}
     </>
   );
 };

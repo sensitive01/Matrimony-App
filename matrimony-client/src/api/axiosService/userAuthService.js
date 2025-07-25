@@ -71,8 +71,22 @@ export const newProfileMatch = async (userId) => {
   return response;
 };
 
-
 export const fetchSearchedProfileData = async (formData) => {
-  const response = await userInstance.post(`/get-searched-profile-data`,formData);
+  const response = await userInstance.post(
+    `/get-searched-profile-data`,
+    formData
+  );
+  return response;
+};
+
+export const getAllPlanDetails = async () => {
+  const response = await userInstance.get(`/get-plan-details`);
+  return response;
+};
+
+export const sendPaymentData = async (paymentData, userId) => {
+  const response = await userInstance.post(`/save-plan-details/${userId}`, {
+    paymentData,
+  });
   return response;
 };

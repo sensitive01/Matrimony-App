@@ -29,6 +29,8 @@ import ForgotPassword from "./pages/forgotpassword/ForgotPasswordPage";
 import ChangePassword from "./pages/changepassword/ChangePassword";
 import UserPlanSelection from "./pages/userplanselection/UserPlanSelection";
 import UserSearchResult from "./pages/userSearch/UserSearchResult";
+import AgapeVowsApp from "./components/sample/AgapeVowsApp";
+import HomePageComponent from "./components/agapeows-components/pages/HomePageComponent";
 
 // Component to handle page reloads
 function ReloadHandler() {
@@ -57,7 +59,9 @@ function App() {
     <Router>
       {/* <ReloadHandler /> */}
       <Routes>
-        <Route path="/" element={<UserHomePage />} />
+        {/* <Route path="/" element={<UserHomePage />} /> */}
+        <Route path="/" element={<HomePageComponent />} />
+
         <Route path="/user/user-login" element={<UserLoginPage />} />
         <Route path="/user/user-sign-up" element={<UserSignUp />} />
 
@@ -73,7 +77,10 @@ function App() {
           element={<UserProfileEditPage />}
         />
 
-        <Route path="/user/user-plan-selection" element={<UserPlanSelection />} />
+        <Route
+          path="/user/user-plan-selection"
+          element={<UserPlanSelection />}
+        />
         <Route path="/user/user-plan-page" element={<UserPlanPage />} />
         <Route path="/user/user-interest-page" element={<UserInterest />} />
         <Route path="/user/user-chat-page" element={<UserChatPage />} />
@@ -87,13 +94,13 @@ function App() {
           element={<UserAllProfilePage />}
         />
 
-
-
-
-        <Route path="/show-searched-result" element={<UserSearchResult />} />        
-        <Route path="/reset-password/:userId" element={<ChangePassword />} />        
+        <Route path="/show-searched-result" element={<UserSearchResult />} />
+        <Route path="/reset-password/:userId" element={<ChangePassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/profile-more-details/:profileId" element={<MoreDetails />} />
+        <Route
+          path="/profile-more-details/:profileId"
+          element={<MoreDetails />}
+        />
         <Route path="/join-now-page" element={<JoinNow />} />
         <Route path="/enquiry-page" element={<EnquiryPage />} />
         <Route path="/contact-page" element={<ContactPage />} />
