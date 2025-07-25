@@ -54,6 +54,7 @@ const UserSignUp = () => {
 
     try {
       const response = await sendSignUpRequest(formData);
+      console.log(response.data);
       if (response.status === 201) {
         setSuccess(response.data.message);
         setTimeout(() => {
