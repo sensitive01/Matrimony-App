@@ -72,11 +72,12 @@ const UserProfilePage = () => {
   }, []);
 
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-
-      <section>
+      <div className="pt-16">
         <div className="db">
           <div className="container">
             <div className="row">
@@ -281,11 +282,11 @@ const UserProfilePage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

@@ -1,24 +1,23 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import accountIcon from "../assets/images/profiles/1.jpg";
-import planIcon from "../assets/images/icon/plan.png";
-import menIcon from "../assets/images/icon/user.png";
-import men1 from "../assets/images/profiles/men1.jpg";
-import men2 from "../assets/images/profiles/men2.jpg";
-import men3 from "../assets/images/profiles/men3.jpg";
-import men4 from "../assets/images/profiles/men4.jpg";
 
 import Footer from "../components/Footer";
 import CopyRights from "../components/CopyRights";
 import UserSideBar from "../components/UserSideBar";
 import LayoutComponent from "../components/layouts/LayoutComponent";
 import { newProfileMatch } from "../api/axiosService/userAuthService";
+import PlanDetails from "./userdashboard/PlanDetails";
+import ProfileCompletion from "./userdashboard/ProfileCompletion";
+import RecentChats from "./userdashboard/RecentChats";
+import DashboardSearchComponent from "./userdashboard/DashboardSearchComponent";
 
 const UserDashboardPage = () => {
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const [profileMatches, setProfileMatches] = useState([]);
+  const [allProfiles, setAllProfiles] = useState([]); // Store all profiles for filtering
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState(null);
   const sliderRef = useRef(null);
   const chartRef = useRef(null);
@@ -106,10 +105,13 @@ const UserDashboardPage = () => {
       // Assuming the response structure matches your provided data
       if (response.status === 200) {
         setProfileMatches(response.data.matches);
+        setAllProfiles(response.data.matches); // Store all profiles
       } else if (Array.isArray(response)) {
         setProfileMatches(response);
+        setAllProfiles(response); // Store all profiles
       } else {
         setProfileMatches([]);
+        setAllProfiles([]);
       }
 
       setError(null);
@@ -118,6 +120,71 @@ const UserDashboardPage = () => {
       setError("Failed to load profile matches. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle search functionality
+  const handleSearch = async (searchData) => {
+    try {
+      setSearchLoading(true);
+      console.log("Searching with data:", searchData);
+
+      // Filter profiles based on search criteria
+      let filteredProfiles = [...allProfiles];
+
+      // Filter by gender/looking for
+      if (searchData.lookingFor) {
+        filteredProfiles = filteredProfiles.filter((profile) => {
+          // Assuming profile has a gender field
+          if (searchData.lookingFor === "Groom") {
+            return profile.gender === "Male" || profile.gender === "male";
+          } else {
+            return profile.gender === "Female" || profile.gender === "female";
+          }
+        });
+      }
+
+      // Filter by age range
+      if (searchData.ageFrom && searchData.ageTo) {
+        filteredProfiles = filteredProfiles.filter((profile) => {
+          const age = parseInt(profile.age);
+          return age >= searchData.ageFrom && age <= searchData.ageTo;
+        });
+      }
+
+      // Filter by community
+      if (searchData.community) {
+        filteredProfiles = filteredProfiles.filter(
+          (profile) =>
+            profile.community &&
+            profile.community
+              .toLowerCase()
+              .includes(searchData.community.toLowerCase())
+        );
+      }
+
+      // Filter by location
+      if (searchData.location) {
+        filteredProfiles = filteredProfiles.filter(
+          (profile) =>
+            profile.city &&
+            profile.city
+              .toLowerCase()
+              .includes(searchData.location.toLowerCase())
+        );
+      }
+
+      setProfileMatches(filteredProfiles);
+      setError(null);
+
+      // You can also make an API call here if you want server-side search
+      // const searchResponse = await searchProfiles(searchData);
+      // setProfileMatches(searchResponse.data);
+    } catch (err) {
+      console.error("Error searching profiles:", err);
+      setError("Failed to search profiles. Please try again.");
+    } finally {
+      setSearchLoading(false);
     }
   };
 
@@ -239,18 +306,33 @@ const UserDashboardPage = () => {
   }, []);
 
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-      <section>
+      <div className="pt-16">
         <div className="db">
           <div className="container">
             <div className="row">
               <UserSideBar />
               <div className="col-md-8 col-lg-9">
+                {/* Search Component - Added Here */}
+                <DashboardSearchComponent
+                  onSearch={handleSearch}
+                  loading={searchLoading}
+                />
+
                 <div className="col-md-12 db-sec-com db-new-pro-main">
                   <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h2 className="db-tit">New Profiles Matches</h2>
+                    <h2 className="db-tit">
+                      Profile Matches
+                      {profileMatches.length > 0 && (
+                        <span className="badge bg-primary ms-2">
+                          {profileMatches.length}
+                        </span>
+                      )}
+                    </h2>
                     {loading && (
                       <div
                         className="spinner-border spinner-border-sm"
@@ -313,183 +395,27 @@ const UserDashboardPage = () => {
                   ) : (
                     !loading && (
                       <div className="alert alert-info" role="alert">
-                        No profile matches found at the moment.
+                        No profile matches found for your search criteria.
                       </div>
                     )
                   )}
                 </div>
 
                 <div className="row">
-                  <div className="col-md-12 col-lg-6 col-xl-4 db-sec-com">
-                    <h2 className="db-tit">Profiles status</h2>
-                    <div className="db-pro-stat">
-                      <h6>Profile completion</h6>
-                      <div className="dropdown">
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary"
-                          data-bs-toggle="dropdown"
-                        >
-                          <i
-                            className="fa fa-ellipsis-h"
-                            aria-hidden="true"
-                          ></i>
-                        </button>
-                        <ul className="dropdown-menu">
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Edit profile
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              View profile
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Profile visibility settings
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="db-pro-pgog">
-                        <span>
-                          <b className="count">90</b>%
-                        </span>
-                      </div>
-                      <ul className="pro-stat-ic">
-                        <li>
-                          <span>
-                            <i
-                              className="fa fa-heart-o like"
-                              aria-hidden="true"
-                            ></i>
-                            <b>12</b>Likes
-                          </span>
-                        </li>
-                        <li>
-                          <span>
-                            <i
-                              className="fa fa-eye view"
-                              aria-hidden="true"
-                            ></i>
-                            <b>12</b>Views
-                          </span>
-                        </li>
-                        <li>
-                          <span>
-                            <i
-                              className="fa fa-handshake-o inte"
-                              aria-hidden="true"
-                            ></i>
-                            <b>12</b>Interests
-                          </span>
-                        </li>
-                        <li>
-                          <span>
-                            <i
-                              className="fa fa-hand-pointer-o clic"
-                              aria-hidden="true"
-                            ></i>
-                            <b>12</b>Clicks
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                  <ProfileCompletion />
 
-                  <div className="col-md-12 col-lg-6 col-xl-4 db-sec-com">
-                    <h2 className="db-tit">Plan details</h2>
-                    <div className="db-pro-stat">
-                      <h6 className="tit-top-curv">Standard plan</h6>
-                      <div className="dropdown">
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary"
-                          data-bs-toggle="dropdown"
-                        >
-                          <i
-                            className="fa fa-ellipsis-h"
-                            aria-hidden="true"
-                          ></i>
-                        </button>
-                        <ul className="dropdown-menu">
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Edit profile
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              View profile
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Plan change
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#!">
-                              Download invoice now
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="db-plan-card">
-                        <img src={planIcon} alt="Plan" />
-                      </div>
-                      <div className="db-plan-detil">
-                        <ul>
-                          <li>
-                            Plan name: <strong>Standard</strong>
-                          </li>
-                          <li>
-                            Validity: <strong>6 Months</strong>
-                          </li>
-                          <li>
-                            Valid till <strong>24 June 2024</strong>
-                          </li>
-                          <li>
-                            <a href="#!" className="cta-3">
-                              Upgrade now
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                  <PlanDetails />
 
-                  <div className="col-lg-12 col-xl-4 db-sec-com">
-                    <h2 className="db-tit">Recent chat list</h2>
-                    <div className="db-pro-stat">
-                      <div className="db-inte-prof-list db-inte-prof-chat">
-                        <ul>
-                          {[2, 16, 13, 14].map((profileNum, index) => (
-                            <li key={index}>
-                              <div className="db-int-pro-1">
-                                <img src={accountIcon} alt="Profile" />
-                              </div>
-                              <div className="db-int-pro-2">
-                                <h5>Julia Ann</h5>
-                                <span>Illinois, United States</span>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                  <RecentChats />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

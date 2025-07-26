@@ -122,10 +122,12 @@ const UserAllProfilePage = () => {
   };
 
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-      <section>
+      <div className="pt-16">
         <div className="all-pro-head">
           <div className="container">
             <div className="row">
@@ -142,7 +144,7 @@ const UserAllProfilePage = () => {
             Profile filters <i className="fa fa-filter" aria-hidden="true"></i>{" "}
           </h4>
         </div>
-      </section>
+      </div>
 
       <section>
         <div className="all-weddpro all-jobs all-serexp chosenini">
@@ -691,7 +693,7 @@ const UserAllProfilePage = () => {
 
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

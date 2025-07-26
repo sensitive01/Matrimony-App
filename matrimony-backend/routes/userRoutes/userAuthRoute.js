@@ -3,6 +3,7 @@ const multer = require("multer");
 
 const userAuthRoutes = express.Router();
 const userAuthController = require("../../controller/userController/userAuthController")
+const userChatController = require("../../controller/userController/userChatController")
 
 const upload = multer({ dest: "uploads/" });
 
@@ -16,6 +17,20 @@ userAuthRoutes.get("/get-all-user-profile-home",userAuthController.getAllUserPro
 userAuthRoutes.get("/new-profile-matches/:userId",userAuthController.getNewProfileMatches)
 userAuthRoutes.get("/get-profile-more-information/:profileId",userAuthController.getProfileMoreInformation)
 userAuthRoutes.get("/get-plan-details",userAuthController.getPlanDetails)
+userAuthRoutes.get("/get-my-active-plan-details/:userId",userAuthController.getMyActivePlanDetails)
+userAuthRoutes.get("/get-short-listed-profile-data/:userId",userAuthController.getShortListedProfileData)
+
+
+
+userAuthRoutes.get("/get-all-chat-done-by-the-users/:senderId/:receiverId",userChatController.getAllChatDoneByTheUsers)
+userAuthRoutes.get("/send-my-chat-list/:senderId",userChatController.getMyChatList)
+userAuthRoutes.get("/send-my-individual-chat-list/:chatId",userChatController.getMyIndividualChat)
+
+
+
+
+
+
 
 
 
@@ -31,6 +46,9 @@ userAuthRoutes.post("/complete-profile-data/:userId",upload.fields([
   ]),userAuthController.completeProfileData)
 
 userAuthRoutes.post("/save-plan-details/:userId",userAuthController.savePlanDetails)
+userAuthRoutes.post("/send-my-chat/:senderId/:receiverId",userChatController.saveMyChats)
+userAuthRoutes.post("/short-list-the-profile/:userId",userAuthController.shortListTheProfile)
+
 
 
 userAuthRoutes.put("/change-interest-status/:userId",userAuthController.changeInterestStatus)

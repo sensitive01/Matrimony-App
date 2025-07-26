@@ -3,9 +3,12 @@ import LayoutComponent from "../../components/layouts/LayoutComponent";
 
 const JoinNow = () => {
   return (
-    <>
-      <LayoutComponent />
-      <section>
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
+
+      <div className="pt-16">
         <div className="plans-ban">
           <div className="container">
             <div className="row">
@@ -21,7 +24,7 @@ const JoinNow = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       {/* END */}
       {/* PRICING PLANS */}
       <section>
@@ -233,7 +236,7 @@ const JoinNow = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

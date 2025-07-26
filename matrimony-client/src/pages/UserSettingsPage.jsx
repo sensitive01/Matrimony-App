@@ -5,38 +5,12 @@ import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserSettingsPage = () => {
   return (
-    <>
-      <LayoutComponent />
-
-      <div className="mob-me-all dashbord_menu">
-        <div className="mob-me-clo">
-          <img src="images/icon/close.svg" alt="" />
-        </div>
-        <div className="mv-bus">
-          <div className="head-pro">
-            <img src="images/profiles/1.jpg" alt="" loading="lazy" />
-            <b>user profile</b>
-            <br />
-            <h4>Ashley emyy</h4>
-          </div>
-          <ul>
-            <li>
-              <a href="#">Login</a>
-            </li>
-            <li>
-              <a href="#">Sign-up</a>
-            </li>
-            <li>
-              <a href="#">Pricing plans</a>
-            </li>
-            <li>
-              <a href="/user/show-all-profiles">Browse profiles</a>
-            </li>
-          </ul>
-        </div>
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
       </div>
 
-      <section>
+      <div className="pt-16">
         <div className="db">
           <div className="container">
             <div className="row">
@@ -320,7 +294,7 @@ const UserSettingsPage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <section className="wed-hom-footer">
         <div className="container">
@@ -415,7 +389,7 @@ const UserSettingsPage = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

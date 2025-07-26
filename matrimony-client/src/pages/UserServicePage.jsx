@@ -4,10 +4,12 @@ import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserServicePage = () => {
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-      <section>
+      <div className="pt-16">
         <div className="pg-ser">
           <div className="inn">
             <ul>
@@ -158,7 +160,7 @@ const UserServicePage = () => {
             </ul>
           </div>
         </div>
-      </section>
+      </div>
 
       <section className="wed-hom-footer wed-hom-footer-top0">
         <div className="container">
@@ -245,7 +247,7 @@ const UserServicePage = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

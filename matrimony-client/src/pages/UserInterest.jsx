@@ -15,7 +15,11 @@ const UserInterest = () => {
   const [profileData, setProfileData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [notification, setNotification] = useState({ type: "", message: "", show: false });
+  const [notification, setNotification] = useState({
+    type: "",
+    message: "",
+    show: false,
+  });
 
   // Show notification function
   const showNotification = (type, message) => {
@@ -68,13 +72,16 @@ const UserInterest = () => {
         profileId,
         status
       );
-      
+
       if (response.status === 200) {
         showNotification("success", "Profile request accepted successfully!");
         // Switch to accepted tab and fetch data
         await fetchProfileData("accepted");
       } else {
-        showNotification("error", "Failed to accept the request. Please try again.");
+        showNotification(
+          "error",
+          "Failed to accept the request. Please try again."
+        );
       }
     } catch (error) {
       showNotification("error", "Error accepting request: " + error.message);
@@ -89,13 +96,16 @@ const UserInterest = () => {
         profileId,
         status
       );
-      
+
       if (response.status === 200) {
         showNotification("success", "Profile request rejected successfully!");
         // Switch to rejected tab and fetch data
         await fetchProfileData("rejected");
       } else {
-        showNotification("error", "Failed to reject the request. Please try again.");
+        showNotification(
+          "error",
+          "Failed to reject the request. Please try again."
+        );
       }
     } catch (error) {
       showNotification("error", "Error rejecting request: " + error.message);
@@ -107,7 +117,12 @@ const UserInterest = () => {
     if (!notification.show) return null;
 
     return (
-      <div className={`alert ${notification.type === 'success' ? 'alert-success' : 'alert-danger'} alert-dismissible fade show`} role="alert">
+      <div
+        className={`alert ${
+          notification.type === "success" ? "alert-success" : "alert-danger"
+        } alert-dismissible fade show`}
+        role="alert"
+      >
         {notification.message}
         <button
           type="button"
@@ -239,9 +254,12 @@ const UserInterest = () => {
   };
 
   return (
-    <>
-      <LayoutComponent />
-      <section>
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
+
+      <div className="pt-16">
         <div className="db">
           <div className="container">
             <div className="row">
@@ -251,10 +269,10 @@ const UserInterest = () => {
                 <div className="row">
                   <div className="col-md-12 db-sec-com">
                     <h2 className="db-tit">Interest request</h2>
-                    
+
                     {/* Notification Display */}
                     {renderNotification()}
-                    
+
                     <div className="db-pro-stat">
                       <div className="dropdown">
                         <button
@@ -340,10 +358,10 @@ const UserInterest = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

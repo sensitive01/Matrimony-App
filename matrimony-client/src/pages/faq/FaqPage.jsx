@@ -3,9 +3,12 @@ import LayoutComponent from "../../components/layouts/LayoutComponent";
 
 const FaqPage = () => {
   return (
-    <>
-      <LayoutComponent />
-      <section>
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
+
+      <div className="pt-16">
         <div className="login pg-faq">
           <div className="container">
             <div className="row">
@@ -176,7 +179,7 @@ const FaqPage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       {/* END */}
       {/* FOOTER */}
       <section className="wed-hom-footer">
@@ -273,7 +276,7 @@ const FaqPage = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

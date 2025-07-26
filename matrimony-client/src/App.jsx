@@ -31,6 +31,7 @@ import UserPlanSelection from "./pages/userplanselection/UserPlanSelection";
 import UserSearchResult from "./pages/userSearch/UserSearchResult";
 import AgapeVowsApp from "./components/sample/AgapeVowsApp";
 import HomePageComponent from "./components/agapeows-components/pages/HomePageComponent";
+import ShortListedProfile from "./pages/shortlist/ShortListedProfile";
 
 // Component to handle page reloads
 function ReloadHandler() {
@@ -92,6 +93,10 @@ function App() {
         <Route
           path="/user/show-all-profiles/:searchContent"
           element={<UserAllProfilePage />}
+        />
+        <Route
+          path="/user/short-listed-profiles-page"
+          element={<ShortListedProfile />}
         />
 
         <Route path="/show-searched-result" element={<UserSearchResult />} />

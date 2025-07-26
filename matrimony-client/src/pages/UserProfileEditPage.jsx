@@ -108,23 +108,23 @@ const UserProfileEditPage = () => {
             youtube: userData.youtube || "",
             linkedin: userData.linkedin || "",
             hobbies: Array.isArray(userData.hobbies) ? userData.hobbies : [],
-            pincode: userData.pincode||"",
-            state: userData.state||"",
-            religion: userData.religion||"",
-            diet: userData.diet||"",
-            smoking:userData.smoking||"",
-            drinking: userData.drinking||"",
-            exercise: userData.exercise||"",
+            pincode: userData.pincode || "",
+            state: userData.state || "",
+            religion: userData.religion || "",
+            diet: userData.diet || "",
+            smoking: userData.smoking || "",
+            drinking: userData.drinking || "",
+            exercise: userData.exercise || "",
 
             // Partner Preferences
-            desiredAgeFrom:userData.desiredAgeFrom||"",
-            desiredAgeTo: userData.desiredAgeTo||"",
-            desiredReligion: userData.desiredReligion||"",
-            desiredCaste: userData.desiredCaste||"",
-            desiredEducation: userData.desiredEducation||"",
-            desiredLocation: userData.desiredLocation||"",
-            desiredHeightFrom:userData.desiredHeightFrom||"",
-            desiredHeightTo: userData.desiredHeightTo||"",
+            desiredAgeFrom: userData.desiredAgeFrom || "",
+            desiredAgeTo: userData.desiredAgeTo || "",
+            desiredReligion: userData.desiredReligion || "",
+            desiredCaste: userData.desiredCaste || "",
+            desiredEducation: userData.desiredEducation || "",
+            desiredLocation: userData.desiredLocation || "",
+            desiredHeightFrom: userData.desiredHeightFrom || "",
+            desiredHeightTo: userData.desiredHeightTo || "",
           });
 
           if (userData.profileImage) {
@@ -294,10 +294,12 @@ const UserProfileEditPage = () => {
   };
 
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-      <section>
+      <div className="pt-16">
         <div className="login pro-edit-update">
           <div className="container">
             <div className="row">
@@ -366,10 +368,10 @@ const UserProfileEditPage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

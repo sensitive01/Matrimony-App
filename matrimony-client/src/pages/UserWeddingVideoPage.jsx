@@ -4,11 +4,12 @@ import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserWeddingVideoPage = () => {
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-
-      <section>
+      <div className="pt-16">
         <div className="wedd pg-wedd-vid m-tp">
           <div className="container">
             <div className="row">
@@ -58,7 +59,7 @@ const UserWeddingVideoPage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <section>
         <div className="wedd-dat wedd-vid-dat">
@@ -575,7 +576,7 @@ const UserWeddingVideoPage = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

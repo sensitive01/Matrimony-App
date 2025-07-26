@@ -206,10 +206,12 @@ const UserPlanSelection = () => {
   }
 
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-      <section>
+      <div className="pt-16">
         <div className="plans-ban">
           <div className="container">
             <div className="row">
@@ -225,7 +227,7 @@ const UserPlanSelection = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       {/* END */}
       {/* PRICING PLANS */}
       <section>
@@ -293,7 +295,7 @@ const UserPlanSelection = () => {
       </section>
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

@@ -90,3 +90,53 @@ export const sendPaymentData = async (paymentData, userId) => {
   });
   return response;
 };
+
+export const getMyActivePlanData = async (userId) => {
+  const response = await userInstance.get(
+    `/get-my-active-plan-details/${userId}`
+  );
+  return response;
+};
+
+export const getAllChatDoneByTheUser = async (senderId, receiverId) => {
+  const response = await userInstance.get(
+    `/get-all-chat-done-by-the-users/${senderId}/${receiverId}`
+  );
+  return response;
+};
+
+export const sendChatMessage = async (senderId, message, receiverId) => {
+  console.log("sendChatMessage", senderId, message, receiverId);
+  const response = await userInstance.post(
+    `/send-my-chat/${senderId}/${receiverId}`,
+    { message }
+  );
+  return response;
+};
+
+export const getMyChatList = async (senderId) => {
+  const response = await userInstance.get(`/send-my-chat-list/${senderId}`);
+  return response;
+};
+
+export const getChatMessages = async (chatId) => {
+  const response = await userInstance.get(
+    `/send-my-individual-chat-list/${chatId}`
+  );
+  return response;
+};
+
+export const saveTheProfileAsShortlisted = async (profileId, userId) => {
+  const response = await userInstance.post(
+    `/short-list-the-profile/${userId}`,
+    { profileId }
+  );
+  return response;
+};
+
+export const getShortListedProfileData = async (userId) => {
+  const response = await userInstance.get(
+    `/get-short-listed-profile-data/${userId}`
+  );
+  return response;
+};

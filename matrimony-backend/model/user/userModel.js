@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
         subscriptionValidTo: { type: Date },
         subscriptionType: { type: String },
         subscriptionAmount: { type: Number },
-        subscriptionStatus: { type: String, default: "Pending" },
+        subscriptionStatus: { type: String, default: "Active" },
         subscriptionTransactionDate: { type: Date },
         subscriptionTransactionId: { type: String },
         subscriptionOrderId: { type: String },

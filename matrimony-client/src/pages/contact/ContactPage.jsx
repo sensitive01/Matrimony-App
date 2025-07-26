@@ -3,9 +3,12 @@ import LayoutComponent from "../../components/layouts/LayoutComponent";
 
 const ContactPage = () => {
   return (
-    <>
-      <LayoutComponent />
-      <section>
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
+
+      <div className="pt-16">
         <div className="str">
           <div className="ban-inn ab-ban pg-cont">
             <div className="container">
@@ -23,7 +26,7 @@ const ContactPage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       {/* END */}
       {/* START */}
       <section>
@@ -424,7 +427,7 @@ const ContactPage = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

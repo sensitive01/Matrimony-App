@@ -12,6 +12,7 @@ const userModel = require("../../model/user/userModel");
 const interestModel = require("../../model/user/interestModel");
 const planModel = require("../../model/admin/planModel");
 const paymentModel = require("../../model/user/planBookings");
+const shortListedSchema = require("../../model/user/shortListedProfile");
 const fs = require("fs");
 
 cloudinary.config({
@@ -218,11 +219,14 @@ const getUserProfileImage = async (req, res) => {
     const { userId } = req.params;
 
     // Fetch only the profileImage field of the user
-    const userImage = await userModel.findById(userId, {
-      profileImage: 1,
-      userName: 1,
-      userMobile: 1,
-    });
+    const userImage = await userModel.findOne(
+      { _id: userId },
+      {
+        profileImage: 1,
+        userName: 1,
+        userMobile: 1,
+      }
+    );
 
     if (!userImage) {
       return res.status(404).json({
@@ -550,8 +554,6 @@ const getNewProfileMatches = async (req, res) => {
       };
     });
 
-    console.log("matches", matches);
-
     res.status(200).json({ matches });
   } catch (err) {
     console.error("Error in getting the new profile matches", err);
@@ -592,6 +594,9 @@ const getSearchedProfileData = async (req, res) => {
       age: 1,
       gender: 1,
       religion: 1,
+      height: 1,
+      degree: 1,
+      jobType: 1,
     });
 
     const results = users.map((user) => ({
@@ -602,6 +607,9 @@ const getSearchedProfileData = async (req, res) => {
       age: user.age,
       gender: user.gender,
       religion: user.religion,
+      height: user.height,
+      degree: user.degree,
+      jobType: user.jobType,
     }));
     console.log("results", results);
 
@@ -658,22 +666,32 @@ const savePlanDetails = async (req, res) => {
 
     await payment.save();
 
-    // Step 2: Update User with subscription info
-    await userModel.findByIdAndUpdate(paymentData.userId, {
-      subscriptionValidFrom: validFrom,
-      subscriptionValidTo: validTo,
-      subscriptionType: paymentData.planName,
-      subscriptionAmount: paymentData.amount,
-      subscriptionStatus:
-        paymentData.paymentStatus === "success" ? "Active" : "Pending",
-      subscriptionTransactionDate: validFrom,
-      subscriptionTransactionId: paymentData.razorpayPaymentId,
-      subscriptionOrderId: orderId,
-      isEmployeeAssisted: false,
-      assistedEmployeeId: "",
-      assistedEmployeeName: "",
-      isAnySubscriptionTaken: true,
-    });
+    // Step 2: Push new paymentDetails to UserModel
+    await userModel.findByIdAndUpdate(
+      paymentData.userId,
+      {
+        $push: {
+          paymentDetails: {
+            subscriptionValidFrom: validFrom,
+            subscriptionValidTo: validTo,
+            subscriptionType: paymentData.planName,
+            subscriptionAmount: paymentData.amount,
+            subscriptionStatus:
+              paymentData.paymentStatus === "success" ? "Active" : "Pending",
+            subscriptionTransactionDate: validFrom,
+            subscriptionTransactionId: paymentData.razorpayPaymentId,
+            subscriptionOrderId: orderId,
+            isEmployeeAssisted: false,
+            assistedEmployeeId: "",
+            assistedEmployeeName: "",
+          },
+        },
+        $set: {
+          isAnySubscriptionTaken: true,
+        },
+      },
+      { new: true }
+    );
 
     return res.status(200).json({
       success: true,
@@ -690,7 +708,152 @@ const savePlanDetails = async (req, res) => {
   }
 };
 
+const getMyActivePlanDetails = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const userData = await userModel.findOne(
+      { _id: userId },
+      { paymentDetails: 1 }
+    );
+
+    if (
+      !userData ||
+      !userData.paymentDetails ||
+      userData.paymentDetails.length === 0
+    ) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No subscription found." });
+    }
+
+    // Filter active plans
+    const activePlans = userData.paymentDetails.filter(
+      (plan) => plan.subscriptionStatus === "Active"
+    );
+
+    if (activePlans.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No active subscription found." });
+    }
+
+    // Sort by subscriptionValidFrom (latest first)
+    activePlans.sort(
+      (a, b) =>
+        new Date(b.subscriptionValidFrom) - new Date(a.subscriptionValidFrom)
+    );
+
+    const latestPlan = activePlans[0];
+
+    // Format dates
+    const formatDate = (date) =>
+      new Date(date).toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+    return res.status(200).json({
+      success: true,
+      activePlan: {
+        subscriptionType: latestPlan.subscriptionType,
+        subscriptionAmount: latestPlan.subscriptionAmount,
+        subscriptionValidFrom: formatDate(latestPlan.subscriptionValidFrom),
+        subscriptionValidTo: formatDate(latestPlan.subscriptionValidTo),
+        subscriptionTransactionDate: formatDate(
+          latestPlan.subscriptionTransactionDate
+        ),
+      },
+    });
+  } catch (err) {
+    console.log("Error in getMyActivePlanDetails", err);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error." });
+  }
+};
+
+const shortListTheProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { profileId } = req.body;
+
+    console.log("userId", userId);
+    console.log("profileId", profileId);
+
+    let shortListedData = await shortListedSchema.findOne({ userId });
+
+    if (shortListedData) {
+      const alreadyShortlisted = shortListedData.profiles.includes(profileId);
+      if (!alreadyShortlisted) {
+        shortListedData.profiles.push(profileId);
+        await shortListedData.save();
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: alreadyShortlisted
+          ? "Profile already shortlisted"
+          : "Profile added to shortlist",
+        data: shortListedData,
+      });
+    } else {
+      const newShortlist = await shortListedSchema.create({
+        userId,
+        profiles: [profileId],
+      });
+
+      return res.status(201).json({
+        success: true,
+        message: "Shortlist created and profile added",
+        data: newShortlist,
+      });
+    }
+  } catch (err) {
+    console.log("Error in shortListTheProfile", err);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+const getShortListedProfileData = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const shortListData = await shortListedSchema.findOne({ userId });
+
+    if (!shortListData || shortListData.profiles.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No shortlisted profiles found.",
+        data: [],
+      });
+    }
+
+    const profiles = await userModel.find(
+      { _id: { $in: shortListData.profiles } },
+      { userName: 1, profileImage: 1, age: 1, city: 1, height: 1, degree: 1 }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Shortlisted profiles fetched successfully",
+      data: profiles,
+    });
+  } catch (err) {
+    console.log("Error in getShortListedProfileData", err);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
 module.exports = {
+  getShortListedProfileData,
+  shortListTheProfile,
+  getMyActivePlanDetails,
   savePlanDetails,
   getPlanDetails,
   getSearchedProfileData,

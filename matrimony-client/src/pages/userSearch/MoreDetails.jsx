@@ -125,10 +125,12 @@ const MoreDetails = () => {
   const calculatedAge = calculateAge(profileData.dateOfBirth);
 
   return (
-    <>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-      <section>
+      <div className="pt-16">
         <div className="profi-pg-container">
           {" "}
           {/* Added container class */}
@@ -510,7 +512,7 @@ const MoreDetails = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <ShowInterest />
 
@@ -576,7 +578,7 @@ const MoreDetails = () => {
 
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

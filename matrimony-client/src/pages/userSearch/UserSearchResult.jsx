@@ -6,6 +6,7 @@ import CopyRights from "../../components/CopyRights";
 import { useLocation } from "react-router-dom";
 import {
   fetchSearchedProfileData,
+  saveTheProfileAsShortlisted,
 } from "../../api/axiosService/userAuthService.js";
 
 const UserSearchResult = () => {
@@ -179,11 +180,24 @@ const UserSearchResult = () => {
     setIsChatOpen(false);
   };
 
-  return (
-    <>
-      <LayoutComponent />
+  const shortListProfile = async (user) => {
+    const response = await saveTheProfileAsShortlisted(user._id, userId);
+    if (response.status === 200) {
+      alert(response.data.message);
+      console.log("Profile saved as shortlisted");
+    } else {
+      console.error("Failed to save profile as shortlisted");
+      alert(response.data.message);
+    }
+  };
 
-      <section>
+  return (
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
+
+      <div className="pt-16">
         <div className="all-pro-head">
           <div className="container">
             <div className="row">
@@ -200,7 +214,7 @@ const UserSearchResult = () => {
             Profile filters <i className="fa fa-filter" aria-hidden="true"></i>{" "}
           </h4>
         </div>
-      </section>
+      </div>
 
       <section>
         <div className="all-weddpro all-jobs all-serexp chosenini">
@@ -514,12 +528,12 @@ const UserSearchResult = () => {
                               </span>
                             </div>
                             <div className="links">
-                              <span
+                              {/* <span
                                 className="cta-chat"
                                 onClick={() => openChat(user)}
                               >
                                 Chat now
-                              </span>
+                              </span> */}
                               <a href={`https://wa.me/${user.whatsapp}`}>
                                 WhatsApp
                               </a>
@@ -532,6 +546,12 @@ const UserSearchResult = () => {
                               >
                                 Send interest
                               </a>
+                              <span
+                                className="cta-chat"
+                                onClick={() => shortListProfile(user)}
+                              >
+                                Short List
+                              </span>
                               <a href={`/profile-more-details/${user._id}`}>
                                 More details
                               </a>
@@ -780,7 +800,7 @@ const UserSearchResult = () => {
 
       <Footer />
       <CopyRights />
-    </>
+    </div>
   );
 };
 

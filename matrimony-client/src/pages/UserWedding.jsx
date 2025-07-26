@@ -4,11 +4,12 @@ import LayoutComponent from "../components/layouts/LayoutComponent";
 
 const UserWedding = () => {
   return (
-    <body>
-      <LayoutComponent />
+    <div className="min-h-screen">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <LayoutComponent />
+      </div>
 
-
-      <section>
+      <div className="pt-16">
         <div className="wedd m-tp">
           <div className="container">
             <div className="row">
@@ -57,7 +58,7 @@ const UserWedding = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <section>
         <div className="foot-box">
@@ -574,7 +575,7 @@ const UserWedding = () => {
           </div>
         </div>
       </section>
-    </body>
+    </div>
   );
 };
 
