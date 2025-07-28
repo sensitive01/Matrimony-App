@@ -103,11 +103,10 @@ const getMyChatList = async (req, res) => {
       .find({
         participants: senderId,
       })
-      .sort({ updatedAt: -1 }); 
+      .sort({ updatedAt: -1 });
 
     const chatList = await Promise.all(
       chats.map(async (chat) => {
-     
         const otherParticipantId = chat.participants.find(
           (id) => id.toString() !== senderId
         );
@@ -117,7 +116,6 @@ const getMyChatList = async (req, res) => {
           profileImage: 1,
         });
 
-   
         const lastMessage =
           chat.messages.length > 0
             ? chat.messages[chat.messages.length - 1]
@@ -183,6 +181,7 @@ const getMyIndividualChat = async (req, res) => {
           profileImage: sender?.profileImage || null,
           message: msg.message,
           timestamp: msg.timestamp,
+          formattedTime: moment(msg.timestamp).fromNow(), // e.g., "2 hours ago"
         };
       })
     );
@@ -200,17 +199,9 @@ const getMyIndividualChat = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = { getAllChatDoneByTheUsers, saveMyChats, getMyChatList,getMyIndividualChat};
+module.exports = {
+  getAllChatDoneByTheUsers,
+  saveMyChats,
+  getMyChatList,
+  getMyIndividualChat,
+};
