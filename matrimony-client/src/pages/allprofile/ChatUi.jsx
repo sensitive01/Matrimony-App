@@ -1,6 +1,68 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import EmojiPicker from "emoji-picker-react";
 
+// Utility function to handle both timestamp formats
+const formatTimestamp = (timestamp) => {
+  // If timestamp is already in human-readable format (like "08:53 PM"), return as is
+  if (typeof timestamp === 'string' && timestamp.match(/^\d{1,2}:\d{2}\s?(AM|PM)$/i)) {
+    return timestamp;
+  }
+  
+  // If timestamp is already in simple time format (like "15:30"), return as is
+  if (typeof timestamp === 'string' && timestamp.match(/^\d{1,2}:\d{2}$/)) {
+    return timestamp;
+  }
+  
+  // If it's an ISO string or Date object, convert to human-readable format
+  try {
+    const date = new Date(timestamp);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return timestamp; // Return original if can't parse
+    }
+    
+    const now = new Date();
+    const isToday = now.toDateString() === date.toDateString();
+    
+    if (isToday) {
+      // Show time for today's messages
+      return date.toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+    }
+    
+    // Check if it's yesterday
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const isYesterday = yesterday.toDateString() === date.toDateString();
+    
+    if (isYesterday) {
+      return 'Yesterday';
+    }
+    
+    // Check if it's within this week
+    const weekAgo = new Date(now);
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    
+    if (date > weekAgo) {
+      return date.toLocaleDateString([], { weekday: 'short' }); // Mon, Tue, etc.
+    }
+    
+    // For older messages, show date
+    return date.toLocaleDateString([], { 
+      month: 'short', 
+      day: 'numeric' 
+    });
+    
+  } catch (error) {
+    // If there's any error parsing, return the original timestamp
+    return timestamp;
+  }
+};
+
 const ChatUi = ({
   setIsChatOpen,
   handleChatSubmit,
@@ -11,6 +73,7 @@ const ChatUi = ({
   socket,
   userId,
 }) => {
+  console.log(chatMessages)
   const messagesEndRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
@@ -334,7 +397,8 @@ const ChatUi = ({
                       textAlign: "right",
                     }}
                   >
-                    {message.timestamp}
+                    {/* This will handle both timestamp formats */}
+                    {formatTimestamp(message.timestamp)}
                   </div>
                 </div>
               </div>

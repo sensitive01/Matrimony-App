@@ -308,13 +308,13 @@ const UserChatPage = () => {
                                 </div>
                                 <div className="db-chat-bio">
                                   <h5>{chat.participant.name}</h5>
-                                  <span>{chat.lastMessage.message}</span>
+                                  <span>{chat?.lastMessage?.message||""}</span>
                                 </div>
                                 <div className="db-chat-info">
                                   <div className="time">
                                     <span className="timer">
                                       {formatLastMessageTime(
-                                        chat.lastMessage.timestamp
+                                        chat?.lastMessage?.timestamp||""
                                       )}
                                     </span>
                                     {/* You can add unread count here if available in your API */}
