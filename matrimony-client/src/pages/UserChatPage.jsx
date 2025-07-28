@@ -29,7 +29,7 @@ const UserChatPage = () => {
   // Socket.IO states
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+  const baseUrl = import.meta.env.VITE_BASE_ROUTE;
 
 
   // Initialize Socket.IO connection

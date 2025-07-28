@@ -96,7 +96,7 @@ const MoreDetails = () => {
   const [newMessage, setNewMessage] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [chatLoading, setChatLoading] = useState(false);
-  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+  const baseUrl = import.meta.env.VITE_BASE_ROUTE;
 
   // Socket.IO states
   const [socket, setSocket] = useState(null);
