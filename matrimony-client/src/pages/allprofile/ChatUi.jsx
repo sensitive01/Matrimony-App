@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import EmojiPicker from "emoji-picker-react";
 
 const ChatUi = ({
   setIsChatOpen,
@@ -7,15 +8,139 @@ const ChatUi = ({
   chatMessages,
   newMessage,
   setNewMessage,
+  socket,
+  userId,
 }) => {
   const messagesEndRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [otherUserTyping, setOtherUserTyping] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const typingTimeoutRef = useRef(null);
+  const emojiPickerRef = useRef(null);
+
+  const roomId = `chat_${[userId, profileData.receiverId].sort().join("_")}`;
 
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
 
-  console.log("chatMessages",chatMessages)
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEmojiPicker]);
+
+  // Socket event listeners
+  useEffect(() => {
+    if (!socket) return;
+
+    // Listen for typing indicators
+    const handleUserTyping = ({ userId: typingUserId, isTyping }) => {
+      if (typingUserId === profileData.receiverId) {
+        setOtherUserTyping(isTyping);
+      }
+    };
+
+    socket.on("user_typing", handleUserTyping);
+
+    return () => {
+      socket.off("user_typing", handleUserTyping);
+    };
+  }, [socket, profileData.receiverId]);
+
+  // Handle typing indicator
+  const handleTyping = useCallback(() => {
+    if (!socket) return;
+
+    if (!isTyping) {
+      setIsTyping(true);
+      socket.emit("typing", {
+        senderId: userId,
+        recipientId: profileData.receiverId,
+        isTyping: true,
+        roomId,
+      });
+    }
+
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Set new timeout to stop typing indicator
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      socket.emit("typing", {
+        senderId: userId,
+        recipientId: profileData.receiverId,
+        isTyping: false,
+        roomId,
+      });
+    }, 1000);
+  }, [socket, isTyping, userId, profileData.receiverId, roomId]);
+
+  // Handle emoji selection
+  const handleEmojiClick = useCallback(
+    (emojiData) => {
+      setNewMessage((prev) => prev + emojiData.emoji);
+      setShowEmojiPicker(false);
+      handleTyping(); // Trigger typing indicator when emoji is added
+    },
+    [handleTyping]
+  );
+
+  // Enhanced message submit with Socket.IO
+  const handleEnhancedSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!newMessage.trim()) return;
+
+      // Stop typing indicator
+      if (isTyping) {
+        setIsTyping(false);
+        if (socket) {
+          socket.emit("typing", {
+            senderId: userId,
+            recipientId: profileData.receiverId,
+            isTyping: false,
+            roomId,
+          });
+        }
+      }
+
+      // Close emoji picker if open
+      setShowEmojiPicker(false);
+
+      // Call the original submit handler
+      handleChatSubmit(e);
+    },
+    [
+      newMessage,
+      isTyping,
+      socket,
+      userId,
+      profileData.receiverId,
+      roomId,
+      handleChatSubmit,
+    ]
+  );
+
+  console.log("chatMessages", chatMessages);
 
   return (
     <div
@@ -58,7 +183,7 @@ const ChatUi = ({
               objectFit: "cover",
             }}
           />
-          {/* Online indicator */}
+          {/* Online/Offline indicator */}
           <div
             style={{
               position: "absolute",
@@ -66,7 +191,7 @@ const ChatUi = ({
               right: "0",
               width: "12px",
               height: "12px",
-              backgroundColor: "#4CAF50",
+              backgroundColor: profileData.isOnline ? "#4CAF50" : "#999",
               borderRadius: "50%",
               border: "2px solid white",
             }}
@@ -87,11 +212,19 @@ const ChatUi = ({
           <span
             style={{
               fontSize: "12px",
-              color: "#4CAF50",
+              color: otherUserTyping
+                ? "#2196F3"
+                : profileData.isOnline
+                ? "#4CAF50"
+                : "#999",
               fontWeight: "500",
             }}
           >
-            Available online
+            {otherUserTyping
+              ? "Typing..."
+              : profileData.isOnline
+              ? "Online"
+              : "Offline"}
           </span>
         </div>
 
@@ -117,6 +250,7 @@ const ChatUi = ({
           overflowY: "auto",
           padding: "16px",
           backgroundColor: "#f8f9fa",
+          position: "relative",
         }}
       >
         {chatMessages.length === 0 ? (
@@ -208,6 +342,36 @@ const ChatUi = ({
             <div ref={messagesEndRef} />
           </div>
         )}
+
+        {/* Emoji Picker */}
+        {showEmojiPicker && (
+          <div
+            ref={emojiPickerRef}
+            style={{
+              position: "absolute",
+              bottom: "10px",
+              left: "10px",
+              right: "10px",
+              zIndex: 1001,
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+            }}
+          >
+            <EmojiPicker
+              onEmojiClick={handleEmojiClick}
+              width="100%"
+              height={300}
+              theme="light"
+              searchDisabled={false}
+              skinTonesDisabled={false}
+              previewConfig={{
+                defaultEmoji: "1f60a",
+                defaultCaption: "What's on your mind?",
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Input Area */}
@@ -218,17 +382,53 @@ const ChatUi = ({
           backgroundColor: "white",
         }}
       >
-        <form
-          onSubmit={handleChatSubmit}
-          style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}
-        >
+        <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
+          {/* Emoji Button */}
+          <button
+            type="button"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            style={{
+              background: showEmojiPicker ? "#e3f2fd" : "none",
+              border: "1px solid #e1e5e9",
+              borderRadius: "50%",
+              width: "44px",
+              height: "44px",
+              cursor: "pointer",
+              fontSize: "20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s ease",
+              color: showEmojiPicker ? "#1976d2" : "#666",
+            }}
+            onMouseEnter={(e) => {
+              if (!showEmojiPicker) {
+                e.target.style.backgroundColor = "#f0f0f0";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!showEmojiPicker) {
+                e.target.style.backgroundColor = "transparent";
+              }
+            }}
+          >
+            😊
+          </button>
+
           <input
             type="text"
             name="chat_message"
             placeholder="Type a message here.."
-            required
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => {
+              setNewMessage(e.target.value);
+              handleTyping();
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleEnhancedSubmit(e);
+              }
+            }}
             style={{
               flex: 1,
               padding: "12px 16px",
@@ -243,14 +443,15 @@ const ChatUi = ({
             }}
           />
           <button
-            type="submit"
+            onClick={handleEnhancedSubmit}
+            disabled={!newMessage.trim()}
             style={{
               padding: "12px 16px",
-              backgroundColor: "#007bff",
+              backgroundColor: newMessage.trim() ? "#007bff" : "#ccc",
               color: "white",
               border: "none",
               borderRadius: "24px",
-              cursor: "pointer",
+              cursor: newMessage.trim() ? "pointer" : "not-allowed",
               fontSize: "14px",
               fontWeight: "500",
               display: "flex",
@@ -258,6 +459,7 @@ const ChatUi = ({
               gap: "6px",
               minWidth: "60px",
               justifyContent: "center",
+              transition: "background-color 0.2s",
             }}
           >
             SEND
@@ -271,7 +473,7 @@ const ChatUi = ({
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
             </svg>
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { io } from "socket.io-client";
 import LayoutComponent from "../../components/layouts/LayoutComponent";
 import { useParams } from "react-router-dom";
 import {
@@ -12,7 +13,6 @@ import ShowInterest from "./ShowInterest";
 import ChatUi from "./ChatUi";
 import DisPlayProfileDetails from "./DisPlayProfileDetails";
 
-// Separate component for the image slider to isolate re-renders
 const ImageSlider = React.memo(
   ({ allImages, currentImageIndex, setCurrentImageIndex }) => {
     const nextImage = useCallback(() => {
@@ -96,6 +96,64 @@ const MoreDetails = () => {
   const [newMessage, setNewMessage] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [chatLoading, setChatLoading] = useState(false);
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+
+  // Socket.IO states
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  // Initialize Socket.IO connection
+  useEffect(() => {
+    const newSocket = io(baseUrl, {
+      query: { userId },
+      transports: ["websocket", "polling"],
+    });
+
+    newSocket.on("connect", () => {
+      console.log("Connected to server");
+      setSocket(newSocket);
+    });
+
+    // Listen for incoming messages
+    newSocket.on("receive_message", (message) => {
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          id: message.id,
+          text: message.text,
+          sender: message.senderId === userId ? "user" : "profile",
+          timestamp: new Date(message.timestamp).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          senderId: message.senderId,
+        },
+      ]);
+    });
+
+    // Listen for online users
+    newSocket.on("users_online", (userIds) => {
+      setOnlineUsers(userIds);
+    });
+
+    newSocket.on("user_joined", (joinedUserId) => {
+      setOnlineUsers((prev) => [...prev, joinedUserId]);
+    });
+
+    newSocket.on("user_left", (leftUserId) => {
+      setOnlineUsers((prev) => prev.filter((id) => id !== leftUserId));
+    });
+
+    newSocket.on("disconnect", () => {
+      console.log("Disconnected from server");
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, [userId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -188,8 +246,17 @@ const MoreDetails = () => {
       e.preventDefault();
       if (newMessage.trim() === "") return;
 
+      const messageData = {
+        id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        text: newMessage,
+        senderId: userId,
+        recipientId: profileId,
+        roomId: `chat_${[userId, profileId].sort().join("_")}`,
+        timestamp: new Date().toISOString(),
+      };
+
       const message = {
-        id: Date.now(),
+        id: messageData.id,
         text: newMessage,
         sender: "user",
         timestamp: new Date().toLocaleTimeString([], {
@@ -199,16 +266,29 @@ const MoreDetails = () => {
       };
 
       setChatMessages((prev) => [...prev, message]);
+
+      // Send via socket for real-time delivery
+      if (socket) {
+        socket.emit("send_message", messageData);
+      }
+
+      // Also send via API for persistence
       await sendChatMessage(userId, message, profileId);
       setNewMessage("");
     },
-    [newMessage]
+    [newMessage, userId, profileId, socket]
   );
 
   const getChatDetails = async () => {
     setChatLoading(true);
 
     try {
+      // Join the chat room via socket
+      if (socket) {
+        const roomId = `chat_${[userId, profileId].sort().join("_")}`;
+        socket.emit("join_chat_room", { roomId });
+      }
+
       const response = await getAllChatDoneByTheUser(userId, profileId);
 
       if (response.status === 200) {
@@ -277,6 +357,14 @@ const MoreDetails = () => {
     );
   }
 
+  // Enhanced profile data with online status
+  const enhancedProfileData = {
+    ...profileData,
+    userName: profileData.userName || profileData.name,
+    receiverId: profileId,
+    isOnline: onlineUsers.includes(profileId),
+  };
+
   return (
     <div className="min-h-screen">
       <div className="fixed top-0 left-0 right-0 z-50">
@@ -332,10 +420,12 @@ const MoreDetails = () => {
         <ChatUi
           setIsChatOpen={setIsChatOpen}
           handleChatSubmit={handleChatSubmit}
-          profileData={profileData}
+          profileData={enhancedProfileData}
           chatMessages={chatMessages}
           newMessage={newMessage}
           setNewMessage={setNewMessage}
+          socket={socket}
+          userId={userId}
         />
       )}
 

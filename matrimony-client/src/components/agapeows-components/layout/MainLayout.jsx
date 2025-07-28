@@ -168,6 +168,7 @@ const MainLayout = () => {
       setUserName(storedUserName);
     }
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await getUserProfile(userId);
@@ -176,7 +177,9 @@ const MainLayout = () => {
         setUserImage(response.data.data.profileImage);
       }
     };
-    fetchData();
+    if (userId) {
+      fetchData();
+    }
   }, []);
 
   const handleLogOut = () => {

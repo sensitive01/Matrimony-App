@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import profile1 from "../assets/images/profiles/1.jpg";
 import profile2 from "../assets/images/profiles/2.jpg";
 import profile3 from "../assets/images/profiles/3.jpg";
@@ -24,6 +25,63 @@ const UserChatPage = () => {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
+  
+  // Socket.IO states
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+
+
+  // Initialize Socket.IO connection
+  useEffect(() => {
+    const newSocket = io(baseUrl, {
+      query: { userId },
+      transports: ['websocket', 'polling']
+    });
+
+    newSocket.on("connect", () => {
+      console.log("Connected to server");
+      setSocket(newSocket);
+    });
+
+    // Listen for incoming messages
+    newSocket.on("receive_message", (message) => {
+      setMessages(prev => [...prev, {
+        id: message.id,
+        senderId: message.senderId,
+        sender: message.senderId === userId ? "user" : "profile",
+        text: message.text,
+        message: message.text,
+        timestamp: new Date(message.timestamp).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      }]);
+    });
+
+    // Listen for online users
+    newSocket.on("users_online", (userIds) => {
+      setOnlineUsers(userIds);
+    });
+
+    newSocket.on("user_joined", (joinedUserId) => {
+      setOnlineUsers(prev => [...prev, joinedUserId]);
+    });
+
+    newSocket.on("user_left", (leftUserId) => {
+      setOnlineUsers(prev => prev.filter(id => id !== leftUserId));
+    });
+
+    newSocket.on("disconnect", () => {
+      console.log("Disconnected from server");
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, [userId]);
 
   useEffect(() => {
     const fetchChatList = async () => {
@@ -50,6 +108,12 @@ const UserChatPage = () => {
       setMessagesLoading(true);
       setSelectedChat(chat);
       setIsChatOpen(true);
+
+      // Join the chat room via socket
+      if (socket) {
+        const roomId = `chat_${[userId, chat.participant._id].sort().join("_")}`;
+        socket.emit("join_chat_room", { roomId });
+      }
 
       // Open chatbox
       const chatbox = document.querySelector(".chatbox");
@@ -84,9 +148,18 @@ const UserChatPage = () => {
     if (!newMessage.trim() || !selectedChat) return;
 
     try {
+      const messageData = {
+        id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        text: newMessage,
+        senderId: userId,
+        recipientId: selectedChat.participant._id,
+        roomId: `chat_${[userId, selectedChat.participant._id].sort().join("_")}`,
+        timestamp: new Date().toISOString(),
+      };
+
       // Add optimistic update
       const tempMessage = {
-        id: Date.now(), // temporary ID
+        id: messageData.id,
         senderId: userId,
         sender: "user",
         text: newMessage,
@@ -97,7 +170,14 @@ const UserChatPage = () => {
         }),
       };
       setMessages((prev) => [...prev, tempMessage]);
-      await sendChatMessage(userId, tempMessage, profileData.receiverId);
+
+      // Send via socket for real-time delivery
+      if (socket) {
+        socket.emit("send_message", messageData);
+      }
+
+      // Also send via API for persistence
+      await sendChatMessage(userId, tempMessage, selectedChat.participant._id);
       setNewMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
@@ -143,10 +223,12 @@ const UserChatPage = () => {
         userName: selectedChat.participant.name,
         profileImage: selectedChat.participant.profileImage || profile1,
         receiverId: selectedChat.participant._id,
+        isOnline: onlineUsers.includes(selectedChat.participant._id)
       }
     : {
         userName: "User",
         profileImage: profile1,
+        isOnline: false
       };
 
   if (loading) {
@@ -198,7 +280,7 @@ const UserChatPage = () => {
                                 onClick={() => handleChatClick(chat)}
                                 style={{ cursor: "pointer" }}
                               >
-                                <div className="db-chat-pro">
+                                <div className="db-chat-pro" style={{ position: "relative" }}>
                                   <img
                                     src={
                                       chat.participant.profileImage || profile1
@@ -208,6 +290,21 @@ const UserChatPage = () => {
                                       e.target.src = profile1; // Fallback image
                                     }}
                                   />
+                                  {/* Online indicator */}
+                                  {onlineUsers.includes(chat.participant._id) && (
+                                    <div
+                                      style={{
+                                        position: "absolute",
+                                        bottom: "2px",
+                                        right: "2px",
+                                        width: "12px",
+                                        height: "12px",
+                                        backgroundColor: "#4CAF50",
+                                        borderRadius: "50%",
+                                        border: "2px solid white",
+                                      }}
+                                    />
+                                  )}
                                 </div>
                                 <div className="db-chat-bio">
                                   <h5>{chat.participant.name}</h5>
@@ -250,6 +347,8 @@ const UserChatPage = () => {
           chatMessages={transformedMessages}
           newMessage={newMessage}
           setNewMessage={setNewMessage}
+          socket={socket}
+          userId={userId}
         />
       )}
     </div>
