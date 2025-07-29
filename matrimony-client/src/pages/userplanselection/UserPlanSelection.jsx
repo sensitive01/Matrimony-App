@@ -11,6 +11,7 @@ const UserPlanSelection = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +35,42 @@ const UserPlanSelection = () => {
 
     fetchData();
   }, []);
+
+  // Format large numbers for display
+  const formatNumber = (num) => {
+    const number = parseInt(num);
+    if (number >= 1000000000000 || number >= 1000000000) {
+      return "Unlimited";
+    } else if (number >= 1000000) {
+      return `${(number / 1000000).toFixed(1)}M`;
+    } else if (number >= 1000) {
+      return `${(number / 1000).toFixed(1)}K`;
+    }
+    return number.toString();
+  };
+
+  // Carousel controls - show 3 plans at a time
+  const plansPerSlide = 3;
+  const totalSlides = Math.ceil(plans.length / plansPerSlide);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
+  // Get plans for current slide
+  const getCurrentPlans = () => {
+    const start = currentSlide * plansPerSlide;
+    const end = start + plansPerSlide;
+    return plans.slice(start, end);
+  };
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -159,7 +196,7 @@ const UserPlanSelection = () => {
       hasFeature === "Yes" ||
       hasFeature === "All Profiles" ||
       hasFeature === "Only Basic" ||
-      hasFeature === "Only Gold" ||
+      hasFeature === "Only Premium" ||
       hasFeature === "Only Platinum"
     ) {
       return <i className="fa fa-check" aria-hidden="true" />;
@@ -170,9 +207,13 @@ const UserPlanSelection = () => {
   const getFeatureText = (plan, featureType) => {
     switch (featureType) {
       case "profiles":
-        return `${plan.maxProfiles} Premium Profiles view /${
-          plan.profilesType === "Per month" ? "mo" : "day"
+        const formattedProfiles = formatNumber(plan.maxProfiles);
+        return `${formattedProfiles} Premium Profiles view /${
+          plan.profilesType === "Per month" ? "mo" : "total"
         }`;
+      case "dailyLimit":
+        const formattedDaily = formatNumber(plan.dailyLimit);
+        return `${formattedDaily} per day limit`;
       case "viewProfiles":
         return `${plan.canViewProfiles} user profile can view`;
       case "contactDetails":
@@ -228,25 +269,89 @@ const UserPlanSelection = () => {
           </div>
         </div>
       </div>
-      {/* END */}
-      {/* PRICING PLANS */}
+
+      {/* PRICING PLANS WITH CAROUSEL */}
       <section>
         <div className="plans-main">
           <div className="container">
-            <div className="row">
+            <div className="row" style={{ position: "relative" }}>
+              {/* Carousel Navigation - Only show if more than 3 plans */}
+              {plans.length > 3 && (
+                <>
+                  <button
+                    onClick={prevSlide}
+                    style={{
+                      position: "absolute",
+                      left: "-50px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      zIndex: 10,
+                      background: "#a020f0",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "50px",
+                      height: "50px",
+                      fontSize: "18px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseOver={(e) => (e.target.style.background = "#8b1a9e")}
+                    onMouseOut={(e) => (e.target.style.background = "#a020f0")}
+                  >
+                    <i className="fa fa-chevron-left" aria-hidden="true"></i>
+                  </button>
+
+                  <button
+                    onClick={nextSlide}
+                    style={{
+                      position: "absolute",
+                      right: "-50px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      zIndex: 10,
+                      background: "#a020f0",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "50px",
+                      height: "50px",
+                      fontSize: "18px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseOver={(e) => (e.target.style.background = "#8b1a9e")}
+                    onMouseOut={(e) => (e.target.style.background = "#a020f0")}
+                  >
+                    <i className="fa fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+                </>
+              )}
+
+              {/* Plans Display */}
               <ul>
-                {plans.map((plan, index) => (
+                {getCurrentPlans().map((plan, index) => (
                   <li key={plan._id}>
                     <div
                       className={`pri-box ${
-                        plan.name === "Gold" ? "pri-box-pop" : ""
+                        plan.name === "Premium" || plan.name === "Gold"
+                          ? "pri-box-pop"
+                          : ""
                       }`}
                     >
-                      {plan.name === "Gold" && (
+                      {(plan.name === "Premium" || plan.name === "Gold") && (
                         <span className="pop-pln">Most popular plan</span>
                       )}
                       <h2>{plan.name}</h2>
-                      <p>Printer took a type and scrambled </p>
+                      <p>Printer took a type and scrambled</p>
                       <a
                         href="#"
                         className="cta"
@@ -259,7 +364,9 @@ const UserPlanSelection = () => {
                       </a>
                       <span className="pri-cou">
                         <b>₹{plan.price}</b>/
-                        {plan.priceType === "Per month" ? "mo" : "yr"}
+                        {plan.durationType === "months"
+                          ? `${plan.duration}mo`
+                          : `${plan.duration}yr`}
                       </span>
                       <ol>
                         <li>
@@ -268,6 +375,12 @@ const UserPlanSelection = () => {
                           )}
                           {getFeatureText(plan, "profiles")}
                         </li>
+                        {plan.dailyLimit && (
+                          <li>
+                            {renderFeatureIcon(plan.dailyLimit)}
+                            {getFeatureText(plan, "dailyLimit")}
+                          </li>
+                        )}
                         <li>
                           {renderFeatureIcon(plan.canViewProfiles)}
                           {getFeatureText(plan, "viewProfiles")}
@@ -289,10 +402,39 @@ const UserPlanSelection = () => {
                   </li>
                 ))}
               </ul>
+
+              {/* Carousel Dots - Only show if more than 3 plans */}
+              {plans.length > 3 && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "30px",
+                    gap: "10px",
+                  }}
+                >
+                  {Array.from({ length: totalSlides }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToSlide(index)}
+                      style={{
+                        width: "12px",
+                        height: "12px",
+                        borderRadius: "50%",
+                        border: "none",
+                        background: currentSlide === index ? "#a020f0" : "#ddd",
+                        cursor: "pointer",
+                        transition: "background 0.3s ease",
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
+
       <Footer />
       <CopyRights />
     </div>

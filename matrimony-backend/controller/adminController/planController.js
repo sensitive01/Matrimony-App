@@ -5,22 +5,27 @@ const addNewPlanData = async (req, res) => {
     const { planData } = req.body;
     console.log("Plan Data", planData);
 
-    // Optional: Validate required fields
     const requiredFields = [
       "name",
       "price",
       "priceType",
+      "duration",
+      "durationType",
       "maxProfiles",
       "profilesType",
+      "dailyLimit",
       "canViewProfiles",
       "viewContactDetails",
       "sendInterestRequest",
       "startChat",
+      "dedicatedManager",
       "status",
     ];
+
     const missing = requiredFields.filter(
       (field) => planData[field] == null || planData[field] === ""
     );
+
     if (missing.length) {
       return res.status(400).json({
         success: false,
@@ -28,17 +33,24 @@ const addNewPlanData = async (req, res) => {
       });
     }
 
-    // Convert numeric values
+    const normalizeValue = (val) => {
+      return isNaN(val) ? val : Number(val);
+    };
+
     const docData = {
       name: planData.name,
       price: Number(planData.price),
       priceType: planData.priceType,
-      maxProfiles: Number(planData.maxProfiles),
+      duration: Number(planData.duration),
+      durationType: planData.durationType,
+      maxProfiles: normalizeValue(planData.maxProfiles),
       profilesType: planData.profilesType,
+      dailyLimit: normalizeValue(planData.dailyLimit),
       canViewProfiles: planData.canViewProfiles,
       viewContactDetails: planData.viewContactDetails,
       sendInterestRequest: planData.sendInterestRequest,
       startChat: planData.startChat,
+      dedicatedManager: planData.dedicatedManager,
       status: planData.status,
     };
 
@@ -120,7 +132,7 @@ const editPlanStatus = async (req, res) => {
   try {
     const { planId } = req.params;
     const { planStatus } = req.body;
-    console.log("planStatus",planStatus,planId)
+    console.log("planStatus", planStatus, planId);
 
     if (!["Active", "Inactive"].includes(planStatus)) {
       return res.status(400).json({

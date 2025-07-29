@@ -44,14 +44,14 @@ const Sidebar = () => {
                   <a href="/admin/all-user-list">All Users</a>
                 </li>
                 <li>
-                  <a href="/admin/free-user-list">Free Users</a>
+                  <a href="/admin/paid-user-list">Paid Users</a>
                 </li>
-                <li>
+                {/* <li>
                   <a href="/admin/standard-user-list">Standard Users</a>
                 </li>
                 <li>
                   <a href="/admin/premium-user-list">Premium Users</a>
-                </li>
+                </li> */}
                 <li>
                   <a href="/admin/add-new-user">Add new User</a>
                 </li>

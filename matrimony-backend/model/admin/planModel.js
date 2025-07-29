@@ -5,7 +5,7 @@ const planSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      enum: ["Basic", "Gold", "Platinum"],
+      enum: ["Basic", "Premium", "Platinum", "Golden membership"],
       required: true,
     },
     price: {
@@ -14,21 +14,37 @@ const planSchema = new mongoose.Schema(
     },
     priceType: {
       type: String,
-      enum: ["Per day", "Per month", "Per Year"],
+      enum: ["₹", "$", "€"],
+      default: "₹",
+    },
+    // NEW: Duration fields
+    duration: {
+      type: Number,
+      required: true,
+    },
+    durationType: {
+      type: String,
+      enum: ["days", "months", "years"],
+      default: "months",
       required: true,
     },
     maxProfiles: {
-      type: Number,
+      type: mongoose.Schema.Types.Mixed, // Can be Number or String ("unlimited")
       required: true,
     },
     profilesType: {
       type: String,
-      enum: ["Per day", "Per month", "Per Year"],
+      enum: ["Total", "Per day", "Per month", "Per Year"],
+      default: "Total",
+      required: true,
+    },
+    // NEW: Daily limit field
+    dailyLimit: {
+      type: String, // Can be number or "unlimited"
       required: true,
     },
     canViewProfiles: {
       type: String,
-      enum: ["All Profiles", "Only Basic", "Only Gold", "Only Platinum"],
       required: true,
     },
     viewContactDetails: {
@@ -45,6 +61,12 @@ const planSchema = new mongoose.Schema(
       type: String,
       enum: ["Yes", "No"],
       required: true,
+    },
+    // NEW: Dedicated manager field
+    dedicatedManager: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
     },
     status: {
       type: String,

@@ -6,7 +6,7 @@ const planController = require("../../controller/adminController/planController"
 adminRoutes.get("/",adminController.registerAdmin);
 adminRoutes.get("/get-all-users",adminController.getAllUsersData);
 adminRoutes.get("/get-all-new-requested-users",adminController.getAllNewRequestedUsersData);
-adminRoutes.get("/unpaid-users-data", adminController.getUnPaidUsersData);
+adminRoutes.get("/paid-users-data", adminController.getPaidUsersData);
 adminRoutes.get("/get-all-plan-data", planController.getAllPlanData);
 
 

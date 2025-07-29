@@ -54,29 +54,29 @@ function App() {
           }
         />
         <Route
-          path="/admin/free-user-list"
+          path="/admin/paid-user-list"
           element={
             <AdminLayout>
               <AdminFreeUserList />
             </AdminLayout>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/standard-user-list"
           element={
             <AdminLayout>
               <AdminFreeUserList />
             </AdminLayout>
           }
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/admin/premium-user-list"
           element={
             <AdminLayout>
               <AdminPremiumUserList />
             </AdminLayout>
           }
-        />
+        /> */}
         <Route
           path="/admin/add-new-user"
           element={

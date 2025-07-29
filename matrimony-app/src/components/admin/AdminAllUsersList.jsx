@@ -13,6 +13,16 @@ const AdminAllUsersList = () => {
   const [filterPayment, setFilterPayment] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setOpenDropdown(null);
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,137 +124,7 @@ const AdminAllUsersList = () => {
     });
   };
 
-  // Table styles (matching the AdminNewUserRequest layout)
-  const tableStyles = {
-    tableContainer: {
-      backgroundColor: "#fff",
-      borderRadius: "8px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-      overflow: "hidden",
-    },
-    table: {
-      width: "100%",
-      borderCollapse: "collapse",
-      fontSize: "14px",
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    },
-    tableHeader: {
-      backgroundColor: "#f8f9fa",
-      borderBottom: "2px solid #e9ecef",
-    },
-    th: {
-      padding: "12px 15px",
-      textAlign: "left",
-      fontWeight: "600",
-      color: "#495057",
-      fontSize: "13px",
-      textTransform: "uppercase",
-      letterSpacing: "0.5px",
-      cursor: "pointer",
-    },
-    td: {
-      padding: "12px 15px",
-      borderBottom: "1px solid #e9ecef",
-      color: "#212529",
-      fontSize: "14px",
-      fontWeight: "400",
-    },
-    profileCell: {
-      display: "flex",
-      alignItems: "center",
-      gap: "12px",
-    },
-    profileImage: {
-      width: "40px",
-      height: "40px",
-      borderRadius: "50%",
-      objectFit: "cover",
-      border: "2px solid #e9ecef",
-    },
-    profileInfo: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "3px",
-    },
-    profileName: {
-      fontWeight: "600",
-      color: "#212529",
-      fontSize: "14px",
-      margin: "0",
-      lineHeight: "1.2",
-    },
-    profileEmail: {
-      color: "#6c757d",
-      fontSize: "12px",
-      margin: "0",
-      lineHeight: "1.2",
-    },
-    profileMobile: {
-      color: "#495057",
-      fontSize: "12px",
-      margin: "0",
-      lineHeight: "1.2",
-      fontWeight: "500",
-    },
-    dateTimeContainer: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "2px",
-    },
-    dateText: {
-      fontSize: "13px",
-      fontWeight: "600",
-      color: "#212529",
-      margin: "0",
-      lineHeight: "1.2",
-    },
-    timeText: {
-      fontSize: "11px",
-      color: "#6c757d",
-      margin: "0",
-      lineHeight: "1.2",
-    },
-    badge: {
-      padding: "4px 8px",
-      borderRadius: "12px",
-      fontSize: "11px",
-      fontWeight: "600",
-      textTransform: "uppercase",
-      letterSpacing: "0.5px",
-    },
-    paidStatus: {
-      backgroundColor: "#e8f5e8",
-      color: "#2e7d32",
-    },
-    unpaidStatus: {
-      backgroundColor: "#ffebee",
-      color: "#d32f2f",
-    },
-    pendingStatus: {
-      backgroundColor: "#fff3e0",
-      color: "#f57c00",
-    },
-    premiumBadge: {
-      backgroundColor: "#e8f5e8",
-      color: "#2e7d32",
-    },
-    basicBadge: {
-      backgroundColor: "#e3f2fd",
-      color: "#1976d2",
-    },
-    dropdownButton: {
-      padding: "6px 10px",
-      backgroundColor: "transparent",
-      border: "1px solid #dee2e6",
-      borderRadius: "4px",
-      color: "#495057",
-      cursor: "pointer",
-      fontSize: "12px",
-    },
-  };
-
-  // Pagination component (matching AdminNewUserRequest)
+  // Pagination component
   const Pagination = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
@@ -260,54 +140,15 @@ const AdminAllUsersList = () => {
       pageNumbers.push(i);
     }
 
-    const paginationStyles = {
-      pagination: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        listStyle: "none",
-        padding: "0",
-        margin: "20px 0",
-        gap: "5px",
-      },
-      pageItem: {
-        display: "inline-block",
-      },
-      pageLink: {
-        display: "block",
-        padding: "8px 12px",
-        textDecoration: "none",
-        color: "#007bff",
-        backgroundColor: "#fff",
-        border: "1px solid #dee2e6",
-        borderRadius: "4px",
-        fontSize: "14px",
-        fontWeight: "500",
-        transition: "all 0.2s ease-in-out",
-        cursor: "pointer",
-      },
-      activePage: {
-        backgroundColor: "#007bff",
-        color: "#fff",
-        borderColor: "#007bff",
-      },
-      disabledPage: {
-        color: "#6c757d",
-        backgroundColor: "#f8f9fa",
-        borderColor: "#dee2e6",
-        cursor: "not-allowed",
-      },
-    };
-
     return (
-      <nav aria-label="Page navigation">
-        <ul style={paginationStyles.pagination}>
-          <li style={paginationStyles.pageItem}>
+      <nav
+        aria-label="Page navigation"
+        className="d-flex justify-content-center mt-4"
+      >
+        <ul className="pagination">
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
             <button
-              style={{
-                ...paginationStyles.pageLink,
-                ...(currentPage === 1 ? paginationStyles.disabledPage : {}),
-              }}
+              className="page-link"
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
             >
@@ -317,35 +158,26 @@ const AdminAllUsersList = () => {
 
           {startPage > 1 && (
             <>
-              <li style={paginationStyles.pageItem}>
-                <button
-                  style={paginationStyles.pageLink}
-                  onClick={() => setCurrentPage(1)}
-                >
+              <li className="page-item">
+                <button className="page-link" onClick={() => setCurrentPage(1)}>
                   1
                 </button>
               </li>
               {startPage > 2 && (
-                <li style={paginationStyles.pageItem}>
-                  <span
-                    style={{ ...paginationStyles.pageLink, cursor: "default" }}
-                  >
-                    ...
-                  </span>
+                <li className="page-item">
+                  <span className="page-link">...</span>
                 </li>
               )}
             </>
           )}
 
           {pageNumbers.map((number) => (
-            <li key={number} style={paginationStyles.pageItem}>
+            <li
+              key={number}
+              className={`page-item ${currentPage === number ? "active" : ""}`}
+            >
               <button
-                style={{
-                  ...paginationStyles.pageLink,
-                  ...(currentPage === number
-                    ? paginationStyles.activePage
-                    : {}),
-                }}
+                className="page-link"
                 onClick={() => setCurrentPage(number)}
               >
                 {number}
@@ -356,17 +188,13 @@ const AdminAllUsersList = () => {
           {endPage < totalPages && (
             <>
               {endPage < totalPages - 1 && (
-                <li style={paginationStyles.pageItem}>
-                  <span
-                    style={{ ...paginationStyles.pageLink, cursor: "default" }}
-                  >
-                    ...
-                  </span>
+                <li className="page-item">
+                  <span className="page-link">...</span>
                 </li>
               )}
-              <li style={paginationStyles.pageItem}>
+              <li className="page-item">
                 <button
-                  style={paginationStyles.pageLink}
+                  className="page-link"
                   onClick={() => setCurrentPage(totalPages)}
                 >
                   {totalPages}
@@ -375,14 +203,13 @@ const AdminAllUsersList = () => {
             </>
           )}
 
-          <li style={paginationStyles.pageItem}>
+          <li
+            className={`page-item ${
+              currentPage === totalPages ? "disabled" : ""
+            }`}
+          >
             <button
-              style={{
-                ...paginationStyles.pageLink,
-                ...(currentPage === totalPages
-                  ? paginationStyles.disabledPage
-                  : {}),
-              }}
+              className="page-link"
               onClick={() => setCurrentPage(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
@@ -400,8 +227,8 @@ const AdminAllUsersList = () => {
         <div className="col-md-12">
           <div className="box-com box-qui box-lig box-tab">
             <div className="tit">
-              <h3>All Users</h3>
-              <p>All user profiles ({filteredUsers.length} users)</p>
+              <h3>Approved Users</h3>
+              <p>All approved user profiles ({filteredUsers.length} users)</p>
               <div className="dropdown">
                 <button
                   type="button"
@@ -458,7 +285,7 @@ const AdminAllUsersList = () => {
                 </div>
               </div>
               <div className="col-md-2">
-                <select
+                {/* <select
                   className="form-control"
                   value={filterPlan}
                   onChange={(e) => setFilterPlan(e.target.value)}
@@ -466,10 +293,10 @@ const AdminAllUsersList = () => {
                   <option value="all">All Plans</option>
                   <option value="Premium">Premium</option>
                   <option value="Basic">Basic</option>
-                </select>
+                </select> */}
               </div>
               <div className="col-md-2">
-                <select
+                {/* <select
                   className="form-control"
                   value={filterPayment}
                   onChange={(e) => setFilterPayment(e.target.value)}
@@ -477,7 +304,7 @@ const AdminAllUsersList = () => {
                   <option value="all">All Payments</option>
                   <option value="Paid">Paid</option>
                   <option value="Pending">Pending</option>
-                </select>
+                </select> */}
               </div>
               <div className="col-md-2">
                 <button
@@ -500,30 +327,33 @@ const AdminAllUsersList = () => {
                 </div>
               </div>
             ) : (
-              <div style={tableStyles.tableContainer}>
-                <table style={tableStyles.table}>
-                  <thead style={tableStyles.tableHeader}>
+              <div
+                className="table-responsive"
+                style={{ height: "70vh", overflowY: "auto" }}
+              >
+                <table className="table table-hover">
+                  <thead>
                     <tr>
-                      <th style={tableStyles.th}>No</th>
+                      <th className="text-center border-0">NO</th>
                       <th
-                        style={tableStyles.th}
+                        className="cursor-pointer border-0"
                         onClick={() => handleSort("userName")}
                       >
-                        Profile {getSortIcon("userName")}
+                        PROFILE {getSortIcon("userName")}
                       </th>
                       <th
-                        style={tableStyles.th}
+                        className="cursor-pointer d-none d-md-table-cell border-0"
                         onClick={() => handleSort("userMobile")}
                       >
-                        Phone {getSortIcon("userMobile")}
+                        PHONE {getSortIcon("userMobile")}
                       </th>
                       <th
-                        style={tableStyles.th}
+                        className="cursor-pointer d-none d-lg-table-cell border-0"
                         onClick={() => handleSort("city")}
                       >
-                        City {getSortIcon("city")}
+                        CITY {getSortIcon("city")}
                       </th>
-                      <th style={tableStyles.th}>Plan Start</th>
+                      {/* <th style={tableStyles.th}>Plan Start</th>
                       <th style={tableStyles.th}>Expiry Date</th>
                       <th
                         style={tableStyles.th}
@@ -536,8 +366,8 @@ const AdminAllUsersList = () => {
                         onClick={() => handleSort("planType")}
                       >
                         Plan Type {getSortIcon("planType")}
-                      </th>
-                      <th style={tableStyles.th}>More</th>
+                      </th> */}
+                      <th className="text-center border-0">MORE</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -546,41 +376,67 @@ const AdminAllUsersList = () => {
                         const serialNumber = indexOfFirstItem + index + 1;
                         return (
                           <tr key={user._id}>
-                            <td style={tableStyles.td}>{serialNumber}</td>
-                            <td style={tableStyles.td}>
-                              <div style={tableStyles.profileCell}>
-                                <div
-                                  style={{
-                                    ...tableStyles.profileImage,
-                                    backgroundColor: "#007bff",
-                                    color: "white",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontSize: "14px",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  {/* {getInitials(user.userName)} */}
+                            <td className="text-center align-middle border-0">
+                              {serialNumber}
+                            </td>
+                            <td className="align-middle border-0">
+                              <div className="d-flex align-items-center">
+                                {user.profileImage ? (
                                   <img
                                     src={user.profileImage}
-                                    alt={getInitials(user.userName)}
-                                    style={tableStyles.profileImage}
+                                    alt={user.userName}
+                                    className="rounded-circle me-3"
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      objectFit: "cover",
+                                    }}
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                      e.target.nextSibling.style.display =
+                                        "flex";
+                                    }}
                                   />
-                                </div>
-                                <div style={tableStyles.profileInfo}>
-                                  <h5 style={tableStyles.profileName}>
+                                ) :     <div
+                                  className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                  style={{
+                                    width: "40px",
+                                    height: "40px",
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                    display: user.profileImage
+                                      ? "none"
+                                      : "flex",
+                                  }}
+                                >
+                                  {getInitials(user.userName)}
+                                </div>}
+                            
+                                <div>
+                                  <h6 className="mb-0 fw-bold">
                                     {user.userName}
-                                  </h5>
-                                  <p style={tableStyles.profileEmail}>
+                                  </h6>
+                                  <small className="text-muted">
                                     {user.userEmail}
-                                  </p>
+                                  </small>
+                                  <div className="d-md-none">
+                                    <small className="text-muted d-block">
+                                      {user.userMobile}
+                                    </small>
+                                    <small className="text-muted d-lg-none">
+                                      {user.city}
+                                    </small>
+                                  </div>
                                 </div>
                               </div>
                             </td>
-                            <td style={tableStyles.td}>{user.userMobile}</td>
-                            <td style={tableStyles.td}>{user.city}</td>
-                            <td style={tableStyles.td}>
+                            <td className="align-middle d-none d-md-table-cell border-0">
+                              {user.userMobile}
+                            </td>
+                            <td className="align-middle d-none d-lg-table-cell border-0">
+                              {user.city}
+                            </td>
+                            {/* <td style={tableStyles.td}>
                               {formatDate(user.planStart)}
                             </td>
                             <td style={tableStyles.td}>
@@ -621,46 +477,109 @@ const AdminAllUsersList = () => {
                               >
                                 {user.planType}
                               </span>
-                            </td>
-                            <td style={tableStyles.td}>
-                              <div className="dropdown">
+                            </td> */}
+                            <td className="align-middle text-center border-0">
+                              <div className="dropdown position-relative">
                                 <button
                                   type="button"
-                                  style={tableStyles.dropdownButton}
-                                  data-bs-toggle="dropdown"
+                                  className="btn btn-outline-secondary btn-sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenDropdown(
+                                      openDropdown === user._id
+                                        ? null
+                                        : user._id
+                                    );
+                                  }}
                                 >
                                   <i
                                     className="fa fa-ellipsis-h"
                                     aria-hidden="true"
                                   ></i>
                                 </button>
-                                <ul className="dropdown-menu">
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      Edit
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      Delete
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      Billing info
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      View more details
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a className="dropdown-item" href="#">
-                                      View profile
-                                    </a>
-                                  </li>
-                                </ul>
+                                {openDropdown === user._id && (
+                                  <ul
+                                    className="dropdown-menu show position-absolute"
+                                    style={{
+                                      display: "block",
+                                      top: "100%",
+                                      left: "auto",
+                                      right: "0",
+                                      zIndex: 1000,
+                                      minWidth: "160px",
+                                    }}
+                                  >
+                                    <li>
+                                      <a
+                                        className="dropdown-item"
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          setOpenDropdown(null);
+                                          // Add your edit logic here
+                                        }}
+                                      >
+                                        <i className="fa fa-edit me-2"></i>Edit
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a
+                                        className="dropdown-item text-danger"
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          setOpenDropdown(null);
+                                          // Add your delete logic here
+                                        }}
+                                      >
+                                        <i className="fa fa-trash me-2"></i>
+                                        Delete
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a
+                                        className="dropdown-item"
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          setOpenDropdown(null);
+                                          // Add your billing logic here
+                                        }}
+                                      >
+                                        <i className="fa fa-credit-card me-2"></i>
+                                        Billing info
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a
+                                        className="dropdown-item"
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          setOpenDropdown(null);
+                                          // Add your view details logic here
+                                        }}
+                                      >
+                                        <i className="fa fa-info-circle me-2"></i>
+                                        View details
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a
+                                        className="dropdown-item"
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          setOpenDropdown(null);
+                                          // Add your view profile logic here
+                                        }}
+                                      >
+                                        <i className="fa fa-user me-2"></i>View
+                                        profile
+                                      </a>
+                                    </li>
+                                  </ul>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -668,13 +587,10 @@ const AdminAllUsersList = () => {
                       })
                     ) : (
                       <tr>
-                        <td
-                          colSpan="9"
-                          style={{ ...tableStyles.td, textAlign: "center" }}
-                        >
-                          <div className="p-4">
-                            <i className="fa fa-search fa-2x text-muted mb-3"></i>
-                            <h5>No users found</h5>
+                        <td colSpan="5" className="text-center py-5 border-0">
+                          <div>
+                            <i className="fa fa-search fa-3x text-muted mb-3"></i>
+                            <h5 className="text-muted">No users found</h5>
                             <p className="text-muted">
                               Try adjusting your search or filter criteria
                             </p>
@@ -688,14 +604,85 @@ const AdminAllUsersList = () => {
             )}
 
             {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="mt-4">
-                <Pagination />
-              </div>
-            )}
+            {totalPages > 1 && <Pagination />}
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .cursor-pointer {
+          cursor: pointer;
+        }
+
+        .table th {
+          font-weight: 600;
+          font-size: 13px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #6c757d;
+          background-color: #f8f9fa;
+          padding: 15px;
+        }
+
+        .table td {
+          font-size: 14px;
+          vertical-align: middle;
+          padding: 15px;
+        }
+
+        .table {
+          border: none;
+        }
+
+        .dropdown-menu {
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+          border: 1px solid rgba(0, 0, 0, 0.15);
+          border-radius: 0.375rem;
+        }
+
+        .dropdown-item:hover {
+          background-color: #f8f9fa;
+        }
+
+        .table-responsive::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 3px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+          background: #a8a8a8;
+        }
+
+        .badge {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          padding: 4px 8px;
+        }
+
+        @media (max-width: 768px) {
+          .table th,
+          .table td {
+            padding: 8px;
+            font-size: 12px;
+          }
+
+          .badge {
+            font-size: 10px;
+            padding: 2px 6px;
+          }
+        }
+      `}</style>
     </NewLayout>
   );
 };

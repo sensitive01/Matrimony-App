@@ -109,11 +109,11 @@ const getAllUsersData = async (req, res) => {
   }
 };
 
-const getUnPaidUsersData = async (req, res) => {
+const getPaidUsersData = async (req, res) => {
   try {
     const userData = await userModel
       .find(
-        { isAnySubscriptionTaken: false },
+        { isAnySubscriptionTaken: true },
         {
           userEmail: 1,
           userMobile: 1,
@@ -121,17 +121,24 @@ const getUnPaidUsersData = async (req, res) => {
           gender: 1,
           city: 1,
           profileImage: 1,
+          isAnySubscriptionTaken: 1,
+          "paymentDetails.subscriptionValidFrom": 1,
+          "paymentDetails.subscriptionValidTo": 1,
+          "paymentDetails.subscriptionType": 1,
+          "paymentDetails.subscriptionAmount": 1,
+          "paymentDetails.subscriptionStatus": 1,
+          "paymentDetails.subscriptionTransactionDate": 1,
         }
       )
       .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
-      message: "All users fetched successfully",
+      message: "Paid users fetched successfully",
       data: userData,
     });
   } catch (err) {
-    console.error("Error in getAllUsersData", err);
+    console.error("Error in getPaidUsersData", err);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -193,7 +200,7 @@ const approveNewUser = async (req, res) => {
 };
 
 module.exports = {
-  getUnPaidUsersData,
+  getPaidUsersData,
   approveNewUser,
   getAllNewRequestedUsersData,
   registerAdmin,

@@ -13,17 +13,31 @@ const AdminPricingPlans = () => {
     id: null,
     name: "",
     price: "",
-    priceType: "",
+    priceType: "₹",
+    duration: "",
+    durationType: "months",
     maxProfiles: "",
-    profilesType: "",
+    profilesType: "Total",
+    dailyLimit: "",
     canViewProfiles: "",
     viewContactDetails: "",
     sendInterestRequest: "",
     startChat: "",
+    dedicatedManager: "No",
     status: "Active",
   });
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setOpenDropdown(null);
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,27 +55,47 @@ const AdminPricingPlans = () => {
       id: null,
       name: "",
       price: "",
-      priceType: "",
+      priceType: "₹",
+      duration: "",
+      durationType: "months",
       maxProfiles: "",
-      profilesType: "",
+      profilesType: "Total",
+      dailyLimit: "",
       canViewProfiles: "",
       viewContactDetails: "",
       sendInterestRequest: "",
       startChat: "",
+      dedicatedManager: "No",
       status: "Active",
     });
   };
 
   const handleEditPlan = (plan) => {
     setModalMode("edit");
-    setCurrentPlan(plan);
+    setCurrentPlan({
+      id: plan._id,
+      name: plan.name,
+      price: plan.price.toString(),
+      priceType: plan.priceType || "₹",
+      duration: plan.duration || "",
+      durationType: plan.durationType || "months",
+      maxProfiles: plan.maxProfiles?.toString() || "",
+      profilesType: plan.profilesType || "Total",
+      dailyLimit: plan.dailyLimit || "",
+      canViewProfiles: plan.canViewProfiles || "",
+      viewContactDetails: plan.viewContactDetails || "",
+      sendInterestRequest: plan.sendInterestRequest || "",
+      startChat: plan.startChat || "",
+      dedicatedManager: plan.dedicatedManager || "No",
+      status: plan.status,
+    });
   };
 
   const handleSubmitPlan = async (e) => {
     e.preventDefault();
 
-    if (!currentPlan.name || !currentPlan.price) {
-      alert("Please fill in all required fields");
+    if (!currentPlan.name || !currentPlan.price || !currentPlan.duration) {
+      alert("Please fill in all required fields (Plan name, Price, Duration)");
       return;
     }
 
@@ -135,6 +169,32 @@ const AdminPricingPlans = () => {
     }
   };
 
+  // Helper function to format duration display
+  const formatDuration = (duration, durationType) => {
+    if (!duration) return "N/A";
+    return `${duration} ${durationType || 'months'}`;
+  };
+
+  // Helper function to format profile views display
+  const formatProfileViews = (maxProfiles, dailyLimit) => {
+    let display = "";
+    if (maxProfiles === "unlimited" || maxProfiles === "Unlimited") {
+      display = "Unlimited";
+    } else if (maxProfiles) {
+      display = `${maxProfiles} total`;
+    } else {
+      display = "N/A";
+    }
+    
+    if (dailyLimit && dailyLimit !== "unlimited" && dailyLimit !== "Unlimited") {
+      display += ` (${dailyLimit}/day max)`;
+    } else if (dailyLimit === "unlimited" || dailyLimit === "Unlimited") {
+      display += " (Unlimited daily)";
+    }
+    
+    return display;
+  };
+
   return (
     <>
       <style jsx>{`
@@ -149,6 +209,53 @@ const AdminPricingPlans = () => {
         }
         .modal-body::-webkit-scrollbar {
           display: none;
+        }
+        .cursor-pointer {
+          cursor: pointer;
+        }
+        .table th {
+          font-weight: 600;
+          font-size: 13px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #6c757d;
+          background-color: #f8f9fa;
+          padding: 15px;
+        }
+        .table td {
+          font-size: 14px;
+          vertical-align: middle;
+          padding: 15px;
+        }
+        .table {
+          border: none;
+        }
+        .dropdown-menu {
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+          border: 1px solid rgba(0, 0, 0, 0.15);
+          border-radius: 0.375rem;
+        }
+        .dropdown-item:hover {
+          background-color: #f8f9fa;
+        }
+        .plan-details {
+          font-size: 12px;
+          color: #6c757d;
+          margin-top: 4px;
+        }
+        .table-responsive::-webkit-scrollbar {
+          width: 6px;
+        }
+        .table-responsive::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 3px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+          background: #a8a8a8;
         }
       `}</style>
       <NewLayout>
@@ -205,120 +312,150 @@ const AdminPricingPlans = () => {
                     Plan
                   </button>
                 </div>
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>Plan name</th>
-                      <th>Price</th>
-                      <th>Status</th>
-                      <th>More</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {plans.map((plan, index) => (
-                      <tr key={plan._id}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <span className="hig-blu">{plan.name}</span>
-                        </td>
-                        <td>
-                          <span className="hig-red">
-                            {typeof plan.price === "number"
-                              ? ` ₹${plan.price}`
-                              : plan.price}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className={
-                              plan.status === "Active" ? "hig-grn" : "hig-red"
-                            }
-                          >
-                            {plan.status}
-                          </span>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <button
-                              type="button"
-                              className="btn btn-outline-secondary"
-                              data-bs-toggle="dropdown"
-                            >
-                              <i
-                                className="fa fa-ellipsis-h"
-                                aria-hidden="true"
-                              ></i>
-                            </button>
-                            <ul className="dropdown-menu">
-                              <li>
-                                <a
-                                  className="dropdown-item"
-                                  href="#"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#pricing"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    handleEditPlan({
-                                      id: plan._id,
-                                      name: plan.name,
-                                      price: plan.price.toString(),
-                                      priceType: plan.priceType || "Per month",
-                                      maxProfiles:
-                                        plan.maxProfiles?.toString() || "",
-                                      profilesType:
-                                        plan.profilesType || "Per day",
-                                      canViewProfiles:
-                                        plan.canViewProfiles || "",
-                                      viewContactDetails:
-                                        plan.viewContactDetails || "",
-                                      sendInterestRequest:
-                                        plan.sendInterestRequest || "",
-                                      startChat: plan.startChat || "",
-                                      status: plan.status,
-                                    });
-                                  }}
-                                >
-                                  Edit
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  className="dropdown-item"
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    togglePlanStatus(plan._id, plan.status);
-                                  }}
-                                >
-                                  {plan.status === "Active"
-                                    ? "Disable"
-                                    : "Enable"}
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  className="dropdown-item"
-                                  href="../plans.html"
-                                  target="_blank"
-                                >
-                                  View pricing page
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </td>
+                <div className="table-responsive" style={{ height: '60vh', overflowY: 'auto' }}>
+                  <table className="table table-hover">
+                    <thead>
+                      <tr>
+                        <th className="border-0">NO</th>
+                        <th className="border-0">PLAN NAME</th>
+                        <th className="border-0">PRICE</th>
+                        <th className="border-0">DURATION</th>
+                        <th className="border-0">PROFILE VIEWS</th>
+                        <th className="border-0">STATUS</th>
+                        <th className="border-0 text-center">MORE</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {plans.map((plan, index) => (
+                        <tr key={plan._id}>
+                          <td className="border-0">{index + 1}</td>
+                          <td className="border-0">
+                            <div>
+                              <span className="hig-blu fw-bold">{plan.name}</span>
+                              {plan.dedicatedManager === "Yes" && (
+                                <div className="plan-details">
+                                  <i className="fa fa-star text-warning me-1"></i>
+                                  Dedicated Account Manager
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td className="border-0">
+                            <span className="hig-red fw-bold">
+                              {typeof plan.price === "number"
+                                ? `₹${plan.price}`
+                                : `₹${plan.price}`}
+                            </span>
+                          </td>
+                          <td className="border-0">
+                            <span className="badge bg-info text-dark">
+                              {formatDuration(plan.duration, plan.durationType)}
+                            </span>
+                          </td>
+                          <td className="border-0">
+                            <span className="badge bg-primary text-white">
+                              {formatProfileViews(plan.maxProfiles, plan.dailyLimit)}
+                            </span>
+                          </td>
+                          <td className="border-0 ">
+                            <span
+                              className={`badge text-white ${
+                                plan.status === "Active" ? "bg-success" : "bg-danger"
+                              }`}
+                            >
+                              {plan.status}
+                            </span>
+                          </td>
+                          <td className="border-0 text-center">
+                            <div className="dropdown position-relative">
+                              <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOpenDropdown(openDropdown === plan._id ? null : plan._id);
+                                }}
+                              >
+                                <i className="fa fa-ellipsis-h" aria-hidden="true"></i>
+                              </button>
+                              {openDropdown === plan._id && (
+                                <ul 
+                                  className="dropdown-menu show position-absolute"
+                                  style={{ 
+                                    display: 'block', 
+                                    top: '100%', 
+                                    left: 'auto',
+                                    right: '0',
+                                    zIndex: 1000,
+                                    minWidth: '180px'
+                                  }}
+                                >
+                                  <li>
+                                    <a
+                                      className="dropdown-item"
+                                      href="#"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#pricing"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        setOpenDropdown(null);
+                                        handleEditPlan(plan);
+                                      }}
+                                    >
+                                      <i className="fa fa-edit me-2"></i>Edit
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      className="dropdown-item"
+                                      href="#"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        setOpenDropdown(null);
+                                        togglePlanStatus(plan._id, plan.status);
+                                      }}
+                                    >
+                                      <i className={`fa ${plan.status === "Active" ? "fa-ban text-danger" : "fa-check text-success"} me-2`}></i>
+                                      {plan.status === "Active" ? "Disable" : "Enable"}
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      className="dropdown-item"
+                                      href="../plans.html"
+                                      target="_blank"
+                                      onClick={() => setOpenDropdown(null)}
+                                    >
+                                      <i className="fa fa-external-link me-2"></i>View pricing page
+                                    </a>
+                                  </li>
+                                </ul>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      {plans.length === 0 && (
+                        <tr>
+                          <td colSpan="7" className="text-center py-5 border-0">
+                            <div>
+                              <i className="fa fa-list-alt fa-3x text-muted mb-3"></i>
+                              <h5 className="text-muted">No plans found</h5>
+                              <p className="text-muted">Click "Add New Plan" to create your first pricing plan</p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Enhanced Modal for Add/Edit Plan */}
           <div className="modal fade" id="pricing">
-            <div className="modal-dialog">
+            <div className="modal-dialog modal-lg">
               <div className="modal-content">
                 {/* Modal Header */}
                 <div className="modal-header">
@@ -337,8 +474,8 @@ const AdminPricingPlans = () => {
                     <form onSubmit={handleSubmitPlan}>
                       {/*PROFILE BIO*/}
                       <div className="edit-pro-parti">
-                        <div className="form-group">
-                          <label className="lb">Plan name:</label>
+                        <div className="form-group mb-3">
+                          <label className="lb">Plan name: *</label>
                           <select
                             name=""
                             required="required"
@@ -352,19 +489,22 @@ const AdminPricingPlans = () => {
                             }
                           >
                             <option value="">Select Plan</option>
+                           
                             <option value="Basic">Basic</option>
-                            <option value="Gold">Gold</option>
+                            <option value="Premium">Premium</option>
                             <option value="Platinum">Platinum</option>
+                            <option value="Golden membership">Golden membership</option>
                           </select>
                         </div>
+
                         <div className="row">
                           <div className="col-md-8">
-                            <div className="form-group">
-                              <label className="lb">Price:</label>
+                            <div className="form-group mb-3">
+                              <label className="lb">Price: *</label>
                               <input
-                                type="text"
+                                type="number"
                                 className="form-control"
-                                placeholder="Enter price"
+                                placeholder="Enter price (e.g., 1000)"
                                 value={currentPlan.price}
                                 onChange={(e) =>
                                   setCurrentPlan({
@@ -377,11 +517,10 @@ const AdminPricingPlans = () => {
                             </div>
                           </div>
                           <div className="col-md-4">
-                            <div className="form-group">
-                              <label className="lb">&nbsp;</label>
+                            <div className="form-group mb-3">
+                              <label className="lb">Currency:</label>
                               <select
                                 name=""
-                                required="required"
                                 className="form-control chosen-select"
                                 value={currentPlan.priceType}
                                 onChange={(e) =>
@@ -391,22 +530,63 @@ const AdminPricingPlans = () => {
                                   })
                                 }
                               >
-                                <option value="">Select</option>
-                                <option value="Per day">Per day</option>
-                                <option value="Per month">Per month</option>
-                                <option value="Per Year">Per Year</option>
+                                <option value="₹">₹ (INR)</option>
+                                <option value="$">$ (USD)</option>
+                                <option value="€">€ (EUR)</option>
                               </select>
                             </div>
                           </div>
                         </div>
+
                         <div className="row">
                           <div className="col-md-8">
-                            <div className="form-group">
-                              <label className="lb">Max profiles view:</label>
+                            <div className="form-group mb-3">
+                              <label className="lb">Duration: *</label>
                               <input
                                 type="number"
                                 className="form-control"
-                                placeholder="Enter number"
+                                placeholder="Enter duration (e.g., 1, 3, 6)"
+                                value={currentPlan.duration}
+                                onChange={(e) =>
+                                  setCurrentPlan({
+                                    ...currentPlan,
+                                    duration: e.target.value,
+                                  })
+                                }
+                                required=""
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="form-group mb-3">
+                              <label className="lb">Duration Type:</label>
+                              <select
+                                name=""
+                                className="form-control chosen-select"
+                                value={currentPlan.durationType}
+                                onChange={(e) =>
+                                  setCurrentPlan({
+                                    ...currentPlan,
+                                    durationType: e.target.value,
+                                  })
+                                }
+                              >
+                                <option value="days">Days</option>
+                                <option value="months">Months</option>
+                                <option value="years">Years</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="row">
+                          <div className="col-md-8">
+                            <div className="form-group mb-3">
+                              <label className="lb">Max profile views:</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Enter number or 'unlimited' (e.g., 100, 500, unlimited)"
                                 value={currentPlan.maxProfiles}
                                 onChange={(e) =>
                                   setCurrentPlan({
@@ -415,36 +595,33 @@ const AdminPricingPlans = () => {
                                   })
                                 }
                               />
+                              <small className="text-muted">Total profile views for the entire subscription period</small>
                             </div>
                           </div>
                           <div className="col-md-4">
-                            <div className="form-group">
-                              <label className="lb">&nbsp;</label>
-                              <select
-                                name=""
-                                required="required"
-                                className="form-control chosen-select"
-                                value={currentPlan.profilesType}
+                            <div className="form-group mb-3">
+                              <label className="lb">Daily Limit:</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="e.g., 10, 20, unlimited"
+                                value={currentPlan.dailyLimit}
                                 onChange={(e) =>
                                   setCurrentPlan({
                                     ...currentPlan,
-                                    profilesType: e.target.value,
+                                    dailyLimit: e.target.value,
                                   })
                                 }
-                              >
-                                <option value="">Select</option>
-                                <option value="Per day">Per day</option>
-                                <option value="Per month">Per month</option>
-                                <option value="Per Year">Per Year</option>
-                              </select>
+                              />
+                              <small className="text-muted">Max views per day</small>
                             </div>
                           </div>
                         </div>
-                        <div className="form-group">
+
+                        <div className="form-group mb-3">
                           <label className="lb">Can able to view:</label>
                           <select
                             name=""
-                            required="required"
                             className="form-control chosen-select"
                             value={currentPlan.canViewProfiles}
                             onChange={(e) =>
@@ -457,68 +634,97 @@ const AdminPricingPlans = () => {
                             <option value="">Select</option>
                             <option value="All Profiles">All Profiles</option>
                             <option value="Only Basic">Only Basic</option>
-                            <option value="Only Gold">Only Gold</option>
+                            <option value="Only Premium">Only Premium</option>
                             <option value="Only Platinum">Only Platinum</option>
                           </select>
                         </div>
-                        <div className="form-group">
-                          <label className="lb">View contact details:</label>
-                          <select
-                            name=""
-                            required="required"
-                            className="form-control chosen-select"
-                            value={currentPlan.viewContactDetails}
-                            onChange={(e) =>
-                              setCurrentPlan({
-                                ...currentPlan,
-                                viewContactDetails: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </select>
+
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group mb-3">
+                              <label className="lb">View contact details:</label>
+                              <select
+                                name=""
+                                className="form-control chosen-select"
+                                value={currentPlan.viewContactDetails}
+                                onChange={(e) =>
+                                  setCurrentPlan({
+                                    ...currentPlan,
+                                    viewContactDetails: e.target.value,
+                                  })
+                                }
+                              >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group mb-3">
+                              <label className="lb">Send interest request:</label>
+                              <select
+                                name=""
+                                className="form-control chosen-select"
+                                value={currentPlan.sendInterestRequest}
+                                onChange={(e) =>
+                                  setCurrentPlan({
+                                    ...currentPlan,
+                                    sendInterestRequest: e.target.value,
+                                  })
+                                }
+                              >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                              </select>
+                            </div>
+                          </div>
                         </div>
-                        <div className="form-group">
-                          <label className="lb">Send interest request:</label>
-                          <select
-                            name=""
-                            required="required"
-                            className="form-control chosen-select"
-                            value={currentPlan.sendInterestRequest}
-                            onChange={(e) =>
-                              setCurrentPlan({
-                                ...currentPlan,
-                                sendInterestRequest: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </select>
+
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group mb-3">
+                              <label className="lb">Start Chat:</label>
+                              <select
+                                name=""
+                                className="form-control chosen-select"
+                                value={currentPlan.startChat}
+                                onChange={(e) =>
+                                  setCurrentPlan({
+                                    ...currentPlan,
+                                    startChat: e.target.value,
+                                  })
+                                }
+                              >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group mb-3">
+                              <label className="lb">Dedicated Account Manager:</label>
+                              <select
+                                name=""
+                                className="form-control chosen-select"
+                                value={currentPlan.dedicatedManager}
+                                onChange={(e) =>
+                                  setCurrentPlan({
+                                    ...currentPlan,
+                                    dedicatedManager: e.target.value,
+                                  })
+                                }
+                              >
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                              </select>
+                            </div>
+                          </div>
                         </div>
-                        <div className="form-group">
-                          <label className="lb">Start Chat:</label>
-                          <select
-                            name=""
-                            required="required"
-                            className="form-control chosen-select"
-                            value={currentPlan.startChat}
-                            onChange={(e) =>
-                              setCurrentPlan({
-                                ...currentPlan,
-                                startChat: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </select>
-                        </div>
-                        <div className="form-group">
+
+                        <div className="form-group mb-3">
                           <label className="lb">Status:</label>
                           <select
                             name=""

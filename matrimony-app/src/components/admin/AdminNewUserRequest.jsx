@@ -469,7 +469,7 @@ export default function AdminNewUserRequest() {
           <div className="col-md-12">
             <div className="box-com box-qui box-lig box-tab">
               <div className="tit">
-                <h3>Join requests</h3>
+                <h3>New join requests</h3>
                 <p>
                   New request profiles, waiting for admin approvals (
                   {filteredUsers.length} users)

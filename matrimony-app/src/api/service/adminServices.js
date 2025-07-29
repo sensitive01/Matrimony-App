@@ -26,8 +26,8 @@ export const approveNewUser = async (userId) => {
   return response;
 };
 
-export const getFreeUserData = async () => {
-  const response = await adminInstance.get(`/unpaid-users-data`);
+export const getPaidUserData = async () => {
+  const response = await adminInstance.get(`/paid-users-data`);
   return response;
 };
 
