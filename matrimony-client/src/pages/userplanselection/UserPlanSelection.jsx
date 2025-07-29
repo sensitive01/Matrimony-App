@@ -231,83 +231,64 @@ const UserPlanSelection = () => {
       {/* END */}
       {/* PRICING PLANS */}
       <section>
-        <div className="plans-main" style={{ padding: "40px 0" }}>
-          <div className="container mx-auto px-4">
-            <div
-              className="flex flex-wrap justify-center"
-              style={{ gap: "30px" }}
-            >
-              {plans.map((plan, index) => (
-                <div
-                  key={plan._id}
-                  className="plan-wrapper"
-                  style={{
-                    flex: "0 0 auto",
-                    width: "100%",
-                    maxWidth: "320px",
-                    minWidth: "280px",
-                    margin: "15px",
-                    "@media (min-width: 768px)": {
-                      width: "calc(50% - 30px)",
-                    },
-                    "@media (min-width: 1024px)": {
-                      width: "calc(33.333% - 30px)",
-                    },
-                    "@media (min-width: 1280px)": {
-                      width: "calc(25% - 30px)",
-                    },
-                  }}
-                >
-                  <div
-                    className={`pri-box ${
-                      plan.name === "Gold" ? "pri-box-pop" : ""
-                    }`}
-                    style={{ width: "100%", height: "100%" }}
-                  >
-                    {plan.name === "Gold" && (
-                      <span className="pop-pln">Most popular plan</span>
-                    )}
-                    <h2>{plan.name}</h2>
-                    <p>Printer took a type and scrambled </p>
-                    <a
-                      href="#"
-                      className="cta"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handlePayment(plan);
-                      }}
+        <div className="plans-main">
+          <div className="container">
+            <div className="row">
+              <ul>
+                {plans.map((plan, index) => (
+                  <li key={plan._id}>
+                    <div
+                      className={`pri-box ${
+                        plan.name === "Gold" ? "pri-box-pop" : ""
+                      }`}
                     >
-                      Get Started
-                    </a>
-                    <span className="pri-cou">
-                      <b>₹{plan.price}</b>/
-                      {plan.priceType === "Per month" ? "mo" : "yr"}
-                    </span>
-                    <ol>
-                      <li>
-                        {renderFeatureIcon(plan.maxProfiles > 0 ? "Yes" : "No")}
-                        {getFeatureText(plan, "profiles")}
-                      </li>
-                      <li>
-                        {renderFeatureIcon(plan.canViewProfiles)}
-                        {getFeatureText(plan, "viewProfiles")}
-                      </li>
-                      <li>
-                        {renderFeatureIcon(plan.viewContactDetails)}
-                        {getFeatureText(plan, "contactDetails")}
-                      </li>
-                      <li>
-                        {renderFeatureIcon(plan.sendInterestRequest)}
-                        {getFeatureText(plan, "sendInterest")}
-                      </li>
-                      <li>
-                        {renderFeatureIcon(plan.startChat)}
-                        {getFeatureText(plan, "startChat")}
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-              ))}
+                      {plan.name === "Gold" && (
+                        <span className="pop-pln">Most popular plan</span>
+                      )}
+                      <h2>{plan.name}</h2>
+                      <p>Printer took a type and scrambled </p>
+                      <a
+                        href="#"
+                        className="cta"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePayment(plan);
+                        }}
+                      >
+                        Get Started
+                      </a>
+                      <span className="pri-cou">
+                        <b>₹{plan.price}</b>/
+                        {plan.priceType === "Per month" ? "mo" : "yr"}
+                      </span>
+                      <ol>
+                        <li>
+                          {renderFeatureIcon(
+                            plan.maxProfiles > 0 ? "Yes" : "No"
+                          )}
+                          {getFeatureText(plan, "profiles")}
+                        </li>
+                        <li>
+                          {renderFeatureIcon(plan.canViewProfiles)}
+                          {getFeatureText(plan, "viewProfiles")}
+                        </li>
+                        <li>
+                          {renderFeatureIcon(plan.viewContactDetails)}
+                          {getFeatureText(plan, "contactDetails")}
+                        </li>
+                        <li>
+                          {renderFeatureIcon(plan.sendInterestRequest)}
+                          {getFeatureText(plan, "sendInterest")}
+                        </li>
+                        <li>
+                          {renderFeatureIcon(plan.startChat)}
+                          {getFeatureText(plan, "startChat")}
+                        </li>
+                      </ol>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

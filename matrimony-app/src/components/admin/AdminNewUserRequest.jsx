@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import img1 from "../../assets/images/profiles/1.jpg";
+import img1 from "/assets/images/profiles/1.jpg";
 import NewLayout from "./layout/NewLayout";
 import {
   approveNewUser,

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Chart, registerables } from "chart.js";
 
-import profImages from "../../assets/images/profiles/1.jpg";
+import profImages from "/assets/images/profiles/1.jpg";
 import NewLayout from "./layout/NewLayout";
 
 Chart.register(...registerables);

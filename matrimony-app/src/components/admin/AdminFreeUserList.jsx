@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import NewLayout from "./layout/NewLayout";
-import img1 from "../../assets/images/profiles/1.jpg";
 import {  getFreeUserData } from "../../api/service/adminServices";
 
 const AdminFreeUserList = () => {

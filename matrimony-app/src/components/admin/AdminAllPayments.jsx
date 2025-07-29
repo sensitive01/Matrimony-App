@@ -1,6 +1,7 @@
 import React from "react";
 import NewLayout from "./layout/NewLayout";
-import img1 from "../../assets/images/profiles/1.jpg"
+import img1 from "/public/assets/images/profiles/1.jpg"
+
 
 const AdminAllPayments = () => {
   return (
