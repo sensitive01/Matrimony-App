@@ -318,6 +318,12 @@ const MainLayout = () => {
               >
                 HELP & SUPPORT
               </button>
+              <button
+                onClick={() => handleNavigate("/about-us")}
+                className="text-gray-800 hover:text-purple-600 font-medium"
+              >
+                ABOUT US
+              </button>
             </nav>
 
             {/* User Profile or Auth Buttons */}
@@ -424,6 +430,15 @@ const MainLayout = () => {
                   className="text-gray-800 hover:text-purple-600 font-medium text-left"
                 >
                   HELP & SUPPORT
+                </button>
+                <button
+                  onClick={() => {
+                    handleNavigate("/about-us");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-gray-800 hover:text-purple-600 font-medium text-left"
+                >
+                  ABOUT US
                 </button>
               </nav>
 

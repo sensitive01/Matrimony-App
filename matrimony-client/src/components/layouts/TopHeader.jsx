@@ -176,7 +176,7 @@ const TopHeader = () => {
     { label: "HOME", path: "/" },
     { label: "PLANS", path: "/user/user-plan-selection" },
     { label: "SUCCESS STORIES", path: "/success-stories" },
-    { label: "HELP & SUPPORT", path: "/help-support" },
+    { label: "HELP & SUPPORTS", path: "/help-support" },
   ];
 
   return (

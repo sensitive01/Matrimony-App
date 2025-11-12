@@ -36,6 +36,7 @@ const scrollbarStyles = `
 
 // Communities data
 const communities = [
+  "Any",
   "Adventist",
   "AG (Assemblies of God)",
   "ACI (Anglican Church of India)",
@@ -173,7 +174,7 @@ const SearchDropdown = ({
       </div>
 
       {showDropdown && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-64 overflow-y-auto custom-scrollbar">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option, index) => (
               <div
@@ -200,19 +201,17 @@ const SearchDropdown = ({
 const HeroSection = () => {
   const navigate = useNavigate();
 
-  // Form data state
+  // Form data state with age range (no location)
   const [formData, setFormData] = useState({
     lookingFor: "Groom",
-    age: 28,
+    ageFrom: 25,
+    ageTo: 35,
     community: "",
-    city: "",
   });
 
   // Search states
   const [communitySearch, setCommunitySearch] = useState("");
-  const [stateSearch, setStateSearch] = useState("");
   const [showCommunityDropdown, setShowCommunityDropdown] = useState(false);
-  const [showStateDropdown, setShowStateDropdown] = useState(false);
 
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
@@ -222,6 +221,17 @@ const HeroSection = () => {
     "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
     "https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
   ];
+
+  // Generate age options for dropdowns
+  const generateAgeOptions = () => {
+    const options = [];
+    for (let i = 18; i <= 70; i++) {
+      options.push(i);
+    }
+    return options;
+  };
+
+  const ageOptions = generateAgeOptions();
 
   // Auto-change background images
   React.useEffect(() => {
@@ -236,7 +246,6 @@ const HeroSection = () => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".search-dropdown")) {
         setShowCommunityDropdown(false);
-        setShowStateDropdown(false);
       }
     };
 
@@ -251,131 +260,206 @@ const HeroSection = () => {
     }));
   };
 
+  // Handle age from change with validation
+  const handleAgeFromChange = (value) => {
+    const newAgeFrom = parseInt(value);
+    setFormData((prev) => ({
+      ...prev,
+      ageFrom: newAgeFrom,
+      ageTo: Math.max(newAgeFrom, prev.ageTo),
+    }));
+  };
+
+  // Handle age to change with validation
+  const handleAgeToChange = (value) => {
+    const newAgeTo = parseInt(value);
+    setFormData((prev) => ({
+      ...prev,
+      ageTo: Math.max(prev.ageFrom, newAgeTo),
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
     console.log("lookingFor:", formData.lookingFor);
-    console.log("age:", formData.age);
+    console.log("ageFrom:", formData.ageFrom);
+    console.log("ageTo:", formData.ageTo);
     console.log("community:", formData.community);
-    console.log("city:", formData.city);
 
     // Navigate to search results page with form data
     navigate("/show-searched-result", { state: { formData: formData } });
   };
 
+  // Calculate percentage for range slider
+  const getPercentage = (value) => {
+    return ((value - 18) / (70 - 18)) * 100;
+  };
+
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-orange-800">
-      {/* Background Images with Transition */}
+      {/* Background Images with HIGH visibility - 85% opacity */}
       {backgroundImages.map((img, index) => (
         <div
           key={index}
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
-            index === currentBgIndex ? "opacity-30" : "opacity-0"
+            index === currentBgIndex ? "opacity-85" : "opacity-0"
           }`}
           style={{ backgroundImage: `url(${img})` }}
         />
       ))}
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+      {/* Minimal dark overlay - Only 15% for better image visibility */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/15 via-blue-900/10 to-purple-900/15"></div>
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
-          {/* Left Side - Hero Text */}
+          {/* Left Side - Hero Text with strong shadows for visibility */}
           <div className="text-center lg:text-left lg:flex-1">
-            <h1 className="text-white text-4xl md:text-6xl lg:text-7xl font-bold mb-4">
-              <span className="text-gray-300">#1</span> MATRIMONY
+            <h1 
+              className="text-white text-4xl md:text-6xl lg:text-7xl font-bold mb-4" 
+              style={{ 
+                textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 25px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6)' 
+              }}
+            >
+              <span className="text-gray-200">#1</span> MATRIMONY
             </h1>
-            <h2 className="text-white text-3xl md:text-5xl lg:text-6xl font-bold mb-2">
+            <h2 
+              className="text-white text-3xl md:text-5xl lg:text-6xl font-bold mb-2"
+              style={{ 
+                textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 25px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6)' 
+              }}
+            >
               Find your
             </h2>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
-              <span className="text-purple-400">Right Match</span>{" "}
+            <h2 
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8"
+              style={{ 
+                textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 25px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6)' 
+              }}
+            >
+              <span className="text-purple-300">Right Match</span>{" "}
               <span className="text-white">here</span>
             </h2>
 
-            <p className="text-white text-lg md:text-xl mb-12">
+            <p 
+              className="text-white text-lg md:text-xl mb-12"
+              style={{ 
+                textShadow: '2px 2px 6px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)' 
+              }}
+            >
               Most trusted Matrimony Brand in the World.
             </p>
           </div>
 
-          {/* Right Side - Search Form */}
-          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 md:p-8 max-w-md w-full">
+          {/* Right Side - Search Form with strong background */}
+          <div 
+            className="rounded-lg p-6 md:p-8 max-w-md w-full shadow-2xl border border-white border-opacity-40"
+            style={{
+              background: 'rgba(255, 255, 255, 0.25)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)'
+            }}
+          >
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Gender Selection */}
-              <label className="block text-white text-sm font-medium mb-2">
-                Looking For
-              </label>
-              <select
-                className="w-full bg-white text-gray-800 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                value={formData.lookingFor}
-                onChange={(e) =>
-                  handleInputChange("lookingFor", e.target.value)
-                }
-              >
-                <option value="Groom">Groom</option>
-                <option value="Bride">Bride</option>
-              </select>
-
-              {/* Age Slider */}
-              <div className="relative">
-                <label className="block text-white text-sm font-medium mb-2">
-                  Age: {formData.age}
+              <div>
+                <label 
+                  className="block text-white text-sm font-medium mb-2 font-semibold"
+                  style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.9)' }}
+                >
+                  Looking For
                 </label>
-                <div className="relative">
-                  <input
-                    type="range"
-                    min="18"
-                    max="70"
-                    value={formData.age}
-                    onChange={(e) =>
-                      handleInputChange("age", parseInt(e.target.value))
-                    }
-                    className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                    style={{
-                      background: `linear-gradient(to right, #9333ea 0%, #9333ea ${
-                        ((formData.age - 18) / (70 - 18)) * 100
-                      }%, #e5e7eb ${
-                        ((formData.age - 18) / (70 - 18)) * 100
-                      }%, #e5e7eb 100%)`,
-                    }}
-                  />
-                  {/* Tooltip */}
-                  <div
-                    className="absolute -top-10 bg-black text-white px-2 py-1 rounded text-sm pointer-events-none"
-                    style={{
-                      left: `${((formData.age - 18) / (70 - 18)) * 100}%`,
-                      transform: "translateX(-50%)",
-                    }}
-                  >
-                    {formData.age}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+                <select
+                  className="w-full bg-white text-gray-800 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-lg font-medium"
+                  value={formData.lookingFor}
+                  onChange={(e) =>
+                    handleInputChange("lookingFor", e.target.value)
+                  }
+                >
+                  <option value="Groom">Groom</option>
+                  <option value="Bride">Bride</option>
+                </select>
+              </div>
+
+              {/* Age Range - Dual Handle Slider with Dropdowns */}
+              <div>
+                <label 
+                  className="block text-white text-sm font-medium mb-3 font-semibold uppercase tracking-wide"
+                  style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.9)' }}
+                >
+                  AGE
+                </label>
+
+                {/* Dual Range Slider */}
+                <div className="relative pt-1 pb-6">
+                  {/* Track */}
+                  <div className="relative h-2 bg-gray-400 rounded-full">
+                    {/* Active range highlight */}
+                    <div 
+                      className="absolute h-2 bg-purple-600 rounded-full"
+                      style={{
+                        left: `${getPercentage(formData.ageFrom)}%`,
+                        right: `${100 - getPercentage(formData.ageTo)}%`
+                      }}
+                    ></div>
+                    
+                    {/* From Handle */}
+                    <input
+                      type="range"
+                      min="18"
+                      max="70"
+                      value={formData.ageFrom}
+                      onChange={(e) => handleAgeFromChange(e.target.value)}
+                      className="absolute w-full h-2 appearance-none bg-transparent pointer-events-none range-slider"
+                      style={{ zIndex: formData.ageFrom > formData.ageTo - 5 ? 5 : 3 }}
+                    />
+                    
+                    {/* To Handle */}
+                    <input
+                      type="range"
+                      min="18"
+                      max="70"
+                      value={formData.ageTo}
+                      onChange={(e) => handleAgeToChange(e.target.value)}
+                      className="absolute w-full h-2 appearance-none bg-transparent pointer-events-none range-slider"
+                      style={{ zIndex: 4 }}
+                    />
                   </div>
                 </div>
 
-                <style jsx>{`
-                  .slider::-webkit-slider-thumb {
-                    appearance: none;
-                    height: 20px;
-                    width: 20px;
-                    border-radius: 50%;
-                    background: #9333ea;
-                    cursor: pointer;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                  }
-                  .slider::-moz-range-thumb {
-                    height: 20px;
-                    width: 20px;
-                    border-radius: 50%;
-                    background: #9333ea;
-                    cursor: pointer;
-                    border: none;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                  }
-                `}</style>
+                {/* Min and Max Dropdowns */}
+                <div className="flex items-center gap-2">
+                  <select
+                    value={formData.ageFrom}
+                    onChange={(e) => handleAgeFromChange(e.target.value)}
+                    className="flex-1 bg-white text-gray-700 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  >
+                    {ageOptions.map(age => (
+                      <option key={age} value={age}>{age}</option>
+                    ))}
+                  </select>
+                  
+                  <span className="text-white font-medium px-2">to</span>
+                  
+                  <select
+                    value={formData.ageTo}
+                    onChange={(e) => handleAgeToChange(e.target.value)}
+                    className="flex-1 bg-white text-gray-700 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  >
+                    {ageOptions.map(age => (
+                      <option key={age} value={age}>{age}+</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Community Search Dropdown */}
               <div className="search-dropdown">
-                <label className="block text-white text-sm font-medium mb-2">
+                <label 
+                  className="block text-white text-sm font-medium mb-2 font-semibold"
+                  style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.9)' }}
+                >
                   Community
                 </label>
                 <SearchDropdown
@@ -390,27 +474,10 @@ const HeroSection = () => {
                 />
               </div>
 
-              {/* State Search Dropdown */}
-              <div className="search-dropdown">
-                <label className="block text-white text-sm font-medium mb-2">
-                  Location
-                </label>
-                <SearchDropdown
-                  placeholder="Select State"
-                  options={states}
-                  value={formData.city}
-                  onChange={(value) => handleInputChange("city", value)}
-                  searchTerm={stateSearch}
-                  onSearchChange={setStateSearch}
-                  showDropdown={showStateDropdown}
-                  onToggleDropdown={setShowStateDropdown}
-                />
-              </div>
-
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
               >
                 Search
               </button>
@@ -418,10 +485,118 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Custom CSS */}
+      <style jsx>{`
+        .opacity-85 {
+          opacity: 0.85;
+        }
+        
+        /* Custom scrollbar for dropdown */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #9333ea;
+          border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #7e22ce;
+        }
+        
+        /* Firefox scrollbar */
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: #9333ea #f1f1f1;
+        }
+        
+        /* Range slider styling */
+        .range-slider {
+          pointer-events: all;
+          position: absolute;
+          top: 50%;
+          left: 0;
+          transform: translateY(-50%);
+          width: 100%;
+          height: 32px;
+          background: transparent;
+          margin: 0;
+          padding: 0;
+          z-index: 10;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 22px;
+          width: 22px;
+          border-radius: 50%;
+          background: #fff;
+          border: 3px solid #9333ea;
+          box-shadow: 0 2px 8px rgba(148, 27, 255, 0.18), 0 4px 20px rgba(0,0,0,0.13);
+          cursor: pointer;
+          position: relative;
+          z-index: 11;
+        }
+        
+        .range-slider::-webkit-slider-runnable-track {
+          width: 100%;
+          height: 8px;
+          background: transparent;
+        }
+        
+        .range-slider::-moz-range-thumb {
+          height: 22px;
+          width: 22px;
+          border-radius: 50%;
+          background: #fff;
+          border: 3px solid #9333ea;
+          box-shadow: 0 2px 8px rgba(148, 27, 255, 0.18), 0 4px 20px rgba(0,0,0,0.13);
+          cursor: pointer;
+        }
+        
+        .range-slider::-moz-range-track {
+          width: 100%;
+          height: 8px;
+          background: transparent;
+        }
+        
+        .range-slider::-ms-thumb {
+          height: 22px;
+          width: 22px;
+          border-radius: 50%;
+          background: #fff;
+          border: 3px solid #9333ea;
+          box-shadow: 0 2px 8px rgba(148, 27, 255, 0.18), 0 4px 20px rgba(0,0,0,0.13);
+          cursor: pointer;
+        }
+        
+        .range-slider::-ms-fill-lower,
+        .range-slider::-ms-fill-upper {
+          background: transparent;
+        }
+        
+        .range-slider:focus {
+          outline: none;
+        }
+        
+        .h-2.bg-gray-400.rounded-full {
+          height: 8px !important;
+          top: 50%;
+          transform: translateY(-50%);
+          position: absolute !important;
+          width: 100%;
+        }
+      `}</style>
     </section>
   );
 };
-
 // Main App Component
 const HomePageComponent = () => {
   return (
@@ -452,4 +627,4 @@ const HomePageComponent = () => {
   );
 };
 
-export default HomePageComponent;
+export default  HomePageComponent;

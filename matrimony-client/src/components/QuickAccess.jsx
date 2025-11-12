@@ -7,6 +7,9 @@ import hallIcon from "../assets/images/icon/hall.png";
 import cameraIcon from "../assets/images/icon/photo-camera.png";
 import cakeIcon from "../assets/images/icon/cake.png";
 
+// Import your icons
+
+
 const QuickAccess = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [itemsPerSlide, setItemsPerSlide] = useState(4);
@@ -112,26 +115,26 @@ const QuickAccess = () => {
   }, [totalSlides]);
 
   return (
-    <section>
-      <div className="str home-acces-main">
-        <div className="container">
-          <div className="row">
-            {/* BACKGROUND SHAPE */}
-            <div className="wedd-shap">
+    <section style={{ background: 'white', padding: '60px 0' }}>
+      <div className="str home-acces-main" style={{ background: 'white' }}>
+        <div className="container" style={{ background: 'white' }}>
+          <div className="row" style={{ background: 'white' }}>
+            {/* BACKGROUND SHAPE - Hidden for white background */}
+            <div className="wedd-shap" style={{ display: 'none' }}>
               <span className="abo-shap-1" />
               <span className="abo-shap-4" />
             </div>
             {/* END BACKGROUND SHAPE */}
             <div className="home-tit">
-              <p style={{color:"white"}} >Quick Access</p>
+              <p style={{ color: "#333" }}>Quick Access</p>
               <h2>
-                <span>Our Services</span>
+                <span style={{ color: "#9333ea" }}>Our Services</span>
               </h2>
-              <span className="leaf1" />
-              <span className="tit-ani-" />
+              <span className="leaf1" style={{ display: 'none' }} />
+              <span className="tit-ani-" style={{ display: 'none' }} />
             </div>
             <div className="home-acces">
-              {/* Navigation Arrows - Only added styles for positioning */}
+              {/* Navigation Arrows */}
               <button 
                 onClick={prevSlide}
                 className="slider-nav-btn slider-prev"
@@ -144,7 +147,7 @@ const QuickAccess = () => {
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  color: 'white',
+                  color: '#333',
                   fontSize: '24px'
                 }}
               >
@@ -163,14 +166,14 @@ const QuickAccess = () => {
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  color: 'white',
+                  color: '#333',
                   fontSize: '24px'
                 }}
               >
                 <ChevronRight size={30} />
               </button>
 
-              {/* Slider Container - Only added transform for sliding */}
+              {/* Slider Container */}
               <div className="slider-container" style={{ overflow: 'hidden' }}>
                 <ul 
                   className="hom-qui-acc-sli" 
@@ -229,7 +232,7 @@ const QuickAccess = () => {
                       height: '12px',
                       borderRadius: '6px',
                       border: 'none',
-                      background: currentSlide === index ? '#D4AF37' : 'rgba(255, 255, 255, 0.3)',
+                      background: currentSlide === index ? '#9333ea' : 'rgba(147, 51, 234, 0.3)',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease'
                     }}
