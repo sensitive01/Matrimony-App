@@ -6,9 +6,7 @@ import TrustBrands from "../../TrustBrands";
 import WhyChooseUs from "../../WhyChooseUs";
 import WelcomeTo from "../../WelcomeTo";
 import CountModal from "../../CountModal";
-import Moments from "../../Moments";
 import RecentCouples from "../../RecentCouples";
-import OurProfessionals from "../../OurProfessionals";
 import GallaryStart from "../../GallaryStart";
 import BlogPostStart from "../../BlogPostStart";
 import FindYourPerfectMatchNow from "../../FindYourPerfectMatchNow";
@@ -521,11 +519,10 @@ const HeroSection = () => {
         .range-slider {
           pointer-events: all;
           position: absolute;
-          top: 50%;
+          top: 0;
           left: 0;
-          transform: translateY(-50%);
           width: 100%;
-          height: 32px;
+          height: 8px;
           background: transparent;
           margin: 0;
           padding: 0;
@@ -534,15 +531,16 @@ const HeroSection = () => {
         
         .range-slider::-webkit-slider-thumb {
           appearance: none;
-          height: 22px;
-          width: 22px;
+          height: 16px;
+          width: 16px;
           border-radius: 50%;
           background: #fff;
           border: 3px solid #9333ea;
-          box-shadow: 0 2px 8px rgba(148, 27, 255, 0.18), 0 4px 20px rgba(0,0,0,0.13);
+          box-shadow: 0 2px 6px rgba(147, 51, 234, 0.4);
           cursor: pointer;
           position: relative;
           z-index: 11;
+          margin-top: -4px;
         }
         
         .range-slider::-webkit-slider-runnable-track {
@@ -552,12 +550,12 @@ const HeroSection = () => {
         }
         
         .range-slider::-moz-range-thumb {
-          height: 22px;
-          width: 22px;
+          height: 16px;
+          width: 16px;
           border-radius: 50%;
           background: #fff;
           border: 3px solid #9333ea;
-          box-shadow: 0 2px 8px rgba(148, 27, 255, 0.18), 0 4px 20px rgba(0,0,0,0.13);
+          box-shadow: 0 2px 6px rgba(147, 51, 234, 0.4);
           cursor: pointer;
         }
         
@@ -568,12 +566,12 @@ const HeroSection = () => {
         }
         
         .range-slider::-ms-thumb {
-          height: 22px;
-          width: 22px;
+          height: 16px;
+          width: 16px;
           border-radius: 50%;
           background: #fff;
           border: 3px solid #9333ea;
-          box-shadow: 0 2px 8px rgba(148, 27, 255, 0.18), 0 4px 20px rgba(0,0,0,0.13);
+          box-shadow: 0 2px 6px rgba(147, 51, 234, 0.4);
           cursor: pointer;
         }
         
@@ -588,9 +586,8 @@ const HeroSection = () => {
         
         .h-2.bg-gray-400.rounded-full {
           height: 8px !important;
-          top: 50%;
-          transform: translateY(-50%);
-          position: absolute !important;
+          top: 0;
+          position: relative !important;
           width: 100%;
         }
       `}</style>
@@ -614,9 +611,7 @@ const HomePageComponent = () => {
         <WhyChooseUs />
         <WelcomeTo />
         <CountModal />
-        <Moments />
         <RecentCouples />
-        <OurProfessionals />
         <GallaryStart />
         <BlogPostStart />
         <FindYourPerfectMatchNow />

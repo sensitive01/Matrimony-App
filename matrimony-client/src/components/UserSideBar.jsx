@@ -43,6 +43,21 @@ const UserSideBar = () => {
       icon: "fa fa-bookmark",
       label: "Short lIsted Profiles",
     },
+     {
+      path: "/user/who-viewed-you-page",
+      icon: "fa fa-eye",
+      label: "Who Viewed You",
+    },
+    {
+      path: "/user/blocked-profiles-page",
+      icon: "fa fa-ban",
+      label: "Blocked Profiles",
+    },
+    {
+      path: "/user/ignored-profiles-page",
+      icon: "fa fa-times-circle",
+      label: "Ignored Profiles",
+    },
     {
       path: "/user/user-plan-page",
       icon: "fa fa-money",

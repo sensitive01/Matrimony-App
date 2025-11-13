@@ -22,55 +22,6 @@ const UserProfilePage = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const initChart = () => {
-      if (window.Chart && document.getElementById("Chart_leads")) {
-        const xValues = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-        const yValues = [10, 20, 30, 40, 50, 60];
-
-        new window.Chart("Chart_leads", {
-          type: "line",
-          data: {
-            labels: xValues,
-            datasets: [
-              {
-                fill: false,
-                tension: 0,
-                backgroundColor: "#f1bb51",
-                borderColor: "#fae9c8",
-                data: yValues,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                display: false,
-              },
-            },
-            scales: {
-              y: {
-                min: 0,
-                max: 100,
-              },
-            },
-          },
-        });
-      }
-    };
-
-    if (!window.Chart) {
-      const script = document.createElement("script");
-      script.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js";
-      script.onload = initChart;
-      document.head.appendChild(script);
-    } else {
-      initChart();
-    }
-  }, []);
-
   return (
     <div className="min-h-screen">
       <div className="fixed top-0 left-0 right-0 z-50">
@@ -253,28 +204,6 @@ const UserProfilePage = () => {
                           </span>
                         </li>
                       </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-12 db-sec-com db-pro-stat-pg">
-                    <h2 className="db-tit">Profiles views</h2>
-                    <div className="db-pro-stat-view-filter cho-round-cor chosenini">
-                      <div>
-                        <select className="chosen-select">
-                          <option value="">Current month</option>
-                          <option value="">Jan 2024</option>
-                          <option value="">Feb 2024</option>
-                          <option value="">Mar 2024</option>
-                          <option value="">Apr 2024</option>
-                          <option value="">May 2024</option>
-                          <option value="">Jun 2024</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="chartin">
-                      <canvas id="Chart_leads"></canvas>
                     </div>
                   </div>
                 </div>

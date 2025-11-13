@@ -32,6 +32,9 @@ import UserSearchResult from "./pages/userSearch/UserSearchResult";
 import AgapeVowsApp from "./components/sample/AgapeVowsApp";
 import HomePageComponent from "./components/agapeows-components/pages/HomePageComponent";
 import ShortListedProfile from "./pages/shortlist/ShortListedProfile";
+import WhoViewedYou from "./hooks/whoviewedyou/WhoViewedYou";
+import BlockedProfile from "./pages/blockedprofile/BlockedProfile";
+import IgnoredProfile from "./pages/ignoredprofile/IgnoredProfile";
 
 // Component to handle page reloads
 function ReloadHandler() {
@@ -51,7 +54,7 @@ function ReloadHandler() {
       sessionStorage.setItem("previousPath", currentPath);
     }
   }, [location.pathname]);
-
+ 
   return null;
 }
 
@@ -97,6 +100,18 @@ function App() {
         <Route
           path="/user/short-listed-profiles-page"
           element={<ShortListedProfile />}
+        />
+        <Route
+          path="/user/who-viewed-you-page"
+          element={<WhoViewedYou />}
+        />
+        <Route
+          path="/user/blocked-profiles-page"
+          element={<BlockedProfile />}
+        />
+        <Route
+          path="/user/ignored-profiles-page"
+          element={<IgnoredProfile />}
         />
 
         <Route path="/show-searched-result" element={<UserSearchResult />} />

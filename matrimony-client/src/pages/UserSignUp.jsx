@@ -62,7 +62,7 @@ const UserSignUp = () => {
         }, 1500);
       }
     } catch (err) {
-      setError("Network error. Please check your connection and try again.");
+      setError("User already exists");
     } finally {
       setLoading(false);
     }

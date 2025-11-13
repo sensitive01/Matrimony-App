@@ -140,3 +140,78 @@ export const getShortListedProfileData = async (userId) => {
   );
   return response;
 };
+
+
+export const getWhoViewedYouData = async (userId) => {
+  try {
+    const response = await userInstance.get(`users/${userId}/who-viewed-you-page`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching who viewed you data:", error);
+    throw error;
+  }
+};
+
+
+
+// Get blocked profiles
+export const getBlockedProfilesData = async (userId) => {
+  try {
+    const response = await userInstance.get(`/api/users/${userId}/blocked-profiles`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching blocked profiles data:", error);
+    throw error;
+  }
+};
+
+// Unblock a profile
+export const unblockProfile = async (userId, blockedUserId) => {
+  try {
+    const response = await userInstance.post(`/api/users/${userId}/unblock`, {
+      blockedUserId: blockedUserId
+    });
+    return response;
+  } catch (error) {
+    console.error("Error unblocking profile:", error);
+    throw error;
+  }
+};
+
+
+// Get ignored profiles
+export const getIgnoredProfilesData = async (userId) => {
+  try {
+    const response = await userInstance.get(`/api/users/${userId}/ignored-profiles`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching ignored profiles data:", error);
+    throw error;
+  }
+};
+
+// Unignore a profile
+export const unignoreProfile = async (userId, ignoredUserId) => {
+  try {
+    const response = await userInstance.post(`/api/users/${userId}/unignore`, {
+      ignoredUserId: ignoredUserId
+    });
+    return response;
+  } catch (error) {
+    console.error("Error unignoring profile:", error);
+    throw error;
+  }
+};
+
+
+// export const checkInterestStatus = async (userId, profileId) => {
+//   try {
+//     const response = await userInstance.get(
+//       `/api/users/${userId}/interest-status/${profileId}`
+//     );
+//     return response;
+//   } catch (error) {
+//     console.error("Error checking interest status:", error);
+//     throw error;
+//   }
+// };

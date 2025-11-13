@@ -112,7 +112,7 @@ const ExploreDropdown = ({ isVisible }) => {
 const ProfileDropdown = ({ isVisible, onLogout }) => {
   const profileLinks = [
     { label: "My Profile", path: "/user/user-dashboard-page" },
-    { label: "My Chats", path: "/user/show-all-profiles/all-profile" },
+    // { label: "My Chatss", path: "/user/show-all-profiles/all-profile" },
     { label: "User Settings", path: "/user/user-settings-page" },
   ];
 

@@ -10,7 +10,9 @@ import { useNavigate } from "react-router-dom";
 const ShortListedProfile = () => {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
-  const [profileData, setProfileData] = useState([]);
+  const [activeTab, setActiveTab] = useState("byYou");
+  const [profileDataByYou, setProfileDataByYou] = useState([]);
+  const [profileDataWhoShortlisted, setProfileDataWhoShortlisted] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,7 +28,10 @@ const ShortListedProfile = () => {
     try {
       const response = await getShortListedProfileData(userId);
       if (response.status === 200) {
-        setProfileData(response.data.data);
+        // Assuming the API returns both types of data
+        // If you have separate endpoints, call them separately
+        setProfileDataByYou(response.data.data.shortlistedByYou || response.data.data || []);
+        setProfileDataWhoShortlisted(response.data.data.whoShortlistedYou || []);
       } else {
         setError("Failed to fetch shortlisted profiles");
       }
@@ -43,9 +48,15 @@ const ShortListedProfile = () => {
   }, []);
 
   // Render profile list
-  const renderProfileList = () => {
+  const renderProfileList = (profileData) => {
     if (loading) {
-      return <div className="text-center">Loading...</div>;
+      return (
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      );
     }
 
     if (error) {
@@ -53,7 +64,12 @@ const ShortListedProfile = () => {
     }
 
     if (profileData.length === 0) {
-      return <div className="text-center">No shortlisted profiles found.</div>;
+      return (
+        <div className="text-center py-5 text-muted">
+          <i className="fa fa-heart-o" style={{ fontSize: "3rem", marginBottom: "1rem" }}></i>
+          <p>No profiles found.</p>
+        </div>
+      );
     }
 
     return (
@@ -65,7 +81,12 @@ const ShortListedProfile = () => {
                 <img
                   src={profile.profileImage || "images/profiles/default.jpg"}
                   alt={profile.userName}
-                  style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                  style={{ 
+                    width: "80px", 
+                    height: "80px", 
+                    objectFit: "cover",
+                    borderRadius: "8px"
+                  }}
                 />
               </div>
               <div className="db-int-pro-2">
@@ -123,46 +144,48 @@ const ShortListedProfile = () => {
                     <h2 className="db-tit">Shortlisted Profiles</h2>
 
                     <div className="db-pro-stat">
-                      <div className="dropdown">
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary"
-                          data-bs-toggle="dropdown"
-                        >
-                          <i
-                            className="fa fa-ellipsis-h"
-                            aria-hidden="true"
-                          ></i>
-                        </button>
-                        <ul className="dropdown-menu">
-                          <li>
-                            <a className="dropdown-item" href="#">
-                              Edit profile
-                            </a>
+                      {/* Tab Navigation */}
+                      <div className="mb-4">
+                        <ul className="nav nav-tabs" role="tablist">
+                          <li className="nav-item" role="presentation">
+                            <button
+                              className={`nav-link ${activeTab === "byYou" ? "active" : ""}`}
+                              onClick={() => setActiveTab("byYou")}
+                              type="button"
+                              role="tab"
+                            >
+                              <i className="fa fa-heart me-2"></i>
+                              Shortlisted By You
+                            </button>
                           </li>
-                          <li>
-                            <a className="dropdown-item" href="#">
-                              View profile
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#">
-                              Plan change
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item" href="#">
-                              Download invoice now
-                            </a>
+                          <li className="nav-item" role="presentation">
+                            <button
+                              className={`nav-link ${activeTab === "whoShortlisted" ? "active" : ""}`}
+                              onClick={() => setActiveTab("whoShortlisted")}
+                              type="button"
+                              role="tab"
+                            >
+                              <i className="fa fa-users me-2"></i>
+                              Who Shortlisted You
+                            </button>
                           </li>
                         </ul>
                       </div>
 
                       <div className="db-inte-main">
                         <div className="tab-content">
-                          <div className="container tab-pane active">
-                            <br />
-                            {renderProfileList()}
+                          {/* Shortlisted By You Tab */}
+                          <div
+                            className={`tab-pane fade ${activeTab === "byYou" ? "show active" : ""}`}
+                          >
+                            {renderProfileList(profileDataByYou)}
+                          </div>
+
+                          {/* Who Shortlisted You Tab */}
+                          <div
+                            className={`tab-pane fade ${activeTab === "whoShortlisted" ? "show active" : ""}`}
+                          >
+                            {renderProfileList(profileDataWhoShortlisted)}
                           </div>
                         </div>
                       </div>

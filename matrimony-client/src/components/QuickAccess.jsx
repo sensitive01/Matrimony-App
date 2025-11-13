@@ -115,10 +115,44 @@ const QuickAccess = () => {
   }, [totalSlides]);
 
   return (
-    <section style={{ background: 'white', padding: '60px 0' }}>
-      <div className="str home-acces-main" style={{ background: 'white' }}>
-        <div className="container" style={{ background: 'white' }}>
-          <div className="row" style={{ background: 'white' }}>
+    <section style={{ 
+      background: 'white', 
+      backgroundColor: 'white',
+      backgroundImage: 'none',
+      padding: '60px 0',
+      position: 'relative'
+    }}>
+      <div className="str home-acces-main" style={{ 
+        background: 'white', 
+        backgroundColor: 'white',
+        backgroundImage: 'none',
+        position: 'relative'
+      }}>
+        {/* Override any pseudo-elements */}
+        <style>{`
+          .str.home-acces-main::before,
+          .str.home-acces-main::after,
+          .home-acces::before,
+          .home-acces::after,
+          .row::before,
+          .row::after {
+            display: none !important;
+            background: none !important;
+          }
+        `}</style>
+        
+        <div className="container" style={{ 
+          background: 'white', 
+          backgroundColor: 'white',
+          backgroundImage: 'none',
+          position: 'relative'
+        }}>
+          <div className="row" style={{ 
+            background: 'white', 
+            backgroundColor: 'white',
+            backgroundImage: 'none',
+            position: 'relative'
+          }}>
             {/* BACKGROUND SHAPE - Hidden for white background */}
             <div className="wedd-shap" style={{ display: 'none' }}>
               <span className="abo-shap-1" />
@@ -133,7 +167,7 @@ const QuickAccess = () => {
               <span className="leaf1" style={{ display: 'none' }} />
               <span className="tit-ani-" style={{ display: 'none' }} />
             </div>
-            <div className="home-acces">
+            <div className="home-acces" style={{ position: 'relative' }}>
               {/* Navigation Arrows */}
               <button 
                 onClick={prevSlide}
