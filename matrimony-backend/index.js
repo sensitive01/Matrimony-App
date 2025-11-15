@@ -27,6 +27,7 @@ const allowedOrigins = [
   "https://matrimony-app-t94e.vercel.app",
   "https://matrimony-app-three.vercel.app",
   "https://matrimony-app-ws3c.vercel.app"
+  "https://matrimonyapp-alpha.vercel.app"
 ];
 
 const corsOptions = {
