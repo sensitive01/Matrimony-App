@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Footer from "../components/Footer";
 import CopyRights from "../components/CopyRights";
 import UserSideBar from "../components/UserSideBar";
@@ -15,7 +14,7 @@ const UserDashboardPage = () => {
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const [profileMatches, setProfileMatches] = useState([]);
-  const [allProfiles, setAllProfiles] = useState([]); // Store all profiles for filtering
+  const [allProfiles, setAllProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -47,10 +46,8 @@ const UserDashboardPage = () => {
       window.$.fn.slick
     ) {
       try {
-        // Destroy existing slider first
         destroySlider();
 
-        // Small delay to ensure DOM is ready
         setTimeout(() => {
           if (sliderRef.current) {
             window.$(sliderRef.current).slick({
@@ -102,13 +99,12 @@ const UserDashboardPage = () => {
       setLoading(true);
       const response = await newProfileMatch(userId);
 
-      // Assuming the response structure matches your provided data
       if (response.status === 200) {
         setProfileMatches(response.data.matches);
-        setAllProfiles(response.data.matches); // Store all profiles
+        setAllProfiles(response.data.matches);
       } else if (Array.isArray(response)) {
         setProfileMatches(response);
-        setAllProfiles(response); // Store all profiles
+        setAllProfiles(response);
       } else {
         setProfileMatches([]);
         setAllProfiles([]);
@@ -129,13 +125,10 @@ const UserDashboardPage = () => {
       setSearchLoading(true);
       console.log("Searching with data:", searchData);
 
-      // Filter profiles based on search criteria
       let filteredProfiles = [...allProfiles];
 
-      // Filter by gender/looking for
       if (searchData.lookingFor) {
         filteredProfiles = filteredProfiles.filter((profile) => {
-          // Assuming profile has a gender field
           if (searchData.lookingFor === "Groom") {
             return profile.gender === "Male" || profile.gender === "male";
           } else {
@@ -144,7 +137,6 @@ const UserDashboardPage = () => {
         });
       }
 
-      // Filter by age range
       if (searchData.ageFrom && searchData.ageTo) {
         filteredProfiles = filteredProfiles.filter((profile) => {
           const age = parseInt(profile.age);
@@ -152,7 +144,6 @@ const UserDashboardPage = () => {
         });
       }
 
-      // Filter by community
       if (searchData.community) {
         filteredProfiles = filteredProfiles.filter(
           (profile) =>
@@ -163,7 +154,6 @@ const UserDashboardPage = () => {
         );
       }
 
-      // Filter by location
       if (searchData.location) {
         filteredProfiles = filteredProfiles.filter(
           (profile) =>
@@ -176,10 +166,6 @@ const UserDashboardPage = () => {
 
       setProfileMatches(filteredProfiles);
       setError(null);
-
-      // You can also make an API call here if you want server-side search
-      // const searchResponse = await searchProfiles(searchData);
-      // setProfileMatches(searchResponse.data);
     } catch (err) {
       console.error("Error searching profiles:", err);
       setError("Failed to search profiles. Please try again.");
@@ -203,7 +189,6 @@ const UserDashboardPage = () => {
     }
 
     const initializeComponents = () => {
-      // Initialize counter animation
       if (typeof window.$ !== "undefined") {
         window.$(".count").each(function () {
           window
@@ -223,13 +208,11 @@ const UserDashboardPage = () => {
             );
         });
 
-        // Initialize tooltips if available
         if (window.$.fn.tooltip) {
           window.$('[data-bs-toggle="tooltip"]').tooltip();
         }
       }
 
-      // Chart initialization
       if (typeof window.Chart !== "undefined" && !chartRef.current) {
         const chartElement = document.getElementById("Chart_leads");
         if (chartElement) {
@@ -272,15 +255,12 @@ const UserDashboardPage = () => {
 
   // Initial fetch and set up interval for periodic updates
   useEffect(() => {
-    // Initial fetch
     fetchProfileMatches();
 
-    // Set up interval to fetch new data every 30 seconds
     const interval = setInterval(() => {
       fetchProfileMatches();
     }, 30000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, [userId]);
 
@@ -307,105 +287,119 @@ const UserDashboardPage = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <LayoutComponent />
       </div>
 
+      {/* Main Content Area */}
       <div className="pt-16">
         <div className="db">
           <div className="container">
             <div className="row">
+              {/* Sidebar - Left Column */}
               <UserSideBar />
+
+              {/* Dashboard Content - Right Column */}
               <div className="col-md-8 col-lg-9">
-                {/* Search Component - Added Here */}
-                <DashboardSearchComponent
-                  onSearch={handleSearch}
-                  loading={searchLoading}
-                />
-
-                <div className="col-md-12 db-sec-com db-new-pro-main">
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h2 className="db-tit">
-                      Profile Matches
-                      {profileMatches.length > 0 && (
-                        <span className="badge bg-primary ms-2">
-                          {profileMatches.length}
-                        </span>
-                      )}
-                    </h2>
-                    {loading && (
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="visually-hidden">Loading...</span>
-                      </div>
-                    )}
+                {/* Search Component */}
+                <div className="row">
+                  <div className="col-md-12">
+                    <DashboardSearchComponent
+                      onSearch={handleSearch}
+                      loading={searchLoading}
+                    />
                   </div>
-
-                  {error && (
-                    <div className="alert alert-danger" role="alert">
-                      {error}
-                    </div>
-                  )}
-
-                  {profileMatches.length > 0 ? (
-                    <ul className="slider" ref={sliderRef}>
-                      {profileMatches.map((profile, index) => (
-                        <li key={profile._id || index}>
-                          <div className="db-new-pro">
-                            <img
-                              src={
-                                profile.profileImage ||
-                                "images/profiles/default.jpg"
-                              }
-                              alt={`${profile.userName}'s Profile`}
-                              className="profile"
-                              onError={(e) => {
-                                e.target.src = "images/profiles/default.jpg";
-                              }}
-                            />
-                            <div>
-                              <h5>{profile.userName}</h5>
-                              <span className="city mr-5">{profile.city}</span>
-                              <span className="age ml-5">
-                                {profile.age} Years old
-                              </span>
-                            </div>
-                            {/* Optional: Add online status indicator */}
-                            {index % 3 === 0 && (
-                              <div
-                                className="pro-ave"
-                                title="User currently available"
-                              >
-                                <span className="pro-ave-yes"></span>
-                              </div>
-                            )}
-                            <div
-                              className="fclick"
-                              onClick={() => handleProfileClick(profile._id)}
-                              style={{ cursor: "pointer" }}
-                            >
-                              &nbsp;
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    !loading && (
-                      <div className="alert alert-info" role="alert">
-                        No profile matches found for your search criteria.
-                      </div>
-                    )
-                  )}
                 </div>
 
+                {/* Profile Matches Section */}
+                <div className="row">
+                  <div className="col-md-12 db-sec-com db-new-pro-main">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h2 className="db-tit">
+                        Profile Matches
+                        {profileMatches.length > 0 && (
+                          <span className="badge bg-primary ms-2">
+                            {profileMatches.length}
+                          </span>
+                        )}
+                      </h2>
+                      {loading && (
+                        <div
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                        >
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {error && (
+                      <div className="alert alert-danger" role="alert">
+                        {error}
+                      </div>
+                    )}
+
+                    {profileMatches.length > 0 ? (
+                      <ul className="slider" ref={sliderRef}>
+                        {profileMatches.map((profile, index) => (
+                          <li key={profile._id || index}>
+                            <div className="db-new-pro">
+                              <img
+                                src={
+                                  profile.profileImage ||
+                                  "images/profiles/default.jpg"
+                                }
+                                alt={`${profile.userName}'s Profile`}
+                                className="profile"
+                                onError={(e) => {
+                                  e.target.src = "images/profiles/default.jpg";
+                                }}
+                              />
+                              <div>
+                                <h5>{profile.userName}</h5>
+                                <span className="city mr-5">
+                                  {profile.city}
+                                </span>
+                                <span className="age ml-5">
+                                  {profile.age} Years old
+                                </span>
+                              </div>
+                              {index % 3 === 0 && (
+                                <div
+                                  className="pro-ave"
+                                  title="User currently available"
+                                >
+                                  <span className="pro-ave-yes"></span>
+                                </div>
+                              )}
+                              <div
+                                className="fclick"
+                                onClick={() =>
+                                  handleProfileClick(profile._id)
+                                }
+                                style={{ cursor: "pointer" }}
+                              >
+                                &nbsp;
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      !loading && (
+                        <div className="alert alert-info" role="alert">
+                          No profile matches found for your search criteria.
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {/* Additional Dashboard Components */}
                 <div className="row">
                   <ProfileCompletion />
-
                   <PlanDetails />
-
                   <RecentChats />
                 </div>
               </div>
@@ -413,6 +407,8 @@ const UserDashboardPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
       <Footer />
       <CopyRights />
     </div>

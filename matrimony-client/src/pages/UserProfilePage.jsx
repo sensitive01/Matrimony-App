@@ -20,27 +20,32 @@ const UserProfilePage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [userId]);
 
   return (
     <div className="min-h-screen">
+      {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <LayoutComponent />
       </div>
 
+      {/* Main Content Area */}
       <div className="pt-16">
         <div className="db">
           <div className="container">
             <div className="row">
+              {/* Sidebar - Left Column */}
               <UserSideBar />
 
+              {/* Profile Content - Right Column */}
               <div className="col-md-8 col-lg-9">
                 <div className="row">
+                  {/* Profile Info Section */}
                   <div className="col-md-12 col-lg-6 col-xl-8 db-sec-com">
-                    <h2 className="db-tit">Profiles status</h2>
+                    <h2 className="db-tit">Profile Status</h2>
                     <div
                       className="db-profile"
-                      style={{ display: "flex", alignItems: "center" }}
+                      style={{ display: "flex", alignItems: "center", gap: "20px" }}
                     >
                       <div
                         className="img overflow-hidden rounded-full flex items-center justify-center bg-gray-200"
@@ -77,10 +82,7 @@ const UserProfilePage = () => {
                         )}
                       </div>
 
-                      <div
-                        className="profile-info"
-                        style={{ marginLeft: "20px", flex: 1 }}
-                      >
+                      <div className="profile-info" style={{ flex: 1 }}>
                         <div className="user-details">
                           <h3
                             style={{
@@ -117,8 +119,9 @@ const UserProfilePage = () => {
                     </div>
                   </div>
 
+                  {/* Profile Statistics Section */}
                   <div className="col-md-12 col-lg-6 col-xl-4 db-sec-com">
-                    <h2 className="db-tit">Profiles status</h2>
+                    <h2 className="db-tit">Profile Statistics</h2>
                     <div className="db-pro-stat">
                       <h6>Profile completion</h6>
                       <div className="dropdown">
@@ -213,6 +216,7 @@ const UserProfilePage = () => {
         </div>
       </div>
 
+      {/* Footer */}
       <Footer />
       <CopyRights />
     </div>
