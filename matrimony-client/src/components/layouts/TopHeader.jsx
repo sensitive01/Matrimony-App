@@ -111,7 +111,7 @@ const ProfileDropdown = ({ onLogout }) => {
   ];
 
   const handleNavigate = (path) => {
-    console.log(`Navigating to: ${path}`);
+    console.log(`Navigating to: ${path} to this`);
     // Replace with your actual navigation logic
   };
 
