@@ -20,6 +20,7 @@ const AddNewCandidate = () => {
     about: ''
   });
 
+
   const [permissions, setPermissions] = useState({
     holidays: { read: true, write: false, create: false, delete: true, import: false, export: false },
     leaves: { read: false, write: false, create: false, delete: false, import: false, export: false },
