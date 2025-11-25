@@ -1,772 +1,15 @@
-// import React, { useState } from 'react';
-// import axios from 'axios';
-// import AddPositionsModal from './AddPositionsModal';
-// import AddAccessModal from './AddAccessModal';
-// import EditAccessModal from './EditAccessModal';
-// import AccessModal from './AccessModal';
-// import EditStageModal from './EditStageModal';
-// import AddStageModal from './AddStageModal ';
-// import AddUserModal from './AddUserModal';
-// import { toast, ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-// import { useNavigate } from 'react-router-dom';
-
-// const AddUnitModal = ({ show, onClose }) => {
-//   const navigate = useNavigate();
-//   const [activeTab, setActiveTab] = useState('basic-info');
-//   const [showPositionsModal, setShowPositionsModal] = useState(false);
-//   const [showAccessModal, setShowAccessModal] = useState(false);
-//   const [showAddAccessModal, setShowAddAccessModal] = useState(false);
-//   const [showEditAccessModal, setShowEditAccessModal] = useState(false);
-//   const [showStageModal, setShowStageModal] = useState(false);
-//   const [showEditStageModal, setShowEditStageModal] = useState(false);
-//   const [showAddUserModal, setShowAddUserModal] = useState(false);
-//   const [isSubmitting, setIsSubmitting] = useState(false);
-//   const [error, setError] = useState(null);
-
-//   // OTP Verification State
-//   const [otp, setOtp] = useState('');
-//   const [isOtpSent, setIsOtpSent] = useState(false);
-//   const [isOtpVerified, setIsOtpVerified] = useState(false);
-//   const [otpError, setOtpError] = useState('');
-//   const [isSendingOtp, setIsSendingOtp] = useState(false);
-//   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
-
-//   // Get organization ID from localStorage
-//   const employerAdminData = JSON.parse(localStorage.getItem('EmployerAdminData')) || '{}';
-//   const organizationid = employerAdminData._id || '';
-
-//   const [formData, setFormData] = useState({
-//     schoolName: '',
-//     firstName: '',
-//     lastName: '',
-//     address: '',
-//     organizationid: organizationid,
-//     city: '',
-//     state: '',
-//     pincode: '',
-//     institutionName: '',
-//     board: '',
-//     institutionType: '',
-//     website: '',
-//     userEmail: '',
-//     userMobile: '',
-//     userPassword: '',
-//     userProfilePic: '',
-//     employerType: '',
-//     country: ''
-//   });
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData(prev => ({
-//       ...prev,
-//       [name]: value
-//     }));
-//   };
-
-//   // Send OTP to backend
-//   const sendOtp = async () => {
-//     if (!formData.userEmail) {
-//       setOtpError('Please enter your email address first');
-//       return;
-//     }
-
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailRegex.test(formData.userEmail)) {
-//       setOtpError('Please enter a valid email address');
-//       return;
-//     }
-
-//     setIsSendingOtp(true);
-//     setOtpError('');
-
-//     try {
-//       const response = await axios.post('https://edujobemailverification.onrender.com/api/send-otp', {
-//         email: formData.userEmail
-//       });
-
-//       if (response.data.success) {
-//         setIsOtpSent(true);
-//         setOtpError('');
-//       } else {
-//         setOtpError(response.data.error || 'Failed to send OTP');
-//       }
-//     } catch (error) {
-//       setOtpError(error.response?.data?.error || 'Failed to send OTP');
-//     } finally {
-//       setIsSendingOtp(false);
-//     }
-//   };
-
-//   // Verify OTP with backend
-//   const verifyOtp = async () => {
-//     if (!otp || otp.length !== 6) {
-//       setOtpError('Please enter a 6-digit OTP');
-//       return;
-//     }
-
-//     setIsVerifyingOtp(true);
-//     setOtpError('');
-
-//     try {
-//       const response = await axios.post('https://edujobemailverification.onrender.com/api/verify-otp', {
-//         email: formData.userEmail,
-//         otp
-//       });
-
-//       if (response.data.success) {
-//         setIsOtpVerified(true);
-//         setOtpError('');
-//       } else {
-//         setOtpError(response.data.error || 'Invalid OTP');
-//         setIsOtpVerified(false);
-//       }
-//     } catch (error) {
-//       setOtpError(error.response?.data?.error || 'Verification failed');
-//       setIsOtpVerified(false);
-//     } finally {
-//       setIsVerifyingOtp(false);
-//     }
-//   };
-
-//   const handleNext = () => {
-//     // Validate required fields in basic info before proceeding
-//     if (
-//       !formData.schoolName ||
-//       !formData.firstName ||
-//       !formData.lastName ||
-//       !formData.institutionName ||
-//       !formData.board ||
-//       !formData.institutionType ||
-//       !formData.userMobile ||
-//       !formData.userPassword ||
-//       !formData.employerType
-//     ) {
-//       setError('Please fill all required fields');
-//       return;
-//     }
-
-//     // If email is provided, require OTP verification
-//     if (formData.userEmail && !isOtpVerified) {
-//       setError('Please verify your email with OTP');
-//       return;
-//     }
-
-//     setError(null);
-//     setActiveTab('address');
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setIsSubmitting(true);
-//     setError(null);
-
-//     // Validate address fields
-//     if (
-//       !formData.address ||
-//       !formData.country ||
-//       !formData.state ||
-//       !formData.city ||
-//       !formData.pincode
-//     ) {
-//       setError('Please fill all address fields');
-//       setIsSubmitting(false);
-//       return;
-//     }
-
-//     // If email is provided, require OTP verification
-//     if (formData.userEmail && !isOtpVerified) {
-//       setError('Please verify your email with OTP');
-//       setIsSubmitting(false);
-//       return;
-//     }
-
-//     try {
-//       const token = localStorage.getItem('EmployerAdminToken');
-//       const response = await axios.post('https://api.edprofio.com/employeradmin/createemployer', formData, {
-//         headers: {
-//           'Authorization': `Bearer ${token}`,
-//           'Content-Type': 'application/json'
-//         }
-//       });
-
-//       console.log('Employer created successfully:', response.data);
-//       toast.success('Unit created successfully!');
-
-//       // Call the onSave prop with the response data
-//       if (typeof onSave === 'function') {
-//         onSave(response.data.data);
-//       }
-
-//       // Reset form data
-//       setFormData({
-//         schoolName: '',
-//         firstName: '',
-//         lastName: '',
-//         address: '',
-//         organizationid: organizationid,
-//         city: '',
-//         state: '',
-//         pincode: '',
-//         institutionName: '',
-//         board: '',
-//         institutionType: '',
-//         website: '',
-//         userEmail: '',
-//         userMobile: '',
-//         userPassword: '',
-//         userProfilePic: '',
-//         employerType: '',
-//         country: ''
-//       });
-
-//       // Reset OTP state
-//       setOtp('');
-//       setIsOtpSent(false);
-//       setIsOtpVerified(false);
-
-//       // Close modal after a short delay to allow toast to show
-//       setTimeout(() => {
-//         onClose();
-//       }, 1000);
-
-//     } catch (err) {
-//       console.error('Error creating employer:', err);
-//       setError(err.response?.data?.message || 'Failed to create unit. Please try again.');
-//       toast.error('Failed to create unit. Please try again.');
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
-
-//   if (!show) {
-//     return null;
-//   }
-
-//   return (
-//     <>
-//       <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-//         <div className="modal-dialog modal-dialog-centered modal-lg">
-//           <div className="modal-content">
-//             <div className="modal-header">
-//               <h4 className="modal-title">Add New Unit</h4>
-//               <button
-//                 type="button"
-//                 className="btn-close custom-btn-close"
-//                 onClick={onClose}
-//                 aria-label="Close"
-//               >
-//                 <i className="ti ti-x"></i>
-//               </button>
-//             </div>
-
-//             <form onSubmit={handleSubmit}>
-//               <div className="contact-grids-tab">
-//                 <ul className="nav nav-underline" id="myTab" role="tablist">
-//                   <li className="nav-item" role="presentation">
-//                     <button
-//                       className={`nav-link ${activeTab === 'basic-info' ? 'active' : ''}`}
-//                       onClick={() => setActiveTab('basic-info')}
-//                       type="button"
-//                     >
-//                       Basic Information
-//                     </button>
-//                   </li>
-//                   <li className="nav-item" role="presentation">
-//                     <button
-//                       className={`nav-link ${activeTab === 'address' ? 'active' : ''}`}
-//                       onClick={() => setActiveTab('address')}
-//                       type="button"
-//                     >
-//                       Address
-//                     </button>
-//                   </li>
-//                 </ul>
-//               </div>
-
-//               {error && (
-//                 <div className="alert alert-danger mx-3 mt-3">
-//                   {error}
-//                 </div>
-//               )}
-
-//               <div className="tab-content" id="myTabContent">
-//                 {/* Basic Info Tab */}
-//                 <div className={`tab-pane fade ${activeTab === 'basic-info' ? 'show active' : ''}`}>
-//                   <div className="modal-body pb-0">
-//                     <div className="row">
-//                       <div className="col-md-12">
-//                         <div className="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">
-//                           {formData.userProfilePic ? (
-//                             <img
-//                               src={formData.userProfilePic}
-//                               alt="Profile Preview"
-//                               className="avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0"
-//                               style={{ objectFit: 'cover' }}
-//                             />
-//                           ) : (
-//                             <div className="d-flex align-items-center justify-content-center avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0 text-dark frames">
-//                               <i className="ti ti-photo text-gray-2 fs-16"></i>
-//                             </div>
-//                           )}
-//                           <div className="profile-upload">
-//                             <div className="mb-2">
-//                               <h6 className="mb-1">Upload Profile Image</h6>
-//                               <p className="fs-12">Image should be below 4 mb</p>
-//                             </div>
-//                             <div className="profile-uploader d-flex align-items-center">
-//                               <div className="drag-upload-btn btn btn-sm btn-primary me-2">
-//                                 Upload
-//                                 <input
-//                                   type="file"
-//                                   className="form-control image-sign"
-//                                   onChange={(e) => {
-//                                     if (e.target.files && e.target.files[0]) {
-//                                       setFormData(prev => ({
-//                                         ...prev,
-//                                         userProfilePic: URL.createObjectURL(e.target.files[0])
-//                                       }));
-//                                     }
-//                                   }}
-//                                 />
-//                               </div>
-//                               <button
-//                                 type="button"
-//                                 className="btn btn-light btn-sm"
-//                                 onClick={() => setFormData(prev => ({ ...prev, userProfilePic: '' }))}
-//                               >
-//                                 Cancel
-//                               </button>
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">School Name <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="schoolName"
-//                             value={formData.schoolName}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">First Name <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="firstName"
-//                             value={formData.firstName}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Last Name <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="lastName"
-//                             value={formData.lastName}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Institution Name <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="institutionName"
-//                             value={formData.institutionName}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Board <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="board"
-//                             value={formData.board}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Institution Type <span className="text-danger">*</span></label>
-//                           <select
-//                             className="form-select"
-//                             name="institutionType"
-//                             value={formData.institutionType}
-//                             onChange={handleChange}
-//                             required
-//                           >
-//                             <option value="">Select</option>
-//                             <option value="School">School</option>
-//                             <option value="College">College</option>
-//                             <option value="University">University</option>
-//                             <option value="Coaching">Coaching</option>
-//                           </select>
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Email</label>
-//                           <input
-//                             type="email"
-//                             className="form-control"
-//                             name="userEmail"
-//                             value={formData.userEmail}
-//                             onChange={handleChange}
-//                             disabled={isOtpSent}
-//                           />
-//                           {formData.userEmail && (
-//                             <div className="d-flex align-items-center mt-2">
-//                               <input
-//                                 type="text"
-//                                 placeholder="Enter OTP"
-//                                 value={otp}
-//                                 onChange={(e) => setOtp(e.target.value)}
-//                                 className="form-control me-2"
-//                                 style={{ width: '150px' }}
-//                                 disabled={!isOtpSent}
-//                                 maxLength="6"
-//                               />
-//                               {!isOtpSent ? (
-//                                 <button
-//                                   type="button"
-//                                   onClick={sendOtp}
-//                                   className="btn btn-outline-primary"
-//                                   disabled={isSendingOtp || !formData.userEmail}
-//                                 >
-//                                   {isSendingOtp ? 'Sending...' : 'Send OTP'}
-//                                 </button>
-//                               ) : (
-//                                 <button
-//                                   type="button"
-//                                   onClick={verifyOtp}
-//                                   className={`btn ${isOtpVerified ? 'btn-success' : 'btn-primary'}`}
-//                                   disabled={isVerifyingOtp || isOtpVerified}
-//                                 >
-//                                   {isVerifyingOtp ? 'Verifying...' : isOtpVerified ? 'Verified' : 'Verify'}
-//                                 </button>
-//                               )}
-//                             </div>
-//                           )}
-//                           {isOtpSent && !isOtpVerified && (
-//                             <small className="text-muted">OTP sent to your email</small>
-//                           )}
-//                           {isOtpVerified && (
-//                             <small className="text-success">Email verified successfully!</small>
-//                           )}
-//                           {otpError && (
-//                             <div className="text-danger small mt-1">{otpError}</div>
-//                           )}
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Mobile Number <span className="text-danger">*</span></label>
-//                           <input
-//                             type="tel"
-//                             className="form-control"
-//                             name="userMobile"
-//                             value={formData.userMobile}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Password <span className="text-danger">*</span></label>
-//                           <input
-//                             type="password"
-//                             className="form-control"
-//                             name="userPassword"
-//                             value={formData.userPassword}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Website</label>
-//                           <input
-//                             type="url"
-//                             className="form-control"
-//                             name="website"
-//                             value={formData.website}
-//                             onChange={handleChange}
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Employer Type <span className="text-danger">*</span></label>
-//                           <select
-//                             className="form-select"
-//                             name="employerType"
-//                             value={formData.employerType}
-//                             onChange={handleChange}
-//                             required
-//                           >
-//                             <option value="">Select</option>
-//                             <option value="Admin">Admin</option>
-//                             <option value="Teacher">Teacher</option>
-//                             <option value="Staff">Staff</option>
-//                           </select>
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6 d-flex justify-content-between align-items-center mb-2">
-//                         <label className="col-form-label p-0">Positions <span className="text-danger">*</span></label>
-//                         <button
-//                           type="button"
-//                           className="add-new text-primary"
-//                           onClick={() => setShowPositionsModal(true)}
-//                           style={{ border: 'none', backgroundColor: 'white' }}
-//                         >
-//                           <i className="ti ti-plus text-primary me-1"></i>Add New
-//                         </button>
-//                       </div>
-//                       <div className="col-md-12 d-flex justify-content-between align-items-center mb-2">
-//                         <label className="col-form-label p-0">User <span className="text-danger">*</span></label>
-//                         <button
-//                           type="button"
-//                           className="add-new text-primary"
-//                           onClick={() => setShowAddUserModal(true)}
-//                           style={{ border: 'none', backgroundColor: 'white' }}
-//                         >
-//                           <i className="ti ti-plus text-primary me-1"></i>Add New
-//                         </button>
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <div className="modal-footer">
-//                     <button type="button" className="btn btn-light me-2" onClick={onClose} disabled={isSubmitting}>
-//                       Cancel
-//                     </button>
-//                     <button
-//                       type="button"
-//                       className="btn btn-primary"
-//                       onClick={handleNext}
-//                       disabled={isSubmitting}
-//                     >
-//                       Next
-//                     </button>
-//                   </div>
-//                 </div>
-
-//                 {/* Address Tab */}
-//                 <div className={`tab-pane fade ${activeTab === 'address' ? 'show active' : ''}`}>
-//                   <div className="modal-body pb-0">
-//                     <div className="row">
-//                       <div className="col-md-12">
-//                         <div className="mb-3">
-//                           <label className="form-label">Address <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="address"
-//                             value={formData.address}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Country <span className="text-danger">*</span></label>
-//                           <select
-//                             className="form-select"
-//                             name="country"
-//                             value={formData.country}
-//                             onChange={handleChange}
-//                             required
-//                           >
-//                             <option value="">Select</option>
-//                             <option value="USA">USA</option>
-//                             <option value="India">India</option>
-//                             <option value="UK">UK</option>
-//                             <option value="Canada">Canada</option>
-//                           </select>
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">State <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="state"
-//                             value={formData.state}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">City <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="city"
-//                             value={formData.city}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-md-6">
-//                         <div className="mb-3">
-//                           <label className="form-label">Pincode <span className="text-danger">*</span></label>
-//                           <input
-//                             type="text"
-//                             className="form-control"
-//                             name="pincode"
-//                             value={formData.pincode}
-//                             onChange={handleChange}
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <div className="modal-footer">
-//                     <button type="button" className="btn btn-light me-2" onClick={onClose} disabled={isSubmitting}>
-//                       Cancel
-//                     </button>
-//                     <button type="submit" className="btn btn-primary" disabled={isSubmitting || (formData.userEmail && !isOtpVerified)}>
-//                       {isSubmitting ? 'Saving...' : 'Save'}
-//                     </button>
-//                   </div>
-//                 </div>
-//               </div>
-//             </form>
-//           </div>
-//         </div>
-//       </div>
-
-//       <AddPositionsModal
-//         show={showPositionsModal}
-//         onClose={() => setShowPositionsModal(false)}
-//         onAddAccess={() => {
-//           setShowPositionsModal(false);
-//           setShowAddAccessModal(true);
-//         }}
-//       />
-//       <AddAccessModal
-//         show={showAddAccessModal}
-//         onClose={() => setShowAddAccessModal(false)}
-//         onAddStage={() => {
-//           setShowAddAccessModal(false);
-//           setShowStageModal(true);
-//         }}
-//         onEditStage={() => {
-//           setShowAddAccessModal(false);
-//           setShowEditStageModal(true);
-//         }}
-//       />
-
-//       <EditAccessModal
-//         show={showEditAccessModal}
-//         onClose={() => setShowEditAccessModal(false)}
-//         onAddStage={() => {
-//           setShowEditAccessModal(false);
-//           setShowStageModal(true);
-//         }}
-//         onEditStage={() => {
-//           setShowEditAccessModal(false);
-//           setShowEditStageModal(true);
-//         }}
-//       />
-
-//       <AccessModal
-//         show={showAccessModal}
-//         onClose={() => setShowAccessModal(false)}
-//       />
-
-//       <AddStageModal
-//         show={showStageModal}
-//         onClose={() => setShowStageModal(false)}
-//       />
-
-//       <EditStageModal
-//         show={showEditStageModal}
-//         onClose={() => setShowEditStageModal(false)}
-//       />
-
-//       <AddUserModal
-//         show={showAddUserModal}
-//         onClose={() => setShowAddUserModal(false)}
-//         onAddPositions={() => {
-//           setShowAddUserModal(false);
-//           setShowPositionsModal(true);
-//         }}
-//       />
-//       <ToastContainer
-//         position="top-right"
-//         autoClose={5000}
-//         hideProgressBar={false}
-//         newestOnTop={false}
-//         closeOnClick
-//         rtl={false}
-//         pauseOnFocusLoss
-//         draggable
-//         pauseOnHover
-//       />
-//     </>
-//   );
-// };
-
-// export default AddUnitModal;
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AddPositionsModal from "./AddPositionsModal";
-import AddAccessModal from "./AddAccessModal";
-import EditAccessModal from "./EditAccessModal";
-import AccessModal from "./AccessModal";
-import EditStageModal from "./EditStageModal";
-import AddStageModal from "./AddStageModal ";
-import AddUserModal from "./AddUserModal";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 
-const AddUnitModal = ({ show, onClose }) => {
-  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL
-  const navigate = useNavigate();
+const AddUnitModal = ({ show, onClose, onSave }) => {
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
   const [activeTab, setActiveTab] = useState("basic-info");
-  const [showPositionsModal, setShowPositionsModal] = useState(false);
-  const [showAccessModal, setShowAccessModal] = useState(false);
-  const [showAddAccessModal, setShowAddAccessModal] = useState(false);
-  const [showEditAccessModal, setShowEditAccessModal] = useState(false);
-  const [showStageModal, setShowStageModal] = useState(false);
-  const [showEditStageModal, setShowEditStageModal] = useState(false);
-  const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // OTP Verification State
+  // OTP State
   const [otp, setOtp] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
@@ -774,15 +17,10 @@ const AddUnitModal = ({ show, onClose }) => {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
-  // Duplicate check state
   const [emailExists, setEmailExists] = useState(false);
   const [phoneExists, setPhoneExists] = useState(false);
-  const [existingEmails, setExistingEmails] = useState([]);
-  const [existingPhones, setExistingPhones] = useState([]);
 
-  // Get organization ID from localStorage
-  const employerAdminData =
-    JSON.parse(localStorage.getItem("EmployerAdminData")) || "{}";
+  const employerAdminData = JSON.parse(localStorage.getItem("EmployerAdminData") || "{}");
   const organizationid = employerAdminData._id || "";
 
   const [formData, setFormData] = useState({
@@ -806,124 +44,155 @@ const AddUnitModal = ({ show, onClose }) => {
     country: "",
   });
 
-  // Mock data for existing emails and phone numbers
-  useEffect(() => {
-    // In a real app, you would fetch this from your backend
-    const mockExistingData = {
-      emails: [
-        "existing1@example.com",
-        "existing2@example.com",
-        "admin@school.com",
-      ],
-      phones: ["9876543210", "1234567890", "5555555555"],
-    };
-    setExistingEmails(mockExistingData.emails);
-    setExistingPhones(mockExistingData.phones);
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
-    // Check for email duplication
-    if (name === "userEmail") {
-      const exists = existingEmails.includes(value);
-      setEmailExists(exists);
-      if (exists) {
-        setIsOtpSent(false);
-        setIsOtpVerified(false);
-        setOtp("");
-      }
-    }
-    if (name === "userMobile") {
-      // Remove any non-digit characters before checking
-      const cleanPhone = value.replace(/\D/g, "");
-      const exists = existingPhones.includes(cleanPhone);
-      setPhoneExists(exists);
-    }
   };
 
-  // Send OTP to backend
-  const sendOtp = async () => {
-    if (!formData.userEmail) {
-      setOtpError("Please enter your email address first");
-      return;
+  // FIXED: Convert error objects to strings
+  const getErrorMessage = (error) => {
+    // If error is already a string, return it
+    if (typeof error === 'string') {
+      return error;
+    }
+    
+    // If error is an object, extract the message
+    if (error && typeof error === 'object') {
+      // Try different common error object structures
+      if (error.message) return String(error.message);
+      if (error.error) return String(error.error);
+      if (error.msg) return String(error.msg);
+      
+      // If it has code and command, it might be a database error
+      if (error.code) {
+        return `Error code: ${error.code}`;
+      }
+      
+      // Last resort: stringify the object
+      return JSON.stringify(error);
+    }
+    
+    // Default fallback
+    return "An unknown error occurred";
+  };
+
+  const sendOtp = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
 
-    if (emailExists) {
-      setOtpError("This email is already registered");
+    // Validation
+    if (!formData.userEmail) {
+      const msg = "Please enter your email address first";
+      setOtpError(msg);
+      toast.error(msg);
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.userEmail)) {
-      setOtpError("Please enter a valid email address");
+      const msg = "Please enter a valid email address";
+      setOtpError(msg);
+      toast.error(msg);
       return;
     }
 
     setIsSendingOtp(true);
     setOtpError("");
 
-    try {
-      const response = await axios.post(
-        `${VITE_BASE_URL}/sendemailotp`,
-        {
-          email: formData.userEmail,
-        }
-      );
-
-      if (response.data.success) {
+    axios.post(
+      `${VITE_BASE_URL}/employer/sendemailotp`,
+      { userEmail: formData.userEmail },
+      { 
+        timeout: 10000,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
+    .then((response) => {
+      console.log("API Response:", response.data);
+      
+      if (response.status===200) {
         setIsOtpSent(true);
         setOtpError("");
+        toast.success("OTP sent successfully!");
       } else {
-        setOtpError(response.data.error || "Failed to send OTP");
+        // FIXED: Convert error to string
+        const errorMsg = getErrorMessage(response.data.error) || "Failed to send OTP";
+        setOtpError(errorMsg);
+        toast.error(errorMsg);
       }
-    } catch (error) {
-      setOtpError(error.response?.data?.error || "Failed to send OTP");
-    } finally {
+    })
+    .catch((error) => {
+      console.error("API ERROR:", error);
+      console.error("Error response:", error.response?.data);
+      
+      // FIXED: Properly handle error objects
+      let errorMsg = "Failed to send OTP. Please try again.";
+      
+      if (error.response?.data) {
+        errorMsg = getErrorMessage(error.response.data.error || error.response.data);
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+      
+      setOtpError(errorMsg);
+      toast.error(errorMsg);
+    })
+    .finally(() => {
       setIsSendingOtp(false);
-    }
+    });
   };
 
-  // Verify OTP with backend
-  const verifyOtp = async () => {
+  const verifyOtp = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     if (!otp || otp.length !== 6) {
-      setOtpError("Please enter a 6-digit OTP");
+      toast.error("Please enter a 6-digit OTP");
       return;
     }
 
     setIsVerifyingOtp(true);
     setOtpError("");
 
-    try {
-      const response = await axios.post(
-        `${VITE_BASE_URL}/verify-otp`,
-        {
-          email: formData.userEmail,
-          otp,
-        }
-      );
-
-      if (response.data.success) {
+    axios.post(
+      `${VITE_BASE_URL}/employer/verifyemailotp`,
+      { userEmail: formData.userEmail, otp },
+      { timeout: 10000 }
+    )
+    .then((response) => {
+      if (response.status===200) {
         setIsOtpVerified(true);
         setOtpError("");
+        toast.success("Email verified!");
       } else {
-        setOtpError(response.data.error || "Invalid OTP");
-        setIsOtpVerified(false);
+        const errorMsg = getErrorMessage(response.data.error) || "Invalid OTP";
+        setOtpError(errorMsg);
+        toast.error(errorMsg);
       }
-    } catch (error) {
-      setOtpError(error.response?.data?.error || "Verification failed");
-      setIsOtpVerified(false);
-    } finally {
+    })
+    .catch((error) => {
+      const errorMsg = getErrorMessage(error.response?.data?.error) || "Verification failed";
+      setOtpError(errorMsg);
+      toast.error(errorMsg);
+    })
+    .finally(() => {
       setIsVerifyingOtp(false);
-    }
+    });
   };
 
-  const handleNext = () => {
-    // Validate required fields in basic info before proceeding
+  const handleNext = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     if (
       !formData.schoolName ||
       !formData.firstName ||
@@ -935,19 +204,23 @@ const AddUnitModal = ({ show, onClose }) => {
       !formData.userPassword ||
       !formData.employerType
     ) {
-      setError("Please fill all required fields");
+      const errorMsg = "Please fill all required fields";
+      setError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
-    // Check for phone number duplication
     if (phoneExists) {
-      setError("Phone number is already registered");
+      const errorMsg = "Phone number is already registered";
+      setError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
-    // If email is provided, require OTP verification
     if (formData.userEmail && !isOtpVerified) {
-      setError("Please verify your email with OTP");
+      const errorMsg = "Please verify your email with OTP";
+      setError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
@@ -955,60 +228,59 @@ const AddUnitModal = ({ show, onClose }) => {
     setActiveTab("address");
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+
     setIsSubmitting(true);
     setError(null);
 
-    // Validate address fields
-    if (
-      !formData.address ||
-      !formData.country ||
-      !formData.state ||
-      !formData.city ||
-      !formData.pincode
-    ) {
-      setError("Please fill all address fields");
+    if (!formData.address || !formData.country || !formData.state || !formData.city || !formData.pincode) {
+      const errorMsg = "Please fill all address fields";
+      setError(errorMsg);
+      toast.error(errorMsg);
       setIsSubmitting(false);
       return;
     }
 
-    // Check for phone number duplication
     if (phoneExists) {
-      setError("Phone number is already registered");
+      const errorMsg = "Phone number is already registered";
+      setError(errorMsg);
+      toast.error(errorMsg);
       setIsSubmitting(false);
       return;
     }
 
-    // If email is provided, require OTP verification
     if (formData.userEmail && !isOtpVerified) {
-      setError("Please verify your email with OTP");
+      const errorMsg = "Please verify your email with OTP";
+      setError(errorMsg);
+      toast.error(errorMsg);
       setIsSubmitting(false);
       return;
     }
 
-    try {
-      const token = localStorage.getItem("EmployerAdminToken");
-      const response = await axios.post(
-        "https://api.edprofio.com/employeradmin/createemployer",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("Employer created successfully:", response.data);
+    const token = localStorage.getItem("EmployerAdminToken");
+    
+    axios.post(
+      "https://api.edprofio.com/employeradmin/createemployer",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      }
+    )
+    .then((response) => {
+      console.log("Employer created:", response.data);
       toast.success("Unit created successfully!");
 
-      // Call the onSave prop with the response data
       if (typeof onSave === "function") {
         onSave(response.data.data);
       }
 
-      // Reset form data
+      // Reset form
       setFormData({
         schoolName: "",
         firstName: "",
@@ -1030,25 +302,24 @@ const AddUnitModal = ({ show, onClose }) => {
         country: "",
       });
 
-      // Reset OTP state
       setOtp("");
       setIsOtpSent(false);
       setIsOtpVerified(false);
+      setActiveTab("basic-info");
 
-      // Close modal after a short delay to allow toast to show
       setTimeout(() => {
         onClose();
-      }, 1000);
-    } catch (err) {
+      }, 1500);
+    })
+    .catch((err) => {
       console.error("Error creating employer:", err);
-      setError(
-        err.response?.data?.message ||
-          "Failed to create unit. Please try again."
-      );
-      toast.error("Failed to create unit. Please try again.");
-    } finally {
+      const errorMsg = getErrorMessage(err.response?.data?.message || err.response?.data) || "Failed to create unit";
+      setError(errorMsg);
+      toast.error(errorMsg);
+    })
+    .finally(() => {
       setIsSubmitting(false);
-    }
+    });
   };
 
   if (!show) {
@@ -1059,7 +330,12 @@ const AddUnitModal = ({ show, onClose }) => {
     <>
       <div
         className="modal fade show"
-        style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+        style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
       >
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className="modal-content">
@@ -1067,34 +343,34 @@ const AddUnitModal = ({ show, onClose }) => {
               <h4 className="modal-title">Add New Unit</h4>
               <button
                 type="button"
-                className="btn-close custom-btn-close"
+                className="btn-close"
                 onClick={onClose}
                 aria-label="Close"
-              >
-                <i className="ti ti-x"></i>
-              </button>
+              />
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="contact-grids-tab">
-                <ul className="nav nav-underline" id="myTab" role="tablist">
-                  <li className="nav-item" role="presentation">
+                <ul className="nav nav-underline">
+                  <li className="nav-item">
                     <button
-                      className={`nav-link ${
-                        activeTab === "basic-info" ? "active" : ""
-                      }`}
-                      onClick={() => setActiveTab("basic-info")}
+                      className={`nav-link ${activeTab === "basic-info" ? "active" : ""}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveTab("basic-info");
+                      }}
                       type="button"
                     >
                       Basic Information
                     </button>
                   </li>
-                  <li className="nav-item" role="presentation">
+                  <li className="nav-item">
                     <button
-                      className={`nav-link ${
-                        activeTab === "address" ? "active" : ""
-                      }`}
-                      onClick={() => setActiveTab("address")}
+                      className={`nav-link ${activeTab === "address" ? "active" : ""}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveTab("address");
+                      }}
                       type="button"
                     >
                       Address
@@ -1107,70 +383,11 @@ const AddUnitModal = ({ show, onClose }) => {
                 <div className="alert alert-danger mx-3 mt-3">{error}</div>
               )}
 
-              <div className="tab-content" id="myTabContent">
+              <div className="tab-content">
                 {/* Basic Info Tab */}
-                <div
-                  className={`tab-pane fade ${
-                    activeTab === "basic-info" ? "show active" : ""
-                  }`}
-                >
-                  <div className="modal-body pb-0">
+                <div className={`tab-pane fade ${activeTab === "basic-info" ? "show active" : ""}`}>
+                  <div className="modal-body">
                     <div className="row">
-                      <div className="col-md-12">
-                        <div className="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">
-                          {formData.userProfilePic ? (
-                            <img
-                              src={formData.userProfilePic}
-                              alt="Profile Preview"
-                              className="avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0"
-                              style={{ objectFit: "cover" }}
-                            />
-                          ) : (
-                            <div className="d-flex align-items-center justify-content-center avatar avatar-xxl rounded-circle border border-dashed me-2 flex-shrink-0 text-dark frames">
-                              <i className="ti ti-photo text-gray-2 fs-16"></i>
-                            </div>
-                          )}
-                          <div className="profile-upload">
-                            <div className="mb-2">
-                              <h6 className="mb-1">Upload Profile Image</h6>
-                              <p className="fs-12">
-                                Image should be below 4 mb
-                              </p>
-                            </div>
-                            <div className="profile-uploader d-flex align-items-center">
-                              <div className="drag-upload-btn btn btn-sm btn-primary me-2">
-                                Upload
-                                <input
-                                  type="file"
-                                  className="form-control image-sign"
-                                  onChange={(e) => {
-                                    if (e.target.files && e.target.files[0]) {
-                                      setFormData((prev) => ({
-                                        ...prev,
-                                        userProfilePic: URL.createObjectURL(
-                                          e.target.files[0]
-                                        ),
-                                      }));
-                                    }
-                                  }}
-                                />
-                              </div>
-                              <button
-                                type="button"
-                                className="btn btn-light btn-sm"
-                                onClick={() =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    userProfilePic: "",
-                                  }))
-                                }
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label className="form-label">
@@ -1180,6 +397,7 @@ const AddUnitModal = ({ show, onClose }) => {
                             type="text"
                             className="form-control"
                             name="schoolName"
+                            autoComplete="organization"
                             value={formData.schoolName}
                             onChange={handleChange}
                             required
@@ -1195,6 +413,7 @@ const AddUnitModal = ({ show, onClose }) => {
                             type="text"
                             className="form-control"
                             name="firstName"
+                            autoComplete="given-name"
                             value={formData.firstName}
                             onChange={handleChange}
                             required
@@ -1210,6 +429,7 @@ const AddUnitModal = ({ show, onClose }) => {
                             type="text"
                             className="form-control"
                             name="lastName"
+                            autoComplete="family-name"
                             value={formData.lastName}
                             onChange={handleChange}
                             required
@@ -1219,13 +439,13 @@ const AddUnitModal = ({ show, onClose }) => {
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label className="form-label">
-                            Institution Name{" "}
-                            <span className="text-danger">*</span>
+                            Institution Name <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
                             className="form-control"
                             name="institutionName"
+                            autoComplete="organization"
                             value={formData.institutionName}
                             onChange={handleChange}
                             required
@@ -1250,8 +470,7 @@ const AddUnitModal = ({ show, onClose }) => {
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label className="form-label">
-                            Institution Type{" "}
-                            <span className="text-danger">*</span>
+                            Institution Type <span className="text-danger">*</span>
                           </label>
                           <select
                             className="form-select"
@@ -1268,80 +487,87 @@ const AddUnitModal = ({ show, onClose }) => {
                           </select>
                         </div>
                       </div>
-                      <div className="col-md-6">
+
+                      {/* Email with OTP */}
+                      <div className="col-md-12">
                         <div className="mb-3">
-                          <label className="form-label">Email</label>
+                          <label className="form-label">Email (Optional)</label>
                           <input
                             type="email"
                             className="form-control"
                             name="userEmail"
+                            autoComplete="email"
                             value={formData.userEmail}
                             onChange={handleChange}
                             disabled={isOtpSent}
                           />
-                          {emailExists && (
-                            <div className="text-danger small mt-1">
-                              Email already registered
-                            </div>
-                          )}
-                          {formData.userEmail && !emailExists && (
-                            <div className="d-flex align-items-center mt-2">
-                              <input
-                                type="text"
-                                placeholder="Enter OTP"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                className="form-control me-2"
-                                style={{ width: "150px" }}
-                                disabled={!isOtpSent}
-                                maxLength="6"
-                              />
-                              {!isOtpSent ? (
-                                <button
-                                  type="button"
-                                  onClick={sendOtp}
-                                  className="btn btn-outline-primary"
-                                  disabled={isSendingOtp || !formData.userEmail}
-                                >
-                                  {isSendingOtp ? "Sending..." : "Send OTP"}
-                                </button>
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={verifyOtp}
-                                  className={`btn ${
-                                    isOtpVerified
-                                      ? "btn-success"
-                                      : "btn-primary"
-                                  }`}
-                                  disabled={isVerifyingOtp || isOtpVerified}
-                                >
-                                  {isVerifyingOtp
-                                    ? "Verifying..."
-                                    : isOtpVerified
-                                    ? "Verified"
-                                    : "Verify"}
-                                </button>
+                          
+                          {formData.userEmail && (
+                            <div className="mt-2">
+                              <div className="d-flex gap-2 align-items-center">
+                                <input
+                                  type="text"
+                                  placeholder="Enter 6-digit OTP"
+                                  value={otp}
+                                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                                  className="form-control"
+                                  style={{ maxWidth: "150px" }}
+                                  disabled={!isOtpSent}
+                                  maxLength="6"
+                                  autoComplete="one-time-code"
+                                />
+                                {!isOtpSent ? (
+                                  <button
+                                    type="button"
+                                    onClick={sendOtp}
+                                    className="btn btn-primary btn-sm"
+                                    disabled={isSendingOtp}
+                                    style={{ whiteSpace: "nowrap" }}
+                                  >
+                                    {isSendingOtp ? (
+                                      <>
+                                        <span className="spinner-border spinner-border-sm me-1" />
+                                        Sending...
+                                      </>
+                                    ) : (
+                                      "Send OTP"
+                                    )}
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={verifyOtp}
+                                    className={`btn btn-sm ${isOtpVerified ? "btn-success" : "btn-primary"}`}
+                                    disabled={isVerifyingOtp || isOtpVerified || otp.length !== 6}
+                                    style={{ whiteSpace: "nowrap" }}
+                                  >
+                                    {isVerifyingOtp ? (
+                                      <>
+                                        <span className="spinner-border spinner-border-sm me-1" />
+                                        Verifying...
+                                      </>
+                                    ) : isOtpVerified ? (
+                                      <>✓ Verified</>
+                                    ) : (
+                                      "Verify OTP"
+                                    )}
+                                  </button>
+                                )}
+                              </div>
+                              {isOtpSent && !isOtpVerified && (
+                                <small className="text-muted d-block mt-1">OTP sent to your email</small>
                               )}
-                            </div>
-                          )}
-                          {isOtpSent && !isOtpVerified && (
-                            <small className="text-muted">
-                              OTP sent to your email
-                            </small>
-                          )}
-                          {isOtpVerified && (
-                            <small className="text-success">
-                              Email verified successfully!
-                            </small>
-                          )}
-                          {otpError && (
-                            <div className="text-danger small mt-1">
-                              {otpError}
+                              {isOtpVerified && (
+                                <small className="text-success d-block mt-1">✓ Email verified!</small>
+                              )}
+                              {otpError && (
+                                <div className="text-danger small mt-1">{otpError}</div>
+                              )}
                             </div>
                           )}
                         </div>
                       </div>
+
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label className="form-label">
@@ -1349,19 +575,13 @@ const AddUnitModal = ({ show, onClose }) => {
                           </label>
                           <input
                             type="tel"
-                            className={`form-control ${
-                              phoneExists ? "is-invalid" : ""
-                            }`}
+                            className="form-control"
                             name="userMobile"
+                            autoComplete="tel"
                             value={formData.userMobile}
                             onChange={handleChange}
                             required
                           />
-                          {phoneExists && (
-                            <div className="invalid-feedback">
-                              Phone number already registered
-                            </div>
-                          )}
                         </div>
                       </div>
                       <div className="col-md-6">
@@ -1373,6 +593,7 @@ const AddUnitModal = ({ show, onClose }) => {
                             type="password"
                             className="form-control"
                             name="userPassword"
+                            autoComplete="new-password"
                             value={formData.userPassword}
                             onChange={handleChange}
                             required
@@ -1410,63 +631,21 @@ const AddUnitModal = ({ show, onClose }) => {
                           </select>
                         </div>
                       </div>
-                      <div className="col-md-6 d-flex justify-content-between align-items-center mb-2">
-                        <label className="col-form-label p-0">
-                          Positions <span className="text-danger">*</span>
-                        </label>
-                        <button
-                          type="button"
-                          className="add-new text-primary"
-                          onClick={() => setShowPositionsModal(true)}
-                          style={{ border: "none", backgroundColor: "white" }}
-                        >
-                          <i className="ti ti-plus text-primary me-1"></i>Add
-                          New
-                        </button>
-                      </div>
-                      <div className="col-md-12 d-flex justify-content-between align-items-center mb-2">
-                        <label className="col-form-label p-0">
-                          User <span className="text-danger">*</span>
-                        </label>
-                        <button
-                          type="button"
-                          className="add-new text-primary"
-                          onClick={() => setShowAddUserModal(true)}
-                          style={{ border: "none", backgroundColor: "white" }}
-                        >
-                          <i className="ti ti-plus text-primary me-1"></i>Add
-                          New
-                        </button>
-                      </div>
                     </div>
                   </div>
                   <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-light me-2"
-                      onClick={onClose}
-                      disabled={isSubmitting}
-                    >
+                    <button type="button" className="btn btn-light" onClick={onClose}>
                       Cancel
                     </button>
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={handleNext}
-                      disabled={isSubmitting || phoneExists}
-                    >
+                    <button type="button" className="btn btn-primary" onClick={handleNext}>
                       Next
                     </button>
                   </div>
                 </div>
 
                 {/* Address Tab */}
-                <div
-                  className={`tab-pane fade ${
-                    activeTab === "address" ? "show active" : ""
-                  }`}
-                >
-                  <div className="modal-body pb-0">
+                <div className={`tab-pane fade ${activeTab === "address" ? "show active" : ""}`}>
+                  <div className="modal-body">
                     <div className="row">
                       <div className="col-md-12">
                         <div className="mb-3">
@@ -1477,6 +656,7 @@ const AddUnitModal = ({ show, onClose }) => {
                             type="text"
                             className="form-control"
                             name="address"
+                            autoComplete="street-address"
                             value={formData.address}
                             onChange={handleChange}
                             required
@@ -1551,24 +731,22 @@ const AddUnitModal = ({ show, onClose }) => {
                     </div>
                   </div>
                   <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-light me-2"
-                      onClick={onClose}
-                      disabled={isSubmitting}
-                    >
+                    <button type="button" className="btn btn-light" onClick={onClose}>
                       Cancel
                     </button>
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      disabled={
-                        isSubmitting ||
-                        (formData.userEmail && !isOtpVerified) ||
-                        phoneExists
-                      }
+                      disabled={isSubmitting || (formData.userEmail && !isOtpVerified)}
                     >
-                      {isSubmitting ? "Saving..." : "Save"}
+                      {isSubmitting ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" />
+                          Saving...
+                        </>
+                      ) : (
+                        "Save"
+                      )}
                     </button>
                   </div>
                 </div>
@@ -1578,74 +756,7 @@ const AddUnitModal = ({ show, onClose }) => {
         </div>
       </div>
 
-      <AddPositionsModal
-        show={showPositionsModal}
-        onClose={() => setShowPositionsModal(false)}
-        onAddAccess={() => {
-          setShowPositionsModal(false);
-          setShowAddAccessModal(true);
-        }}
-      />
-      <AddAccessModal
-        show={showAddAccessModal}
-        onClose={() => setShowAddAccessModal(false)}
-        onAddStage={() => {
-          setShowAddAccessModal(false);
-          setShowStageModal(true);
-        }}
-        onEditStage={() => {
-          setShowAddAccessModal(false);
-          setShowEditStageModal(true);
-        }}
-      />
-
-      <EditAccessModal
-        show={showEditAccessModal}
-        onClose={() => setShowEditAccessModal(false)}
-        onAddStage={() => {
-          setShowEditAccessModal(false);
-          setShowStageModal(true);
-        }}
-        onEditStage={() => {
-          setShowEditAccessModal(false);
-          setShowEditStageModal(true);
-        }}
-      />
-
-      <AccessModal
-        show={showAccessModal}
-        onClose={() => setShowAccessModal(false)}
-      />
-
-      <AddStageModal
-        show={showStageModal}
-        onClose={() => setShowStageModal(false)}
-      />
-
-      <EditStageModal
-        show={showEditStageModal}
-        onClose={() => setShowEditStageModal(false)}
-      />
-
-      <AddUserModal
-        show={showAddUserModal}
-        onClose={() => setShowAddUserModal(false)}
-        onAddPositions={() => {
-          setShowAddUserModal(false);
-          setShowPositionsModal(true);
-        }}
-      />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 };

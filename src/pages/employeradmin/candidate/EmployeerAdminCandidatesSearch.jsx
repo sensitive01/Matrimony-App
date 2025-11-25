@@ -17,10 +17,10 @@ import EmployerAdminHeader from "../Layout/EmployerAdminHeader";
 import defaultEmployeeAvatar from "../../../assets/employer-admin/assets/img/profiles/avatar-12.jpg";
 
 const EmployeerAdminCandidatesSearch = () => {
-  const [sortBy, setSortBy] = useState("Sort By : Last 7 Days");
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [sortBy, setSortBy] = useState("Sort By : Last 7 Days");  
+  const [isCollapsed, setIsCollapsed] = useState(false);     
   const [searchQuery, setSearchQuery] = useState("");
-  const [candidates, setCandidates] = useState([]);
+  const [candidates, setCandidates] = useState([]);  
   const [filteredCandidates, setFilteredCandidates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

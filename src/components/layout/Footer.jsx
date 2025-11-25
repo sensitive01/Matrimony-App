@@ -140,7 +140,7 @@ const Footer = () => {
                       <i className="icon icon-phone"></i> &nbsp; Phone:
                     </strong>
                     <span className="sub-text">
-                      <a href="tel:">(+91) 123 456 7890</a>
+                      <a href="tel:">(+91) 7022913737</a>
                     </span>
                   </li>
                   <li>
@@ -306,8 +306,7 @@ const Footer = () => {
               >
                 <strong className="h3 text-dark">Let Employers Find You</strong>
                 <p align="justify" className="text-secondary">
-                  Advertise your jobs to millions of candidates and search 15.8
-                  million CVs through EdProfio.
+                 Tap into the best employers zone designed to simplify hiring and speed up your on boarding.
                 </p>
                 {isLoggedIn ? (
                   <Link

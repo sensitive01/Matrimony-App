@@ -166,15 +166,15 @@ const EmployerResetPassword = () => {
                         className="text-white display-1"
                         style={{ textAlign: "center" }}
                       >
-                        Empowering Schools through seamless Staff management.
-                      </h1>
+                        Empowering Schools with seamless and intelligent staff management solutions.                      </h1>
                       <div className="my-4 mx-auto authen-overlay-img">
                         <img src={authBg} alt="Authentication Background" />
                       </div>
                       <div>
-                        <p className="text-white fs-20 fw-semibold text-center">
-                          Efficiently manage your workforce, streamline <br />{" "}
-                          operations effortlessly.
+                          <p className="text-white fs-20 fw-semibold text-center">
+                          Empower your teams operations effortlessly.
+                          <br />
+                          Elevate your entire institution.
                         </p>
                       </div>
                     </div>

@@ -559,9 +559,10 @@ const EmployerVerifyOTP = () => {
                         <img src={authBg} alt="Authentication Background" />
                       </div>
                       <div>
-                        <p className="text-white fs-20 fw-semibold text-center">
-                          Efficiently manage your workforce, streamline <br />{" "}
-                          operations effortlessly.
+                         <p className="text-white fs-20 fw-semibold text-center">
+                          Empower your teams operations effortlessly.
+                          <br />
+                          Elevate your entire institution.
                         </p>
                       </div>
                     </div>
