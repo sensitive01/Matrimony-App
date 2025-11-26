@@ -262,7 +262,19 @@ const Footer = () => {
                           </Link>
                         </li>
                       )}
+                      <li>
+                        <Link
+                          to="/candidates"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLinkClick("/blogs");
+                          }}
+                        >
+                          Blogs
+                        </Link>
+                      </li>
                     </ul>
+                     
                   </div>
                   <div className="col-7">
                     <strong className="h5 text-primary">Categories</strong>

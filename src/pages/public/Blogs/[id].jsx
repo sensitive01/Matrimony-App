@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { getBlogBySlug, getAllBlogs } from '../../../../public/blogData';
+
 
 const BlogDetailsPage = () => {
+  const { slug } = useParams();
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    console.log('Looking for blog with slug:', slug);
+    const foundBlog = getBlogBySlug(slug);
+    console.log('Found blog:', foundBlog);
+    setBlog(foundBlog);
+    setLoading(false);
+  }, [slug]);
+
+  if (loading) {
+    return <div className="container py-5 text-center">Loading...</div>;
+  }
+
+  if (!blog) {
+    return (
+      <div className="container py-5 text-center">
+        <h3>Blog not found</h3>
+        <p>The blog you're looking for doesn't exist.</p>
+        <Link to="/blogs" className="btn btn-primary mt-3">Back to Blogs</Link>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Sub Visual Block */}
@@ -13,7 +42,11 @@ const BlogDetailsPage = () => {
             <div className="col-12">
               <div className="subvisual-textbox">
                 <h1>Blog Details</h1>
-                <p>Feel free to get in touch with us. Need Help?</p>
+                <p>
+                  <Link to="/blogs" className="text-white">
+                    ← Feel free to get in touch with us. Need Help?
+                  </Link>
+                </p>
               </div>
             </div>
           </div>
@@ -30,56 +63,41 @@ const BlogDetailsPage = () => {
               {/* Article Post */}
               <article className="post singlepost-theme-1">
                 <div className="post-image">
-                  <img src="/images/post-image.jpg" alt="How to overcome economic crisis instantly" />
+                  <img src={`/images/${blog.image}`} alt={blog.title} />
                 </div>
-                <strong className="subtitle">Developer, Code</strong>
-                <h3 className="entry-title">Looking For A Highly Motivated Producer To Build</h3>
+                <strong className="subtitle">{blog.subtitle}</strong>
+                <h3 className="entry-title">{blog.title}</h3>
                 
                 {/* Post Meta */}
                 <div className="post-meta-wrap">
                   <ul className="entry-meta">
-                    <li><span className="subtext">December 31, 2024</span></li>
-                    <li><span className="subtext">14 Comments</span></li>
+                    <li><span className="subtext">{blog.date}</span></li>
+                    <li><span className="subtext">{blog.comments} Comments</span></li>
                   </ul>
                   <div className="post-author-info">
                     <span className="author-image">
-                      <img src="/images/avatar-03.jpg" width="52" height="52" alt="Thomas Smith" />
+                      <img src={`/images/${blog.authorImage}`} width="52" height="52" alt={blog.authorName} />
                     </span>
-                    <span className="post-by">By <strong><a href="#">Thomas Smith</a></strong></span>
+                    <span className="post-by">By <strong><a href="#">{blog.authorName}</a></strong></span>
                   </div>
                 </div>
                 
                 {/* Post Content */}
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt lab magna aliqua. Ut enim ad minim veniam, quisoris nisi ut aliquip ex ea commodo consequat. Duis dolor in reprehenderit in vol tate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sin idatat no roident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dol met, consectetur adipiscing elit,</p>
-                <p>dolor in reprehenderit in vol tate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sin idatat no roident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dol met, consectetur adipiscing elit,</p>
-                
-                <h4>One touch of a red-hot stove is usually all we need to avoid that kind of discomfort in future</h4>
-                <ul>
-                  <li>Far curiosity incommode now led smallness allowance.</li>
-                  <li>Favour bed assure son things yet.</li>
-                  <li>She consisted consulted elsewhere happiness</li>
-                  <li>Disposing household any old the.</li>
-                  <li>Widow downs you new shade drift hopes small.</li>
-                  <li>Interested discretion estimating on stimulated.</li>
-                </ul>
-                
-                <blockquote>
-                  <q>"A business consulting agency is involved in the planning, implementation, and education of businesses."</q>
-                  <cite><span>Brian Reed,</span> front-end developer</cite>
-                </blockquote>
-                
-                <p>Phasellus justo purus, dignissim fermentum turpis sit amet, fermentum porttitor ante. Praesent fermentum lectus ac ante posuere bibendum. Donec a orci vel risus feugiat iaculis vel eu mauris. Fusce viverra dui nec erat ullamcorper eleifend. In non pellentesque lacus. Cras at quam nec felis fermentum porttitor. Maecenas ac ligula at enim maximus commodo. Nunc condimentum magna nec libero lobortis euismod. Sed hendrerit nisl ut ipsum euismod euismod. Phasellus egestas bibendum eros, in dapibus nunc semper eget. Morbi elementum malesuada diam, at pretium nulla hendrerit a. Nulla semper tellus ipsum. Morbi sed elit sed ante volutpat viverra sed vitae sem. Nam in diam consectetur, facilisis ipsum eu, tempus lorem. Ut in aliquet nisl, non tincidunt nulla.</p>
-                
-                <h3>True as we experience</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt lab magna aliqua. Ut enim ad minim veniam, quisoris nisi ut aliquip ex ea commodo consequat. Duis dolor in reprehenderit in vol tate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum d olor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt lab magna aliqua. Ut enim ad minim veniam, quis</p>
+                <div 
+                  className="post-content" 
+                  dangerouslySetInnerHTML={{ __html: blog.content }}
+                />
                 
                 {/* Tags */}
                 <div className="post-tags">
                   <strong className="title">Tags:</strong>
                   <div className="tagcloud">
-                    <a href="#">business,</a>
-                    <a href="#">makreting,</a>
-                    <a href="#">tips</a>
+                    {blog.tags && blog.tags.map((tag, index) => (
+                      <React.Fragment key={tag}>
+                        <a href="#">{tag}</a>
+                        {index < blog.tags.length - 1 && ', '}
+                      </React.Fragment>
+                    ))}
                   </div>
                 </div>
                 
@@ -96,10 +114,10 @@ const BlogDetailsPage = () => {
                 {/* Author Bio */}
                 <div className="post-author">
                   <div className="author-avatar">
-                    <img src="/images/img-candiate01.jpg" alt="Lara Miller" />
+                    <img src={`/images/${blog.authorImage}`} alt={blog.authorName} />
                   </div>
                   <div className="author-bio">
-                    <strong className="title">Willimes Marko</strong>
+                    <strong className="title">{blog.authorName}</strong>
                     <p>Integer sollicitudin ligula non enim sodales Sewid commodo risus ineuismod varius condimentum est libero</p>
                   </div>
                 </div>
@@ -207,7 +225,7 @@ const BlogDetailsPage = () => {
             
             {/* Sidebar Column */}
             <div className="col-12 col-lg-4">
-              <Sidebar />
+              <Sidebar currentBlogSlug={blog.slug} />
             </div>
           </div>
         </div>
@@ -217,7 +235,39 @@ const BlogDetailsPage = () => {
 };
 
 // Sidebar Component
-const Sidebar = () => {
+const Sidebar = ({ currentBlogSlug }) => {
+  const [recentPosts, setRecentPosts] = useState([]);
+
+  useEffect(() => {
+    const allBlogs = getAllBlogs();
+    const recent = allBlogs.filter(b => b.slug !== currentBlogSlug).slice(0, 3);
+    setRecentPosts(recent);
+  }, [currentBlogSlug]);
+
+  const categories = [
+    { name: "Education", count: 30 },
+    { name: "Job Seeking", count: 8 },
+    { name: "Interview", count: 26 },
+    { name: "Unique Ideas", count: 14 },
+    { name: "Learning", count: 9 },
+    { name: "Identity", count: 12 }
+  ];
+
+  const quickLinks = [
+    "Website Services",
+    "Revamp Services",
+    "Social Management",
+    "Domain & Website",
+    "Branding & Logo"
+  ];
+
+  const metaLinks = [
+    "Log in",
+    "Entries feed",
+    "Comments feed",
+    "WordPress.org"
+  ];
+
   return (
     <aside className="sidebar sidebar-theme-1">
       {/* Recent Posts Widget */}
@@ -227,13 +277,15 @@ const Sidebar = () => {
           {recentPosts.map((post, index) => (
             <li key={index}>
               <div className="thumbnail">
-                <a href="#">
+                <Link to={`/blog-details/${post.slug}`}>
                   <img src={`/images/${post.image}`} width="66" height="66" alt={post.title} />
-                </a>
+                </Link>
               </div>
               <div className="textbox">
-                <strong className="title"><a href="#">{post.title}</a></strong>
-                <span className="date"><i className="icon-clock"></i> <span>{post.time}</span></span>
+                <strong className="title">
+                  <Link to={`/blog-details/${post.slug}`}>{post.title}</Link>
+                </strong>
+                <span className="date"><i className="icon-clock"></i> <span>15 mins ago</span></span>
               </div>
             </li>
           ))}
@@ -286,48 +338,5 @@ const Sidebar = () => {
     </aside>
   );
 };
-
-// Data for dynamic content
-const recentPosts = [
-  {
-    image: "img-thumb01.jpg",
-    title: "Aliquam ac orci nec mauris tristique pharetra",
-    time: "15 mins ago"
-  },
-  {
-    image: "img-thumb02.jpg",
-    title: "Praesent eu nunc feugiat enim scelerisque",
-    time: "15 mins ago"
-  },
-  {
-    image: "img-thumb03.jpg",
-    title: "Droin sodales nisi eu ornare facilisis",
-    time: "15 mins ago"
-  }
-];
-
-const categories = [
-  { name: "Education", count: 30 },
-  { name: "Job Seeking", count: 8 },
-  { name: "Interview", count: 26 },
-  { name: "Unique Ideas", count: 14 },
-  { name: "Learning", count: 9 },
-  { name: "Identity", count: 12 }
-];
-
-const quickLinks = [
-  "Website Services",
-  "Revamp Services",
-  "Social Management",
-  "Domain & Website",
-  "Branding & Logo"
-];
-
-const metaLinks = [
-  "Log in",
-  "Entries feed",
-  "Comments feed",
-  "WordPress.org"
-];
 
 export default BlogDetailsPage;

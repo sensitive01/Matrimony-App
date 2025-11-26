@@ -390,7 +390,7 @@ const JobsPage = () => {
       />
 
       {/* Subfilter Bar - Moved to blue background area */}
-      <section
+      {/* <section
         className="subfilter-section"
         style={{
           backgroundColor: "#063970",
@@ -556,7 +556,7 @@ const JobsPage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <main className="main">
         {showFilters && (

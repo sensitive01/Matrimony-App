@@ -413,7 +413,7 @@ function App() {
                 <Route path="/about-us" element={<AboutPage />} />
                 <Route path="/careers" element={<CareersPage />} />
                 <Route path="/blogs" element={<BlogsPage />} />
-                <Route path="/blog-details" element={<BlogDetailsPage />} />
+                <Route path="//blog-details/:slug" element={<BlogDetailsPage />} />
                 <Route path="/job-vacancies" element={<JobsPage />} />
                 <Route path="/job-vacancies-list" element={<JobsPageList />} />
                 <Route path="/job-vacancies-map" element={<JobPageMapGrid />} />
