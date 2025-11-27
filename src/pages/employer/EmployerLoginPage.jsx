@@ -55,6 +55,8 @@ const EmployerLoginPage = () => {
     
     setIsLoading(true);
     setError(null);
+
+    
     
     try {
       // Use existing API service

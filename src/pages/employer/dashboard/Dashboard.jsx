@@ -537,11 +537,11 @@ const Dashboard = () => {
                 <p>
                   You have{" "}
                   <span className="text-primary text-decoration-underline">
-                    {dashboardData.appliedCount}
+                    {dashboardData?.appliedCount||0}
                   </span>{" "}
                   Total Applications &{" "}
                   <span className="text-primary text-decoration-underline">
-                    {dashboardData.pendingCount}
+                    {dashboardData?.pendingCount||0}
                   </span>{" "}
                   Pending Reviews
                 </p>
@@ -691,7 +691,7 @@ const Dashboard = () => {
                   <div className="col-md-4">
                     <div className="d-flex align-items-center justify-content-md-end">
                       <h6 className="mb-0">
-                        Active Jobs: {dashboardData.activeJobs}
+                        Active Jobs: {dashboardData?.activeJobs||0}
                       </h6>
                     </div>
                   </div>
@@ -708,7 +708,7 @@ const Dashboard = () => {
                         </span>
                         <div className="d-flex align-items-center justify-content-between">
                           <h5 className="text-primary stat-number mb-0">
-                            {dashboardData.appliedCount}
+                            {dashboardData?.appliedCount||0}
                           </h5>
                           <span className="badge badge-primary d-inline-flex align-items-center">
                             <i className="ti ti-user-plus me-1"></i>Total
@@ -726,7 +726,7 @@ const Dashboard = () => {
                         </span>
                         <div className="d-flex align-items-center justify-content-between">
                           <h5 className="text-success stat-number mb-0">
-                            {dashboardData.shortlistedCount}
+                            {dashboardData?.shortlistedCount||0}
                           </h5>
                           <span className="badge badge-success d-inline-flex align-items-center">
                             <i className="ti ti-user-check me-1"></i>Selected
@@ -744,7 +744,7 @@ const Dashboard = () => {
                         </span>
                         <div className="d-flex align-items-center justify-content-between">
                           <h5 className="text-danger stat-number mb-0">
-                            {dashboardData.rejectedCount}
+                            {dashboardData?.rejectedCount|0}
                           </h5>
                           <span className="badge badge-danger d-inline-flex align-items-center">
                             <i className="ti ti-user-x me-1"></i>Not Selected
@@ -762,7 +762,7 @@ const Dashboard = () => {
                         </span>
                         <div className="d-flex align-items-center justify-content-between">
                           <h5 className="text-warning stat-number mb-0">
-                            {dashboardData.pendingCount}
+                            {dashboardData?.pendingCount||0}
                           </h5>
                           <span className="badge badge-warning d-inline-flex align-items-center">
                             <i className="ti ti-clock me-1"></i>Awaiting
@@ -788,14 +788,14 @@ const Dashboard = () => {
                         <i className="ti ti-briefcase fs-16"></i>
                       </span>
                       <span className="badge bg-success fw-normal mb-3">
-                        {dashboardData.activeJobs > 0 ? "+" : ""}
-                        {dashboardData.activeJobs}
+                        {dashboardData?.activeJobs > 0 ? "+" : ""}
+                        {dashboardData?.activeJobs||0}
                       </span>
                     </div>
                     <div className="d-flex align-items-center justify-content-between">
                       <div>
                         <h2 className="mb-1 stat-number">
-                          {dashboardData.totalJobs}
+                          {dashboardData?.totalJobs||0}
                         </h2>
                         <p className="fs-13 mb-0">Total Jobs Posted</p>
                       </div>
@@ -822,7 +822,7 @@ const Dashboard = () => {
                     <div className="d-flex align-items-center justify-content-between">
                       <div>
                         <h2 className="mb-1 stat-number">
-                          {dashboardData.activeJobs}
+                          {dashboardData?.activeJobs||0}
                         </h2>
                         <p className="fs-13 mb-0">Hiring Active Jobs</p>
                       </div>
@@ -849,7 +849,7 @@ const Dashboard = () => {
                     <div className="d-flex align-items-center justify-content-between">
                       <div>
                         <h2 className="mb-1 stat-number">
-                          {dashboardData.interviewScheduledCount}
+                          {dashboardData?.interviewScheduledCount||0}
                         </h2>
                         <p className="fs-13 mb-0">Upcoming Interviews</p>
                       </div>
