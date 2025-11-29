@@ -559,7 +559,7 @@ const Inbox = () => {
                               </div>
                               <div className="jobplugin__messenger-header__right">
                                 <ul className="jobplugin__messenger-header__buttons">
-                                  <li>
+                                  {/* <li>
                                     <button
                                       type="button"
                                       className="bg-light-sky brorder border-grey text-secondary"
@@ -582,7 +582,7 @@ const Inbox = () => {
                                     >
                                       <FaVideo />
                                     </button>
-                                  </li>
+                                  </li> */}
                                   <li className="jobplugin__messenger-header__buttons-close">
                                     <button
                                       type="button"

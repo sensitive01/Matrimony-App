@@ -96,8 +96,7 @@ const ShortlistedJobs = () => {
                   <h2 className="h5">Shortlisted Jobs</h2>
                   <span className="jobplugin__settings-head__bar jobplugin__bg-primary"></span>
                   <p className="jobplugin__settings-head__text">
-                    Your applications that have progressed beyond the initial
-                    stage
+                   Jobs where you've passed the first screening
                   </p>
                 </div>
 

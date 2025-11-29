@@ -39,6 +39,9 @@ const EmployeeRegistration = () => {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
+  // State for referral code
+  const [referralCode, setReferralCode] = useState("");
+
   useAutoClearMessages();
 
   const { values, errors, handleChange, handleSubmit } = useRegistrationForm(
@@ -49,6 +52,12 @@ const EmployeeRegistration = () => {
       }
 
       const { confirmPassword, ...employeeData } = formValues;
+      
+      // Add referral code to employee data if provided
+      if (referralCode.trim()) {
+        employeeData.referralCode = referralCode.trim();
+      }
+      
       const response = await register(employeeData);
       if (response) {
         setTimeout(() => navigate("/login"), 2000);
@@ -495,7 +504,21 @@ const EmployeeRegistration = () => {
                       )}
                     </div>
                     <div className="jobplugin__form-field">
-                      {/* Empty field to maintain layout */}
+                      <input
+                        type="text"
+                        name="referralCode"
+                        placeholder="Referral Code (Optional)"
+                        value={referralCode}
+                        onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                        className="form-control"
+                        style={{
+                          padding: "5px 30px 5px 30px",
+                          paddingRight: "40px",
+                        }}
+                      />
+                      <small className="text-muted" style={{ fontSize: "12px" }}>
+                        Have a referral code? Enter it here to get benefits
+                      </small>
                     </div>
                   </div>
 
@@ -584,12 +607,11 @@ const EmployeeRegistration = () => {
               </div>
 
               <p className="jobplugin__userbox-textinfo">
-                Already have an account? &nbsp;{" "}
-                <a
+                Already have an account?{" "}
+                
                   className="hover:jobplugin__text-primary"
-                  href="login"
-                  style={{ textDecoration: "none" }}
-                >
+                  href="/login"
+                <a>
                   <i className="fa fa-user-circle"></i> Log In
                 </a>
               </p>

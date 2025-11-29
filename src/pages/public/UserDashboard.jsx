@@ -334,7 +334,14 @@ const UserDashboard = () => {
                   {/* Profile Block */}
                   <div className="jobplugin__profile">
                     <div className="jobplugin__profile-intro border border-dark shadow" style={{ borderWidth: "2px" }}>
-                      <div className="jobplugin__profile-intro__left">
+                      <div 
+                        className="jobplugin__profile-intro__left"
+                        style={{
+                          display: "flex",
+                          gap: "24px",
+                          alignItems: "center"
+                        }}
+                      >
                         <div
                           className="jobplugin__profile-intro__image"
                           style={{
@@ -344,10 +351,10 @@ const UserDashboard = () => {
                             position: "relative",
                             width: "150px",
                             height: "150px",
-                            margin: "0 auto",
+                            flexShrink: 0,
                           }}
                         >
-{/* Profile Avatar */}
+                          {/* Profile Avatar */}
                           <div
                             className="jobplugin__profile-intro__avatar"
                             style={{
