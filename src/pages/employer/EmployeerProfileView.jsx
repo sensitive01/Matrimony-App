@@ -466,8 +466,10 @@ const EmployeerProfileView = () => {
                         {new Date(schoolData.createdAt).toLocaleDateString()}
                       </p>
                     </div>
+                    
+                    {/* UPDATED BUTTON SECTION - Both buttons same size */}
                     <div className="row gx-2 mt-3">
-                      <div className="col-6">
+                      <div className="col-12 mb-2">
                         <button
                           className="btn btn-dark w-100"
                           onClick={showModal}
@@ -475,14 +477,6 @@ const EmployeerProfileView = () => {
                           <i className="ti ti-edit me-1"></i>Edit Info
                         </button>
                       </div>
-                      <div className="col-6">
-                        <button className="btn btn-warning w-100">
-                          <i className="ti ti-message-heart me-1"></i>Message
-                        </button>
-                      </div>
-                    </div>
-                    {/* Change Password Button */}
-                    <div className="row gx-2 mt-2">
                       <div className="col-12">
                         <button
                           className="btn btn-danger w-100"

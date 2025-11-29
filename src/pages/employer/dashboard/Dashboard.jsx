@@ -1252,7 +1252,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
       <EmployerFooter />
     </>
   );
