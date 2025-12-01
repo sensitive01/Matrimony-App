@@ -7,6 +7,7 @@ import defaultEmployeeAvatar from "../../../assets/employer-admin/assets/img/pro
 import jobImage from "../../../../public/images/jobImage.jpg";
 
 const JobsPage = () => {
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
   const location = useLocation();
   const [allJobListings, setAllJobListings] = useState([]);
   const [filteredJobListings, setFilteredJobListings] = useState([]);
@@ -64,7 +65,7 @@ const JobsPage = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://api.edprofio.com/employer/fetchjobs"
+          `${VITE_BASE_URL}/employer/fetchjobs`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch jobs");

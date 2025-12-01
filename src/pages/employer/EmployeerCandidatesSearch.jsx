@@ -622,6 +622,25 @@ const EmployeerCandidatesSearch = () => {
     setShowDetails(true);
   };
 
+  const handleCandidateUpdate = (updatedCandidate) => {
+    // Update the candidates array
+    setCandidates((prev) =>
+      prev.map((c) =>
+        c._id === updatedCandidate._id ? { ...c, ...updatedCandidate } : c
+      )
+    );
+
+    // Update the filtered candidates array
+    setFilteredCandidates((prev) =>
+      prev.map((c) =>
+        c._id === updatedCandidate._id ? { ...c, ...updatedCandidate } : c
+      )
+    );
+
+    // Update the selected candidate
+    setSelectedCandidate(updatedCandidate);
+  };
+
   const toggleFavoriteStatus = async (
     applicationId,
     employid,
@@ -865,15 +884,6 @@ const EmployeerCandidatesSearch = () => {
 
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex align-items-center">
-                    {candidate.userMobile && (
-                      <a
-                        href={`tel:${candidate.userMobile}`}
-                        className="btn btn-light text-success btn-icon btn-sm me-1"
-                        title="Call"
-                      >
-                        <i className="ti ti-phone fs-16"></i>
-                      </a>
-                    )}
                     {candidate.userEmail && (
                       <a
                         href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(candidate.userEmail)}`}
@@ -1061,15 +1071,6 @@ const EmployeerCandidatesSearch = () => {
 
                 <div className="col-md-12 col-lg-1">
                   <div className="d-flex justify-content-end align-items-center flex-wrap gap-1">
-                    {candidate.userMobile && (
-                      <a
-                        href={`tel:${candidate.userMobile}`}
-                        className="btn btn-light text-success btn-icon btn-sm"
-                        title="Call"
-                      >
-                        <i className="ti ti-phone fs-16"></i>
-                      </a>
-                    )}
                     {candidate.userEmail && (
                       <a
                         href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(candidate.userEmail)}`}
@@ -1847,6 +1848,7 @@ const EmployeerCandidatesSearch = () => {
           show={showDetails}
           onClose={() => setShowDetails(false)}
           candidate={selectedCandidate}
+          onCandidateUpdate={handleCandidateUpdate}
         />
       )}
       {selectedCandidateForChat && (

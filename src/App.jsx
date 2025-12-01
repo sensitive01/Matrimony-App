@@ -137,6 +137,7 @@ import PrivacyPolicy from "./pages/policy/PrivacyPolicy";
 import ScrollToTop from "./ScrollTop";
 import PendingJobs from "./pages/public/Jobs/PendingJobs";
 import RejectedJobs from "./pages/public/Jobs/RejactedJobs";
+import EditJobPage from "./pages/employer/EditJob";
 
 function App() {
   return (
@@ -190,6 +191,7 @@ function App() {
             element={<EmployeerCandidatesSearch />}
           />
           <Route path="/employer/post-jobs" element={<EmployeerPostJob />} />
+          <Route path="/employer/edit-job/:id" element={<EditJobPage />} />
           <Route path="/employer/jobs" element={<EmployeerJobList />} />
           <Route
             path="/employer/view-job/:id"

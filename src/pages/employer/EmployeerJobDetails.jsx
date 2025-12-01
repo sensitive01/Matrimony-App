@@ -27,8 +27,11 @@ const JobDetailsPage = () => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [favoriteStatus, setfavoriteStatus] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const toggleModal = () => setShowModal(!showModal);
+  const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
 
   const formatDate = (dateString) => {
     if (!dateString) return "Not specified";
@@ -40,6 +43,57 @@ const JobDetailsPage = () => {
         month: "short",
         year: "numeric",
       });
+  };
+
+  const handleEditJob = () => {
+    // Navigate to dedicated edit job page
+    navigate(`/employer/edit-job/${id}`);
+  };
+
+  const handleDeleteJob = async () => {
+    try {
+      setIsDeleting(true);
+      
+      const token = localStorage.getItem("employerToken");
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+
+      const employerData = JSON.parse(localStorage.getItem("employerData"));
+      if (!employerData || !employerData._id) {
+        throw new Error("Employer information not found");
+      }
+
+      // Delete job API call
+      const response = await axios.delete(
+        `https://api.edprofio.com/employer/deletejob/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        // Show success message
+        alert("Job deleted successfully!");
+        
+        // Navigate back to jobs list
+        navigate("/employer/post-jobs");
+      } else {
+        throw new Error(response.data.message || "Failed to delete job");
+      }
+    } catch (err) {
+      console.error("Error deleting job:", err);
+      alert(
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to delete job. Please try again."
+      );
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
   };
 
   const toggleFavorite = async (applicantId) => {
@@ -296,9 +350,9 @@ const JobDetailsPage = () => {
                     </div>
                   </div>
                   <div className="col-xl-6 col-md-6">
-                    <div className="d-flex align-items-center justify-content-end">
+                    <div className="d-flex align-items-center justify-content-end flex-wrap gap-2">
                       <button
-                        className="btn btn-secondary flex-fill me-2"
+                        className="btn btn-secondary"
                         onClick={toggleModal}
                       >
                         <i className="ti ti-user-check"></i> Apply for a
@@ -306,11 +360,29 @@ const JobDetailsPage = () => {
                       </button>
                       <Link
                         to={`/employer/shortlisted-candidate-byjob/${id}`}
-                        className="btn btn-primary flex-fill me-2"
+                        className="btn btn-primary"
                       >
                         <i className="ti ti-circle-check"></i> Shortlisted
                         Candidates
                       </Link>
+
+                      {/* Edit Button */}
+                      <button
+                        className="btn btn-info"
+                        onClick={handleEditJob}
+                        title="Edit Job"
+                      >
+                        <i className="ti ti-edit"></i> Edit
+                      </button>
+
+                      {/* Delete Button */}
+                      <button
+                        className="btn btn-danger"
+                        onClick={toggleDeleteModal}
+                        title="Delete Job"
+                      >
+                        <i className="ti ti-trash"></i> Delete
+                      </button>
 
                       {firstApplicantId && (
                         <button
@@ -821,6 +893,84 @@ const JobDetailsPage = () => {
 
         {/* Modal Backdrop */}
         {showModal && <div className="modal-backdrop fade show"></div>}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteModal && (
+          <>
+            <div
+              className="modal fade show"
+              style={{ display: "block" }}
+              id="delete_modal"
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header border-0 pb-0">
+                    <button
+                      type="button"
+                      className="btn-close custom-btn-close"
+                      onClick={toggleDeleteModal}
+                      aria-label="Close"
+                      disabled={isDeleting}
+                    >
+                      <i className="ti ti-x"></i>
+                    </button>
+                  </div>
+                  <div className="modal-body text-center">
+                    <div className="avatar avatar-xl bg-danger-transparent rounded-circle mb-3 mx-auto">
+                      <i className="ti ti-trash fs-36 text-danger"></i>
+                    </div>
+                    <h4 className="mb-2">Delete Job?</h4>
+                    <p className="text-muted mb-0">
+                      Are you sure you want to delete this job posting?
+                    </p>
+                    <p className="text-muted mb-4">
+                      <strong>"{job.jobTitle}"</strong>
+                    </p>
+                    <p className="text-danger mb-0">
+                      <small>
+                        <i className="ti ti-alert-circle me-1"></i>
+                        This action cannot be undone. All applicant data associated with this job will be removed.
+                      </small>
+                    </p>
+                  </div>
+                  <div className="modal-footer justify-content-center border-0 pt-0">
+                    <button
+                      type="button"
+                      className="btn btn-light me-2"
+                      onClick={toggleDeleteModal}
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={handleDeleteJob}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Deleting...
+                        </>
+                      ) : (
+                        <>
+                          <i className="ti ti-trash me-1"></i>
+                          Yes, Delete
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="modal-backdrop fade show"></div>
+          </>
+        )}
       </div>
       <EmployerFooter />
     </>

@@ -17,6 +17,14 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
   const [updateError, setUpdateError] = useState(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [notes, setNotes] = useState(candidate?.notes || "");
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [interviewDetails, setInterviewDetails] = useState({
+    date: "",
+    time: "",
+    location: "",
+    interviewType: "In-Person",
+    notes: "",
+  });
 
   useEffect(() => {
     if (show && candidate) {
@@ -30,6 +38,13 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
       document.body.style.overflow = "";
     };
   }, [show, candidate]);
+
+  useEffect(() => {
+    // Update selectedStatus when candidate prop changes
+    if (candidate?.employapplicantstatus) {
+      setSelectedStatus(candidate.employapplicantstatus);
+    }
+  }, [candidate?.employapplicantstatus]);
 
   const fetchCandidateDetails = async () => {
     try {
@@ -113,14 +128,23 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
         throw new Error("Authentication required");
       }
 
+      // Get employer data
+      const employerData = JSON.parse(localStorage.getItem("employerData"));
+      if (!employerData || !employerData._id) {
+        throw new Error("Employer information not found");
+      }
+
       // Create a new note with timestamp
       const newNote = `[${new Date().toLocaleString()}] ${noteData.title}: ${
         noteData.description
       }\n${notes || ""}`;
 
+      const applicationId = candidate._id || candidate.applicantId;
+      const employerId = employerData._id;
+
       // Update both status and notes in the backend
       const response = await fetch(
-        `https://api.edprofio.com/employer/update-status/${candidate._id}/${candidate.applicantId}`,
+        `https://api.edprofio.com/employer/updaee/${applicationId}/${employerId}`,
         {
           method: "PUT",
           headers: {
@@ -128,7 +152,7 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            status: selectedStatus,
+            employapplicantstatus: selectedStatus,
             notes: newNote,
           }),
         }
@@ -141,8 +165,19 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
         );
       }
 
-      // Update local state instead of reloading
+      const responseData = await response.json();
+      
+      if (!responseData.success) {
+        throw new Error(responseData.message || "Update failed");
+      }
+
+      console.log("Notes updated successfully, response:", responseData);
+
+      // Update local state
       updateLocalState(selectedStatus, newNote);
+      
+      // Refetch candidate details to ensure data is in sync with backend
+      await fetchCandidateDetails();
       
       setShowModal(false);
       setUpdateSuccess(true);
@@ -159,6 +194,12 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
   };
 
   const handleStatusUpdate = async () => {
+    // Check if status is Interview Scheduled and show modal
+    if (selectedStatus === "Interview Scheduled") {
+      setShowInterviewModal(true);
+      return;
+    }
+
     try {
       setIsUpdating(true);
       setUpdateError(null);
@@ -169,11 +210,27 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
         throw new Error("Authentication required");
       }
 
+      // Get employer data
+      const employerData = JSON.parse(localStorage.getItem("employerData"));
+      if (!employerData || !employerData._id) {
+        throw new Error("Employer information not found");
+      }
+
       const statusNote = `Status updated to ${selectedStatus} at ${new Date().toLocaleString()}`;
       const updatedNotes = notes ? `${statusNote}\n${notes}` : statusNote;
 
+      // Use the correct API endpoint - should match the one used in the search component
+      const applicationId = candidate._id || candidate.applicantId;
+      const employerId = employerData._id;
+
+      console.log("Updating status with:", {
+        applicationId,
+        employerId,
+        status: selectedStatus
+      });
+
       const response = await fetch(
-        `https://api.edprofio.com/employer/update-status/${candidate._id}/${candidate.applicantId}`,
+        `https://api.edprofio.com/employer/updaee/${applicationId}/${employerId}`,
         {
           method: "PUT",
           headers: {
@@ -181,7 +238,7 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            status: selectedStatus,
+            employapplicantstatus: selectedStatus,
             notes: updatedNotes,
           }),
         }
@@ -194,8 +251,19 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
         );
       }
 
-      // Update local state instead of reloading
+      const responseData = await response.json();
+      
+      if (!responseData.success) {
+        throw new Error(responseData.message || "Update failed");
+      }
+
+      console.log("Status update successful, response:", responseData);
+
+      // Update local state
       updateLocalState(selectedStatus, updatedNotes);
+      
+      // Refetch candidate details to ensure data is in sync with backend
+      await fetchCandidateDetails();
       
       setUpdateSuccess(true);
       
@@ -204,6 +272,110 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
 
     } catch (err) {
       console.error("Error updating candidate status:", err);
+      setUpdateError(err.message);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleInterviewSchedule = async () => {
+    try {
+      setIsUpdating(true);
+      setUpdateError(null);
+      setUpdateSuccess(false);
+
+      const token = localStorage.getItem("employerToken");
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+
+      // Get employer data
+      const employerData = JSON.parse(localStorage.getItem("employerData"));
+      if (!employerData || !employerData._id) {
+        throw new Error("Employer information not found");
+      }
+
+      // Validate interview details
+      if (!interviewDetails.date || !interviewDetails.time) {
+        throw new Error("Please select interview date and time");
+      }
+
+      // Create interview note
+      const interviewNote = `Interview Scheduled\n` +
+        `Date: ${new Date(interviewDetails.date).toLocaleDateString()}\n` +
+        `Time: ${interviewDetails.time}\n` +
+        `Type: ${interviewDetails.interviewType}\n` +
+        `${interviewDetails.location ? `Location: ${interviewDetails.location}\n` : ""}` +
+        `${interviewDetails.notes ? `Notes: ${interviewDetails.notes}\n` : ""}` +
+        `Scheduled at: ${new Date().toLocaleString()}`;
+
+      const updatedNotes = notes ? `${interviewNote}\n\n${notes}` : interviewNote;
+
+      const applicationId = candidate._id || candidate.applicantId;
+      const employerId = employerData._id;
+
+      console.log("Scheduling interview with:", {
+        applicationId,
+        employerId,
+        interviewDetails
+      });
+
+      const response = await fetch(
+        `https://api.edprofio.com/employer/updaee/${applicationId}/${employerId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            employapplicantstatus: "Interview Scheduled",
+            notes: updatedNotes,
+            interviewDate: interviewDetails.date,
+            interviewTime: interviewDetails.time,
+            interviewLocation: interviewDetails.location,
+            interviewType: interviewDetails.interviewType,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "Failed to schedule interview"
+        );
+      }
+
+      const responseData = await response.json();
+      
+      if (!responseData.success) {
+        throw new Error(responseData.message || "Update failed");
+      }
+
+      console.log("Interview scheduled successfully, response:", responseData);
+
+      // Update local state
+      updateLocalState("Interview Scheduled", updatedNotes);
+      
+      // Refetch candidate details to ensure data is in sync with backend
+      await fetchCandidateDetails();
+      
+      // Reset interview details
+      setInterviewDetails({
+        date: "",
+        time: "",
+        location: "",
+        interviewType: "In-Person",
+        notes: "",
+      });
+
+      setShowInterviewModal(false);
+      setUpdateSuccess(true);
+      
+      setTimeout(() => setUpdateSuccess(false), 3000);
+
+    } catch (err) {
+      console.error("Error scheduling interview:", err);
       setUpdateError(err.message);
     } finally {
       setIsUpdating(false);
@@ -297,8 +469,7 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
                 <div className="mb-3">
                   <p className="mb-1">Candidate Name</p>
                   <h6 className="fw-normal">
-                    {candidateDetails.firstName}{candidate.firstName}
-                    {candidateDetails.lastName || candidate.lastName}
+                     {candidateDetails?.userName || "Candidate"}
                   </h6>
                 </div>
               </div>
@@ -1104,6 +1275,209 @@ const EmployerCandidatesDetails = ({ show, onClose, candidate, onCandidateUpdate
         statusOptions={statusOptions}
         getStatusBadgeClass={getStatusBadgeClass}
       />
+
+      {/* Interview Scheduling Modal */}
+      {showInterviewModal && (
+        <>
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1050,
+            }}
+            onClick={() => setShowInterviewModal(false)}
+          />
+          <div
+            className="modal fade show"
+            style={{
+              display: "block",
+              zIndex: 1051,
+            }}
+            tabIndex="-1"
+          >
+            <div className="modal-dialog modal-dialog-centered modal-lg">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Schedule Interview</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setShowInterviewModal(false)}
+                    disabled={isUpdating}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  {updateError && (
+                    <div className="alert alert-danger alert-dismissible fade show">
+                      <i className="ti ti-alert-circle me-2"></i>
+                      {updateError}
+                    </div>
+                  )}
+                  
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">
+                        Interview Date <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={interviewDetails.date}
+                        min={new Date().toISOString().split("T")[0]}
+                        onChange={(e) =>
+                          setInterviewDetails({
+                            ...interviewDetails,
+                            date: e.target.value,
+                          })
+                        }
+                        disabled={isUpdating}
+                      />
+                    </div>
+
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">
+                        Interview Time <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="time"
+                        className="form-control"
+                        value={interviewDetails.time}
+                        onChange={(e) =>
+                          setInterviewDetails({
+                            ...interviewDetails,
+                            time: e.target.value,
+                          })
+                        }
+                        disabled={isUpdating}
+                      />
+                    </div>
+
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Interview Type</label>
+                      <select
+                        className="form-select"
+                        value={interviewDetails.interviewType}
+                        onChange={(e) =>
+                          setInterviewDetails({
+                            ...interviewDetails,
+                            interviewType: e.target.value,
+                          })
+                        }
+                        disabled={isUpdating}
+                      >
+                        <option value="In-Person">In-Person</option>
+                        <option value="Video Call">Video Call</option>
+                        <option value="Phone Call">Phone Call</option>
+                        <option value="Online">Online</option>
+                      </select>
+                    </div>
+
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Location/Link</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder={
+                          interviewDetails.interviewType === "Video Call"
+                            ? "Meeting link"
+                            : interviewDetails.interviewType === "Phone Call"
+                            ? "Phone number"
+                            : "Office address"
+                        }
+                        value={interviewDetails.location}
+                        onChange={(e) =>
+                          setInterviewDetails({
+                            ...interviewDetails,
+                            location: e.target.value,
+                          })
+                        }
+                        disabled={isUpdating}
+                      />
+                    </div>
+
+                    <div className="col-12 mb-3">
+                      <label className="form-label">Additional Notes</label>
+                      <textarea
+                        className="form-control"
+                        rows="3"
+                        placeholder="Add any additional information for the candidate..."
+                        value={interviewDetails.notes}
+                        onChange={(e) =>
+                          setInterviewDetails({
+                            ...interviewDetails,
+                            notes: e.target.value,
+                          })
+                        }
+                        disabled={isUpdating}
+                      ></textarea>
+                    </div>
+
+                    <div className="col-12">
+                      <div className="alert alert-info">
+                        <i className="ti ti-info-circle me-2"></i>
+                        <strong>Candidate Information:</strong>
+                        <div className="mt-2">
+                          <p className="mb-1">
+                            <strong>Name:</strong> {candidateDetails?.userName}
+                          </p>
+                          <p className="mb-1">
+                            <strong>Email:</strong>{" "}
+                            {candidateDetails?.userEmail}
+                          </p>
+                          <p className="mb-0">
+                            <strong>Phone:</strong>{" "}
+                            {candidateDetails?.userMobile || "Not specified"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowInterviewModal(false)}
+                    disabled={isUpdating}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleInterviewSchedule}
+                    disabled={
+                      isUpdating ||
+                      !interviewDetails.date ||
+                      !interviewDetails.time
+                    }
+                  >
+                    {isUpdating ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Scheduling...
+                      </>
+                    ) : (
+                      <>
+                        <i className="ti ti-calendar-event me-1"></i>
+                        Schedule Interview
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 };

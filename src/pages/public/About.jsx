@@ -36,9 +36,13 @@ const AboutPage = () => {
                   <p className="fw-bold text-dark">A Platform for Educators at Every Level</p>
                   <hr className="mb-20" />
                   <p style={{textAlign: "justify"}}>
-                    Welcome to EdProfio, the premier platform designed to connect educational institutions with passionate and skilled edu-professionals. 
-                    Whether you are an institution seeking top talent or a candidate pursuing your dream role in the education domain sector, 
-                    EdProfio helps bridge the gap with efficiency and precision.
+                    Welcome to EdProfio, a dedicated recruitment platform built exclusively for the education industry. 
+                    We empower schools, colleges, universities, and EdTech organizations with seamless hiring solutions designed for growth. 
+                    Whether you are an institution seeking qualified professionals or an educator pursuing the right career opportunity, 
+                    EdProfio ensures a smooth, transparent, and efficient process from start to finish.
+                  </p>
+                  <p style={{textAlign: "justify"}}>
+                    We focus on creating meaningful connections — linking opportunity with expertise — so that the right people find the right environment to inspire, innovate, and succeed.
                   </p>
                 </div>
               </div>
@@ -54,21 +58,53 @@ const AboutPage = () => {
                 <Tabs defaultActiveKey="why-choose" id="about-tabs" className="nav-tabs-line">
                   <Tab eventKey="why-choose" title="Why Choose EdProfio?" className="border border-dark shadow p-20" style={{borderRadius: "10px"}}>
                     <p style={{textAlign: "justify"}}>
-                      At EdProfio, we understand the unique needs of the educational industry. Our platform serves a variety of educational institutions, 
-                      including schools, colleges, universities, training centres, and EdTech organizations, providing a robust and efficient recruitment solutions. 
-                      For job seekers, we offer diverse opportunities across teaching, administration, research, and EdTech roles.
+                      Educational hiring requires skill, understanding, and precision — and that's exactly what we excel at. Our platform provides:
+                    </p>
+                    <ul style={{listStyleType: "none", paddingLeft: "0"}}>
+                      <li style={{marginBottom: "10px"}}>
+                        <span style={{color: "#28a745", fontSize: "18px", marginRight: "10px"}}>✔</span>
+                        <strong>Smart talent discovery</strong> through verified profiles
+                      </li>
+                      <li style={{marginBottom: "10px"}}>
+                        <span style={{color: "#28a745", fontSize: "18px", marginRight: "10px"}}>✔</span>
+                        <strong>Streamlined hiring workflows</strong> tailored for educators
+                      </li>
+                      <li style={{marginBottom: "10px"}}>
+                        <span style={{color: "#28a745", fontSize: "18px", marginRight: "10px"}}>✔</span>
+                        <strong>Accurate candidate-institution fit</strong> based on competencies & goals
+                      </li>
+                    </ul>
+                    <p style={{textAlign: "justify", marginTop: "15px"}}>
+                      For professionals, EdProfio opens access to opportunities across teaching, administration, leadership, research, and EdTech — supporting long-term career growth and development.
+                    </p>
+                    <p style={{textAlign: "justify", fontWeight: "600", marginTop: "15px"}}>
+                      We don't just fill positions. <br/>
+                      We build stronger, future-ready institutions.
                     </p>
                   </Tab>
                   <Tab eventKey="benefit" title="Who Can Benefit from EdProfio?" className="border border-dark shadow p-20" style={{borderRadius: "10px"}}>
                     <p style={{textAlign: "justify"}}>
-                      Whether you are an educator, administrator, counsellor, researcher, or EdTech specialist or a company, 
-                      EdProfio is your reliable partner in advancing your career and achieving professional success.
+                      EdProfio is built for the entire education ecosystem, including:
+                    </p>
+                    <ul style={{marginTop: "15px", lineHeight: "1.8"}}>
+                      <li><strong>Teachers</strong> | Administrative Staff | Academic Leaders</li>
+                      <li><strong>Counselors</strong> | Coordinators | Librarians</li>
+                      <li><strong>Researchers</strong> & Academic Support Roles</li>
+                      <li><strong>EdTech</strong> & Training Professionals</li>
+                      <li><strong>Schools, Universities, Coaching Centres</strong> & EdTech Firms</li>
+                    </ul>
+                    <p style={{textAlign: "justify", marginTop: "15px"}}>
+                      We connect the right talent to the right opportunities — driving success for individuals and institutions alike.
                     </p>
                   </Tab>
                   <Tab eventKey="mission" title="Our Mission" className="border border-dark shadow p-20" style={{borderRadius: "10px"}}>
                     <p style={{textAlign: "justify"}}>
-                      Our mission is to empower educational growth by connecting the right talent with the right opportunities. 
-                      With our intuitive interface, powerful search filters, and tailored recommendations, EdProfio makes job searching and recruitment easier.
+                      To advance the education sector by transforming the way talent is discovered, assessed, and hired. 
+                      Through intelligent tools, reliable processes, and people-first solutions, EdProfio strives to make recruitment simpler, faster, and more impactful for everyone involved.
+                    </p>
+                    <p style={{textAlign: "justify", fontWeight: "600", marginTop: "20px"}}>
+                      Together, we shape careers. <br/>
+                      Together, we strengthen education.
                     </p>
                   </Tab>
                 </Tabs>
