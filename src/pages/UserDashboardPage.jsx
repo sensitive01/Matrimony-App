@@ -296,9 +296,11 @@ const UserDashboardPage = () => {
       <div className="pt-16">
         <div className="db">
           <div className="container">
-            <div className="row">
+            <div className="row" style={{ marginLeft: -75, marginRight: 0 }}>
               {/* Sidebar - Left Column */}
-              <UserSideBar />
+              <div className="col-md-4 col-lg-3" style={{ paddingLeft: 0, marginLeft: "-90px" }}>
+                <UserSideBar />
+              </div>
 
               {/* Dashboard Content - Right Column */}
               <div className="col-md-8 col-lg-9">

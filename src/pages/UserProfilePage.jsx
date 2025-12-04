@@ -44,13 +44,15 @@ const UserProfilePage = () => {
       {/* Main Content Area */}
       <div className="pt-16">
         <div className="db">
-          <div className="container">
-            <div className="row">
-              {/* Sidebar - Left Column */}
-              <UserSideBar />
+          <div className="container-fluid" style={{ paddingLeft: 0, paddingRight: 0 }}>
+            <div className="row" style={{ marginLeft: 45, marginRight: 0 }}>
+              {/* Sidebar - Left Column - Pushed further left */}
+              <div className="col-md-4 col-lg-3" style={{ paddingLeft: 0, marginLeft: "-10px" }}>
+                <UserSideBar />
+              </div>
 
               {/* Profile Content - Right Column */}
-              <div className="col-md-8 col-lg-9">
+              <div className="col-md-8 col-lg-9" style={{ paddingLeft: "20px", paddingRight: "15px" }}>
                 <div className="row">
                   {/* Header with Edit Button */}
                   <div className="col-12">
@@ -235,14 +237,13 @@ const UserProfilePage = () => {
                     </div>
                   )}
 
-                  {/* Personal Details */}
-                  <div className="col-md-6 mb-4">
+                  {/* Basic Details */}
+                  <div className="col-12 mb-4">
                     <div style={{ 
                       padding: "20px", 
                       background: "#fff", 
                       borderRadius: "10px",
-                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-                      height: "100%"
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
                     }}>
                       <h4 style={{ 
                         marginBottom: "20px", 
@@ -253,126 +254,104 @@ const UserProfilePage = () => {
                         paddingBottom: "10px"
                       }}>
                         <i className="fa fa-info-circle" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
-                        Personal Details
+                        Basic Details
                       </h4>
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {userInfo?.gender && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Gender:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.gender}</span>
-                          </div>
-                        )}
-                        {userInfo?.dateOfBirth && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Age:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>
-                              {calculateAge(userInfo.dateOfBirth)} years
-                            </span>
-                          </div>
-                        )}
-                        {userInfo?.height && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Height:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.height}</span>
-                          </div>
-                        )}
-                        {userInfo?.weight && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Weight:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.weight} kg</span>
-                          </div>
-                        )}
-                        {userInfo?.religion && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Religion:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.religion}</span>
-                          </div>
-                        )}
-                        {userInfo?.diet && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Diet:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.diet}</span>
-                          </div>
-                        )}
-                        {userInfo?.smoking && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Smoking:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.smoking}</span>
-                          </div>
-                        )}
-                        {userInfo?.drinking && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Drinking:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.drinking}</span>
-                          </div>
-                        )}
-                        {userInfo?.exercise && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Exercise:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.exercise}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Location Information */}
-                  <div className="col-md-6 mb-4">
-                    <div style={{ 
-                      padding: "20px", 
-                      background: "#fff", 
-                      borderRadius: "10px",
-                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-                      height: "100%"
-                    }}>
-                      <h4 style={{ 
-                        marginBottom: "20px", 
-                        fontSize: "1.3rem",
-                        fontWeight: "600",
-                        color: "#333",
-                        borderBottom: "2px solid #7c3aed",
-                        paddingBottom: "10px"
-                      }}>
-                        <i className="fa fa-map-marker" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
-                        Location
-                      </h4>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {userInfo?.address && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Address:</span>
-                            <span style={{ color: "#333", fontWeight: "600", textAlign: "right" }}>{userInfo.address}</span>
-                          </div>
-                        )}
-                        {userInfo?.city && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>City:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.city}</span>
-                          </div>
-                        )}
-                        {userInfo?.state && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>State:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.state}</span>
-                          </div>
-                        )}
-                        {userInfo?.pincode && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Pincode:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.pincode}</span>
-                          </div>
-                        )}
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Profile Created for:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.profileCreatedFor || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Name:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.userName || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Age:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>
+                            {userInfo?.dateOfBirth 
+                              ? `${calculateAge(userInfo.dateOfBirth)} years / ${new Date(userInfo.dateOfBirth).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).replace(',', '')}`
+                              : "Not Specified"}
+                          </span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Body Type:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.bodyType || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Physical Status:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.physicalStatus || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Complexion:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.complexion || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Height:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.height || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Weight:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.weight ? `${userInfo.weight} kg` : "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Marital Status:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.maritalStatus || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Married Month & Year:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.marriedMonthYear || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Living Together Period:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.livingTogetherPeriod || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Divorced Month & Year:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.divorcedMonthYear || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Reason for Divorce:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.reasonForDivorce || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Child Status:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.childStatus || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>No. of Children:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.numberOfChildren || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Eating Habits:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.eatingHabits || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Drinking Habits:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.drinkingHabits || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Smoking Habits:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.smokingHabits || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Mother Tongue:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.motherTongue || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Caste:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.caste || "Not Specified"}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Family Details */}
-                  <div className="col-md-6 mb-4">
+                  <div className="col-12 mb-4">
                     <div style={{ 
                       padding: "20px", 
                       background: "#fff", 
                       borderRadius: "10px",
-                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-                      height: "100%"
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
                     }}>
                       <h4 style={{ 
                         marginBottom: "20px", 
@@ -386,30 +365,252 @@ const UserProfilePage = () => {
                         Family Details
                       </h4>
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {userInfo?.fathersName && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Father's Name:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.fathersName}</span>
-                          </div>
-                        )}
-                        {userInfo?.mothersName && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Mother's Name:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.mothersName}</span>
-                          </div>
-                        )}
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Father's Name:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.fathersName || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Mother's Name:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.mothersName || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Father's Occupation:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.fathersOccupation || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Father's Profession:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.fathersProfession || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Mother's Occupation:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.mothersOccupation || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Father's Native:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.fathersNative || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Mother's Native:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.mothersNative || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Family Value:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.familyValue || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Family Type:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.familyType || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Family Status:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.familyStatus || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Residence Type:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.residenceType || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>No. of Brothers:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.numberOfBrothers || "No brothers"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>No. of Sisters:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.numberOfSisters || "No sisters"}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Education Details */}
-                  <div className="col-md-6 mb-4">
+                  {/* Religious Information */}
+                  <div className="col-12 mb-4">
                     <div style={{ 
                       padding: "20px", 
                       background: "#fff", 
                       borderRadius: "10px",
-                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-                      height: "100%"
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
+                    }}>
+                      <h4 style={{ 
+                        marginBottom: "20px", 
+                        fontSize: "1.3rem",
+                        fontWeight: "600",
+                        color: "#333",
+                        borderBottom: "2px solid #7c3aed",
+                        paddingBottom: "10px"
+                      }}>
+                        <i className="fa fa-book" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
+                        Religious Information
+                      </h4>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Denomination:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.denomination || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Church:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.church || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Church Activity:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.churchActivity || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Pastor's Name:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.pastorsName || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Spirituality:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.spirituality || "Not Specified"}</span>
+                        </div>
+                        <div style={{ marginTop: "8px" }}>
+                          <span style={{ color: "#666", fontWeight: "500", display: "block", marginBottom: "8px" }}>
+                            Religious Detail:
+                          </span>
+                          <div style={{ 
+                            padding: "12px", 
+                            background: "#f9fafb", 
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "6px",
+                            minHeight: "60px",
+                            color: "#333",
+                            fontWeight: "500",
+                            lineHeight: "1.6"
+                          }}>
+                            {userInfo?.religiousDetail || "Not Specified"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact Information */}
+                  <div className="col-12 mb-4">
+                    <div style={{ 
+                      padding: "20px", 
+                      background: "#fff", 
+                      borderRadius: "10px",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
+                    }}>
+                      <h4 style={{ 
+                        marginBottom: "20px", 
+                        fontSize: "1.3rem",
+                        fontWeight: "600",
+                        color: "#333",
+                        borderBottom: "2px solid #7c3aed",
+                        paddingBottom: "10px"
+                      }}>
+                        <i className="fa fa-phone" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
+                        Contact Information
+                      </h4>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Mobile Number:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.userMobile || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Alternate Mobile Number:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.alternateMobile || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Email:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.userEmail || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Landline Number:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.landlineNumber || "Not Specified"}</span>
+                        </div>
+                        <div style={{ marginTop: "8px" }}>
+                          <span style={{ color: "#666", fontWeight: "500", display: "block", marginBottom: "8px" }}>
+                            Current Address:
+                          </span>
+                          <div style={{ 
+                            padding: "12px", 
+                            background: "#f9fafb", 
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "6px",
+                            minHeight: "60px",
+                            color: "#333",
+                            fontWeight: "500",
+                            lineHeight: "1.6"
+                          }}>
+                            {userInfo?.currentAddress || "Not Specified"}
+                          </div>
+                        </div>
+                        <div style={{ marginTop: "8px" }}>
+                          <span style={{ color: "#666", fontWeight: "500", display: "block", marginBottom: "8px" }}>
+                            Permanent Address:
+                          </span>
+                          <div style={{ 
+                            padding: "12px", 
+                            background: "#f9fafb", 
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "6px",
+                            minHeight: "60px",
+                            color: "#333",
+                            fontWeight: "500",
+                            lineHeight: "1.6"
+                          }}>
+                            {userInfo?.permanentAddress || "Not Specified"}
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Contact Person Name:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.contactPersonName || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Relationship:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.relationship || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Citizen Of:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.citizenOf || "Not Specified"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Location Information - moved after Contact */}
+                  <div className="col-12 mb-4">
+                    <div style={{ 
+                      padding: "20px", 
+                      background: "#fff", 
+                      borderRadius: "10px",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
+                    }}>
+                      <h4 style={{ 
+                        marginBottom: "20px", 
+                        fontSize: "1.3rem",
+                        fontWeight: "600",
+                        color: "#333",
+                        borderBottom: "2px solid #7c3aed",
+                        paddingBottom: "10px"
+                      }}>
+                        <i className="fa fa-map-marker" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
+                        Location
+                      </h4>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>City:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.city || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>State:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.state || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Pincode:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.pincode || "Not Specified"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Professional Information - Education Section */}
+                  <div className="col-12 mb-4">
+                    <div style={{ 
+                      padding: "20px", 
+                      background: "#fff", 
+                      borderRadius: "10px",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
                     }}>
                       <h4 style={{ 
                         marginBottom: "20px", 
@@ -420,39 +621,71 @@ const UserProfilePage = () => {
                         paddingBottom: "10px"
                       }}>
                         <i className="fa fa-graduation-cap" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
-                        Education
+                        Professional Information
                       </h4>
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {userInfo?.school && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>School:</span>
-                            <span style={{ color: "#333", fontWeight: "600", textAlign: "right" }}>{userInfo.school}</span>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Education:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.education || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Additional Education:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.additionalEducation || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>College:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.college || "Not Specified"}</span>
+                        </div>
+                        <div style={{ marginTop: "8px" }}>
+                          <span style={{ color: "#666", fontWeight: "500", display: "block", marginBottom: "8px" }}>
+                            Education in detail:
+                          </span>
+                          <div style={{ 
+                            padding: "12px", 
+                            background: "#f9fafb", 
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "6px",
+                            minHeight: "60px",
+                            color: "#333",
+                            fontWeight: "500",
+                            lineHeight: "1.6"
+                          }}>
+                            {userInfo?.educationDetail || "Not Specified"}
                           </div>
-                        )}
-                        {userInfo?.college && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>College:</span>
-                            <span style={{ color: "#333", fontWeight: "600", textAlign: "right" }}>{userInfo.college}</span>
-                          </div>
-                        )}
-                        {userInfo?.degree && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Degree:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.degree.toUpperCase()}</span>
-                          </div>
-                        )}
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Employment Type:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.employmentType || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Occupation:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.occupation || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Position:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.position || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Company Name:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.companyName || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Annual Income:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>
+                            {userInfo?.annualIncome || (userInfo?.salary ? `₹${userInfo.salary}` : "Not Specified")}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Professional Details */}
-                  <div className="col-md-6 mb-4">
+                  {/* Lifestyle */}
+                  <div className="col-12 mb-4">
                     <div style={{ 
                       padding: "20px", 
                       background: "#fff", 
                       borderRadius: "10px",
-                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-                      height: "100%"
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
                     }}>
                       <h4 style={{ 
                         marginBottom: "20px", 
@@ -462,79 +695,63 @@ const UserProfilePage = () => {
                         borderBottom: "2px solid #7c3aed",
                         paddingBottom: "10px"
                       }}>
-                        <i className="fa fa-briefcase" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
-                        Professional Details
+                        <i className="fa fa-heart" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
+                        LifeStyle
                       </h4>
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {userInfo?.jobType && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Job Type:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.jobType}</span>
-                          </div>
-                        )}
-                        {userInfo?.companyName && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Company:</span>
-                            <span style={{ color: "#333", fontWeight: "600", textAlign: "right" }}>{userInfo.companyName}</span>
-                          </div>
-                        )}
-                        {userInfo?.jobExperience && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Experience:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.jobExperience}</span>
-                          </div>
-                        )}
-                        {userInfo?.salary && (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontWeight: "500" }}>Salary:</span>
-                            <span style={{ color: "#333", fontWeight: "600" }}>₹{userInfo.salary}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Hobbies & Interests */}
-                  {userInfo?.hobbies && userInfo.hobbies.length > 0 && (
-                    <div className="col-md-6 mb-4">
-                      <div style={{ 
-                        padding: "20px", 
-                        background: "#fff", 
-                        borderRadius: "10px",
-                        boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-                        height: "100%"
-                      }}>
-                        <h4 style={{ 
-                          marginBottom: "20px", 
-                          fontSize: "1.3rem",
-                          fontWeight: "600",
-                          color: "#333",
-                          borderBottom: "2px solid #7c3aed",
-                          paddingBottom: "10px"
-                        }}>
-                          <i className="fa fa-heart" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
-                          Hobbies & Interests
-                        </h4>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                          {userInfo.hobbies.map((hobby, index) => (
-                            <span
-                              key={index}
-                              style={{
-                                padding: "8px 16px",
-                                background: "#f0f0f0",
-                                borderRadius: "20px",
-                                fontSize: "0.9rem",
-                                color: "#555",
-                                fontWeight: "500"
-                              }}
-                            >
-                              {hobby}
-                            </span>
-                          ))}
+                        <div>
+                          <span style={{ color: "#666", fontWeight: "500", display: "block", marginBottom: "8px" }}>
+                            Hobbies:
+                          </span>
+                          {userInfo?.hobbies && userInfo.hobbies.length > 0 ? (
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                              {userInfo.hobbies.map((hobby, index) => (
+                                <span
+                                  key={index}
+                                  style={{
+                                    padding: "6px 14px",
+                                    background: "#f0f0f0",
+                                    borderRadius: "20px",
+                                    fontSize: "0.85rem",
+                                    color: "#555",
+                                    fontWeight: "500"
+                                  }}
+                                >
+                                  {hobby}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span style={{ color: "#333", fontWeight: "500" }}>Not Specified</span>
+                          )}
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Interests:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.interests || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Music:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.music || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Favourite Reads:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.favouriteReads || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Favourite Cuisines:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.favouriteCuisines || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Sports Activities:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.sportsActivities || "Not Specified"}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "#666", fontWeight: "500" }}>Dress Styles:</span>
+                          <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.dressStyles || "Not Specified"}</span>
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>
 
                   {/* Partner Preferences */}
                   <div className="col-12 mb-4">
@@ -553,55 +770,108 @@ const UserProfilePage = () => {
                         paddingBottom: "10px"
                       }}>
                         <i className="fa fa-heart-o" style={{ marginRight: "10px", color: "#7c3aed" }}></i>
-                        Partner Preferences
+                        Partner Preference
                       </h4>
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                            {(userInfo?.desiredAgeFrom || userInfo?.desiredAgeTo) && (
-                              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span style={{ color: "#666", fontWeight: "500" }}>Age Range:</span>
-                                <span style={{ color: "#333", fontWeight: "600" }}>
-                                  {userInfo.desiredAgeFrom} - {userInfo.desiredAgeTo} years
-                                </span>
-                              </div>
-                            )}
-                            {(userInfo?.desiredHeightFrom || userInfo?.desiredHeightTo) && (
-                              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span style={{ color: "#666", fontWeight: "500" }}>Height Range:</span>
-                                <span style={{ color: "#333", fontWeight: "600" }}>
-                                  {userInfo.desiredHeightFrom} - {userInfo.desiredHeightTo} cm
-                                </span>
-                              </div>
-                            )}
-                            {userInfo?.desiredLocation && (
-                              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span style={{ color: "#666", fontWeight: "500" }}>Location:</span>
-                                <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.desiredLocation}</span>
-                              </div>
-                            )}
+                      
+                      {/* Basic & Religion Preferences */}
+                      <div style={{ marginBottom: "20px" }}>
+                        <h5 style={{ fontSize: "1.05rem", fontWeight: "600", color: "#555", marginBottom: "12px" }}>
+                          Basic & Religion Preferences
+                        </h5>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Bride's Age:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>
+                              {userInfo?.partnerAgeFrom || userInfo?.partnerAgeTo ? 
+                                `${userInfo.partnerAgeFrom || 'Any'} - ${userInfo.partnerAgeTo || 'Any'}` : 
+                                'Any'}
+                            </span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Height:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerHeight || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Marital Status:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerMaritalStatus || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Mother Tongue:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerMotherTongue || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Caste:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerCaste || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Physical Status:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerPhysicalStatus || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Eating Habits:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerEatingHabits || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Drinking Habits:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerDrinkingHabits || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Smoking Habits:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerSmokingHabits || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Denomination:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerDenomination || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Spirituality:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerSpirituality || "Not Specified"}</span>
                           </div>
                         </div>
-                        <div className="col-md-6">
-                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                            {userInfo?.desiredReligion && (
-                              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span style={{ color: "#666", fontWeight: "500" }}>Religion:</span>
-                                <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.desiredReligion}</span>
-                              </div>
-                            )}
-                            {userInfo?.desiredCaste && (
-                              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span style={{ color: "#666", fontWeight: "500" }}>Caste:</span>
-                                <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.desiredCaste}</span>
-                              </div>
-                            )}
-                            {userInfo?.desiredEducation && (
-                              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span style={{ color: "#666", fontWeight: "500" }}>Education:</span>
-                                <span style={{ color: "#333", fontWeight: "600" }}>{userInfo.desiredEducation}</span>
-                              </div>
-                            )}
+                      </div>
+
+                      {/* Professional Preferences */}
+                      <div style={{ marginBottom: "20px" }}>
+                        <h5 style={{ fontSize: "1.05rem", fontWeight: "600", color: "#555", marginBottom: "12px" }}>
+                          Professional Preferences
+                        </h5>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Education:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerEducation || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Employment Type:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerEmploymentType || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Occupation:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerOccupation || "Not Specified"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Annual Income:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerAnnualIncome || "Not Specified"}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Location Preferences */}
+                      <div>
+                        <h5 style={{ fontSize: "1.05rem", fontWeight: "600", color: "#555", marginBottom: "12px" }}>
+                          Location Preferences
+                        </h5>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Country:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerCountry || "Any"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>State:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerState || "Any"}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#666", fontWeight: "500" }}>Residing District:</span>
+                            <span style={{ color: "#333", fontWeight: "600" }}>{userInfo?.partnerDistrict || "Any"}</span>
                           </div>
                         </div>
                       </div>

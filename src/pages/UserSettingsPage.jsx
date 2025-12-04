@@ -13,8 +13,10 @@ const UserSettingsPage = () => {
       <div className="pt-16">
         <div className="db">
           <div className="container">
-            <div className="row">
-              <UserSideBar />
+            <div className="row" style={{ marginLeft: -155, marginRight: 0 }}>
+              <div className="col-md-4 col-lg-3" style={{ paddingLeft: 0, marginLeft: "-10px" }}>
+                <UserSideBar />
+              </div>
 
               <div className="col-md-8 col-lg-9">
                 <div className="row">

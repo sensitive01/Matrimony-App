@@ -8,6 +8,9 @@ const UserSideBar = () => {
   const currentPath = window.location.pathname;
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
+  // index of currently visible image
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await getUserProfile(userId);
@@ -18,69 +21,43 @@ const UserSideBar = () => {
     fetchData();
   }, [userId]);
 
-  const navItems = [
-    {
-      path: "/user/user-dashboard-page",
-      icon: "fa fa-tachometer",
-      label: "Dashboard",
-    },
-    {
-      path: "/user/user-profile-page",
-      icon: "fa fa-male",
-      label: "Profile",
-    },
-    {
-      path: "/user/user-interest-page",
-      icon: "fa fa-handshake-o",
-      label: "Interests",
-    },
-    {
-      path: "/user/user-chat-page",
-      icon: "fa fa-commenting-o",
-      label: "Chat list",
-    },
-    {
-      path: "/user/short-listed-profiles-page",
-      icon: "fa fa-bookmark",
-      label: "Short listed Profiles",
-    },
-    {
-      path: "/user/who-viewed-you-page",
-      icon: "fa fa-eye",
-      label: "Who Viewed You",
-    },
-    {
-      path: "/user/blocked-profiles-page",
-      icon: "fa fa-ban",
-      label: "Blocked Profiles",
-    },
-    {
-      path: "/user/ignored-profiles-page",
-      icon: "fa fa-times-circle",
-      label: "Ignored Profiles",
-    },
-    {
-      path: "/user/user-plan-page",
-      icon: "fa fa-money",
-      label: "Plan",
-    },
-    {
-      path: "/user/user-settings-page",
-      icon: "fa fa-cog",
-      label: "Setting",
-    },
-    {
-      path: "/user/user-login",
-      icon: "fa fa-sign-out",
-      label: "Log out",
-    },
+  // array of images: profile + additionalImages (if any)
+  const images = [
+    userInfo?.profileImage || profImage,
+    ...(Array.isArray(userInfo?.additionalImages)
+      ? userInfo.additionalImages
+      : []),
   ];
 
-  // Styles
+  const handlePrev = () => {
+    if (images.length === 0) return;
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? images.length - 1 : prev - 1
+    );
+  };
+
+  const handleNext = () => {
+    if (images.length === 0) return;
+    setCurrentImageIndex((prev) =>
+      prev === images.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const navItems = [
+    { path: "/user/user-dashboard-page", icon: "fa fa-tachometer", label: "Dashboard" },
+    { path: "/user/user-profile-page", icon: "fa fa-male", label: "Profile" },
+    { path: "/user/user-interest-page", icon: "fa fa-handshake-o", label: "Interests" },
+    { path: "/user/user-chat-page", icon: "fa fa-commenting-o", label: "Chat list" },
+    { path: "/user/short-listed-profiles-page", icon: "fa fa-bookmark", label: "Short listed Profiles" },
+    { path: "/user/who-viewed-you-page", icon: "fa fa-eye", label: "Who Viewed You" },
+    { path: "/user/blocked-profiles-page", icon: "fa fa-ban", label: "Blocked Profiles" },
+    { path: "/user/ignored-profiles-page", icon: "fa fa-times-circle", label: "Ignored Profiles" },
+    { path: "/user/user-plan-page", icon: "fa fa-money", label: "Plan" },
+    { path: "/user/user-settings-page", icon: "fa fa-cog", label: "Setting" },
+    { path: "/user/user-login", icon: "fa fa-sign-out", label: "Log out" },
+  ];
+
   const styles = {
-    sidebarCol: {
-      paddingLeft: "0",
-    },
     sidebarSticky: {
       position: "sticky",
       top: "20px",
@@ -98,6 +75,10 @@ const UserSideBar = () => {
       background: "#fff",
       borderBottom: "1px solid #e9ecef",
     },
+    imageWrapper: {
+      position: "relative", // important for absolute arrows
+      width: "100%",
+    },
     dbNavProImg: {
       width: "100%",
       height: "auto",
@@ -105,6 +86,30 @@ const UserSideBar = () => {
       objectFit: "cover",
       borderRadius: "8px",
       border: "2px solid #e9ecef",
+      display: "block",
+    },
+    arrowButton: {
+      position: "absolute",
+      top: "50%",
+      transform: "translateY(-50%)",
+      width: "32px",
+      height: "32px",
+      borderRadius: "50%",
+      border: "none",
+      background: "rgba(0,0,0,0.45)",
+      color: "#fff",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      fontSize: "16px",
+      zIndex: 2,
+    },
+    arrowLeft: {
+      left: "-10px",
+    },
+    arrowRight: {
+      right: "-10px",
     },
     dbNavList: {
       padding: "0",
@@ -160,18 +165,34 @@ const UserSideBar = () => {
     },
   };
 
- return (
-  <div className="col-md-4 col-lg-3" style={styles.sidebarCol}>
+  return (
     <div style={styles.sidebarSticky}>
       <div style={styles.dbNav}>
-        
-        {/* Profile Image at Top */}
+        {/* Profile Image with Arrows */}
         <div style={styles.dbNavPro}>
-          <img
-            src={userInfo?.profileImage || profImage}
-            style={styles.dbNavProImg}
-            alt="Profile"
-          />
+          <div style={styles.imageWrapper}>
+            <img
+              src={images[currentImageIndex]}
+              style={styles.dbNavProImg}
+              alt="Profile"
+            />
+
+            {/* always render arrows; they will still work even with one image */}
+            <button
+              type="button"
+              style={{ ...styles.arrowButton, ...styles.arrowLeft }}
+              onClick={handlePrev}
+            >
+              <i className="fa fa-chevron-left" />
+            </button>
+            <button
+              type="button"
+              style={{ ...styles.arrowButton, ...styles.arrowRight }}
+              onClick={handleNext}
+            >
+              <i className="fa fa-chevron-right" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation Menu */}
@@ -214,11 +235,9 @@ const UserSideBar = () => {
             })}
           </ul>
         </div>
-
       </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default UserSideBar;
